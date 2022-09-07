@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Declaring Variables in Go - golangbot.com</title>
+    <meta name="description" content="The var keyword is used to declare a variable of a specific type. There is also a shorthand syntax available using :&#x3D; operator to declare a variable." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/variables/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Declaring Variables in Go - golangbot.com" />
+    <meta property="og:description" content="The var keyword is used to declare a variable of a specific type. There is also a shorthand syntax available using :&#x3D; operator to declare a variable." />
+    <meta property="og:url" content="https://golangbot.com/variables/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-04-13T04:52:00.000Z" />
+    <meta property="article:modified_time" content="2020-08-16T09:29:03.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Declaring Variables in Go - golangbot.com" />
+    <meta name="twitter:description" content="The var keyword is used to declare a variable of a specific type. There is also a shorthand syntax available using :&#x3D; operator to declare a variable." />
+    <meta name="twitter:url" content="https://golangbot.com/variables/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Declaring Variables in Go - golangbot.com",
+    "url": "https://golangbot.com/variables/",
+    "datePublished": "2020-04-13T04:52:00.000Z",
+    "dateModified": "2020-08-16T09:29:03.000Z",
+    "description": "The var keyword is used to declare a variable of a specific type. There is also a shorthand syntax available using :&#x3D; operator to declare a variable.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Variables</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-04-13">13 April 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>This is the third tutorial in our <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a> and it deals with variables in Golang. </p>
+
+<p>You can read <a href="https://golangbot.com/hello-world/">Golang tutorial part 2: Hello World</a> to learn about configuring Go and running the hello world program.</p>
+
+<h3 id="whatisavariable">What is a variable?</h3>
+
+<p>Variable is the name given to a memory location to store a value of a specific <a href="https://golangbot.com/types/">type</a>. There are various syntaxes to declare variables in Go. Let's look at them one by one.</p>
+
+<h3 id="declaringasinglevariable">Declaring a single variable</h3>
+
+<p><strong>var name type</strong> is the syntax to declare a single variable.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var age int // variable declaration
+    fmt.Println("My age is", age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/bycpQlMWyw-" target="_blank">Run in playground</a></p>
+
+<p>The statement <code>var age int</code> declares a variable named <code>age</code> of type <code>int</code>. We have not assigned any value to this variable. If a variable is not assigned any value, Go automatically initializes it with the <strong>zero value</strong> of the variable's type. In this case,  age is assigned the value <code>0</code>, which is the zero value of <code>int</code>. If you run this program, you can see the following output.</p>
+
+<pre><code>My age is 0  
+</code></pre>
+
+<p>A variable can be assigned to any value of its type. In the above program, <code>age</code> can be assigned any integer value.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var age int // variable declaration
+    fmt.Println("My age is", age)
+    age = 29 //assignment
+    fmt.Println("My age is", age)
+    age = 54 //assignment
+    fmt.Println("My new age is", age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/dP8hG83Gj3K" target="_blank">Run in playground</a></p>
+
+<p>The above program will print the following output.</p>
+
+<pre><code>My age is  0  
+My age is 29  
+My new age is 54  
+</code></pre>
+
+<h3 id="declaringavariablewithaninitialvalue">Declaring a variable with an initial value</h3>
+
+<p>A variable can also be provided an initial value when it is declared. The following is the syntax to declare a variable with an initial value.</p>
+
+<pre><code>var name type = initialvalue  
+</code></pre>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var age int = 29 // variable declaration with initial value
+
+    fmt.Println("My age is", age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/zWtpqINuJlA" target="_blank">Run in playground</a></p>
+
+<p>In the above program, <code>age</code> is a variable of type <code>int</code> and has initial value <code>29</code>. The above program will print the following output. </p>
+
+<pre><code>My age is 29  
+</code></pre>
+
+<p>It shows that age has been initialized with the value 29.</p>
+
+<h3 id="typeinference">Type inference</h3>
+
+<p>If a variable has an initial value, Go will automatically be able to infer the type of that variable using that initial value. Hence if a variable has an initial value, the <code>type</code> in the variable declaration can be removed.</p>
+
+<p>If the variable is declared using the following syntax  </p>
+
+<pre><code>var name = initialvalue  
+</code></pre>
+
+<p>Go will automatically infer the type of that variable from the initial value.</p>
+
+<p>In the following example, we can see that the type <code>int</code> of the variable <code>age</code> has been removed in line no. 6. Since the variable has an initial value <code>29</code>, Go can infer that it is of type <code>int</code>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var age = 29 // type will be inferred
+    fmt.Println("My age is", age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/i99Xzzz9XBD" target="_blank">Run in playground</a></p>
+
+<h3 id="multiplevariabledeclaration">Multiple variable declaration</h3>
+
+<p>Multiple variables can be declared using a single statement.</p>
+
+<p><strong>var name1, name2 type = initialvalue1, initialvalue2</strong> is the syntax for multiple variable declaration.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var width, height int = 100, 50 //declaring multiple variables
+
+    fmt.Println("width is", width, "height is", height)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/4aOQyt55ah" target=_"blank">Run in playground</a></p>
+
+<p>The <em>type</em> can be removed if the variables have an initial value. Since the above program has initial values for variables, the <code>int</code> type can be removed. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var width, height = 100, 50 //"int" is dropped
+
+    fmt.Println("width is", width, "height is", height)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/sErofTJ6g-" target="_blank">Run in playground</a></p>
+
+<p>The above program will print <code>width is 100 height is 50</code> as the output.</p>
+
+<p>As you would have probably guessed by now, if the initial value is not specified for width and height, they will have <code>0</code> assigned as their initial value.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var width, height int
+    fmt.Println("width is", width, "height is", height)
+    width = 100
+    height = 50
+    fmt.Println("new width is", width, "new height is", height)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/aPegNR4MAA_q" target=" blank">Run in playground</a></p>
+
+<p>The above program will print  </p>
+
+<pre><code class="language- ">width is 0 height is 0  
+new width is 100 new height is 50  
+</code></pre>
+
+<p>There might be cases where we would want to declare variables belonging to different types in a single statement. The syntax for doing that is</p>
+
+<pre><code class="language-go line-numbers">var (  
+      name1 = initialvalue1
+      name2 = initialvalue2
+)
+</code></pre>
+
+<p>The following program uses the above syntax to declare variables of different types.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    var (
+        name   = "naveen"
+        age    = 29
+        height int
+    )
+    fmt.Println("my name is", name, ", age is", age, "and height is", height)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/7pkp74h_9L" target="_blank">Run in playground</a></p>
+
+<p>Here we declare a variable <code>name</code> of type <code>string</code>, <code>age</code> and <code>height</code> of type <code>int</code>. (We will discuss the various types available in Golang in the <a href="https://golangbot.com/types/">next tutorial</a>). </p>
+
+<p>Running the above program will print </p>
+
+<pre><code>my name is naveen , age is 29 and height is 0  
+</code></pre>
+
+<h3 id="shorthanddeclaration">Short hand declaration</h3>
+
+<p>Go also provides another concise way to declare variables. This is known as short hand declaration and it uses <strong>:=</strong> operator. </p>
+
+<p><strong>name := initialvalue</strong> is the short hand syntax to declare a variable.</p>
+
+<p>The following program uses the short hand syntax to declare a variable <code>count</code> initialized to <code>10</code>. Go will automatically infer that <code>count</code> is of type <code>int</code> since it has been initialized with the integer value <code>10</code>.</p>
+
+<pre><code class="language-go line-numbers```">package main
+
+import "fmt"
+
+func main() {  
+    count := 10
+    fmt.Println("Count =",count)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/L5_8aru7VQM" target="_blank">Run in playground</a></p>
+
+<p>The above program will print,</p>
+
+<pre><code>Count = 10  
+</code></pre>
+
+<p>It is also possible to declare multiple variables in a single line using short hand syntax.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    name, age := "naveen", 29 //short hand declaration
+
+    fmt.Println("my name is", name, "age is", age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/ctqgw4w6kx" target="_blank">Run in playground</a></p>
+
+<p>The above program declares two variables <code>name</code> and <code>age</code> of type <code>string</code> and <code>int</code> respectively.</p>
+
+<p>If you run the above program, you can see <code>my name is naveen age is 29</code> getting printed.</p>
+
+<p>Short hand declaration requires initial values for all variables on the left-hand side of the assignment. The following program will print an error <code>assignment mismatch: 2 variables but 1 values</code>. This is because <strong>age has not been assigned a value.</strong></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    name, age := "naveen" //error
+
+    fmt.Println("my name is", name, "age is", age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/wZd2HmDvqw" target="_blank">Run in playground</a></p>
+
+<p>Short hand syntax can only be used when at least one of the variables on the left side of <strong>:=</strong> is newly declared. Consider the following program,  </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    a, b := 20, 30 // declare variables a and b
+    fmt.Println("a is", a, "b is", b)
+    b, c := 40, 50 // b is already declared but c is new
+    fmt.Println("b is", b, "c is", c)
+    b, c = 80, 90 // assign new values to already declared variables b and c
+    fmt.Println("changed b is", b, "c is", c)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/MSUYR8vazB"target ="_blank">Run in playground</a></p>
+
+<p>In the above program, in line no. 8,  <strong>b</strong> has already been declared but <strong>c</strong> is newly declared and hence it works and outputs </p>
+
+<pre><code>a is 20 b is 30  
+b is 40 c is 50  
+changed b is 80 c is 90  
+</code></pre>
+
+<p>Whereas if we run the program below,</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    a, b := 20, 30 //a and b declared
+    fmt.Println("a is", a, "b is", b)
+    a, b := 40, 50 //error, no new variables
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/EYTtRnlDu3" target="_blank">Run in playground</a></p>
+
+<p>it will print error <code>/prog.go:8:10: no new variables on left side of :=</code> This is because both the variables <strong>a</strong> and <strong>b</strong> have already been declared and there are no new variables in the left side of <strong>:=</strong> in line no. 8</p>
+
+<p>Variables can also be assigned values which are computed during run time. Consider the following program,</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "math"
+)
+
+func main() {  
+    a, b := 145.8, 543.8
+    c := math.Min(a, b)
+    fmt.Println("Minimum value is", c)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Kk84pOyFgQB"target ="_blank">Run in playground</a></p>
+
+<p>In the above program <a href="https://golang.org/pkg/math/"target ="_blank">math</a> is a <a href="https://golangbot.com/go-packages/">package</a> and <a href="https://golang.org/pkg/math/#Min"target ="_blank">Min</a> is a <a href="https://golangbot.com/functions/">function</a> in that package. Don't worry about it right now, we will discuss <a href="https://golangbot.com/go-packages/">packages</a> and <a href="https://golangbot.com/functions/">functions</a> in detail in the upcoming tutorials. All we need to know is, the value of <code>c</code> is calculated at run time and it's the minimum of <code>a</code> and <code>b</code>. The program above will print,  </p>
+
+<pre><code>Minimum value is  145.8  
+</code></pre>
+
+<p>Since Go is strongly typed, variables declared as belonging to one type cannot be assigned a value of another type. The following program will print an error <code>cannot use "naveen" (type string) as type int in assignment</code> because <code>age</code> is declared as type <code>int</code> and we are trying to assign a <code>string</code> value to it.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+func main() {  
+    age := 29      // age is int
+    age = "naveen" // error since we are trying to assign a string to a variable of type int
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/K5rz4gxjPj" target="_blank">Run in playground</a></p>
+
+<p>Thanks for reading. Please post your feedback and queries in the comments section.</p>
+
+<p>Like my tutorials? Please <a href="https://golangbot.com/support-the-content/">support the content</a>.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/types/">Types</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Variables&amp;url=https://golangbot.com/variables/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/variables/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/variables/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/variables/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-9"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

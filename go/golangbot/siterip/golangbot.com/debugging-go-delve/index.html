@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Debugging Go Programs using Delve  - golangbot.com</title>
+    <meta name="description" content="This tutorial gives an overview of how to debug Go applications using Delve. It covers the commonly used commands such as breakpoint, continue, next and step." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/debugging-go-delve/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Debugging Go Programs using Delve  - golangbot.com" />
+    <meta property="og:description" content="This tutorial gives an overview of how to debug Go applications using Delve. It covers the commonly used commands such as breakpoint, continue, next and step." />
+    <meta property="og:url" content="https://golangbot.com/debugging-go-delve/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-04-27T11:59:00.000Z" />
+    <meta property="article:modified_time" content="2020-04-29T14:36:14.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Debugging Go Programs using Delve  - golangbot.com" />
+    <meta name="twitter:description" content="This tutorial gives an overview of how to debug Go applications using Delve. It covers the commonly used commands such as breakpoint, continue, next and step." />
+    <meta name="twitter:url" content="https://golangbot.com/debugging-go-delve/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Debugging Go Programs using Delve  - golangbot.com",
+    "url": "https://golangbot.com/debugging-go-delve/",
+    "datePublished": "2020-04-27T11:59:00.000Z",
+    "dateModified": "2020-04-29T14:36:14.000Z",
+    "description": "This tutorial gives an overview of how to debug Go applications using Delve. It covers the commonly used commands such as breakpoint, continue, next and step.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Debugging Go Applications using Delve</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-04-27">27 April 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <h3 id="needforadebugger">Need for a debugger</h3>
+
+<p>The simplest form of debugging in any programming language is by using print statements/logs and writing to standard out. This definitely works but becomes extremely difficult when the size of our application grows and the logic becomes more complex. Adding print statements to every code path of the application is not easy. This is where debuggers come in handy. Debuggers help us to trace the execution path of the program using <a href="https://en.wikipedia.org/wiki/Breakpoint" target=_"blank">breakpoints</a> and a host of other features. <a href="https://github.com/go-delve/" target=_"blank">Delve</a> is one such debugger for Go. In this tutorial, we will learn how to Debug Go applications using Delve.</p>
+
+<h3 id="installingdelve">Installing Delve</h3>
+
+<p>Please ensure that you are inside a directory which doesn't contain a go.mod file. I prefer my <code>Documents</code> directory.</p>
+
+<pre><code>cd ~/Documents/  
+</code></pre>
+
+<p>Next, let's set the <code>GOBIN</code> environment variable. This environment variable specifies the location where the <code>Delve</code> binary will be installed. Please skip this step if you have the <code>GOBIN</code> already set. You can check whether <code>GOBIN</code> is set by running the command below.</p>
+
+<pre><code>go env | grep GOBIN  
+</code></pre>
+
+<p>If the above command prints, <code>GOBIN=""</code>, it means that <code>GOBIN</code> is not set. Please run <code>export GOBIN=~/go/bin/</code> command to set GOBIN.</p>
+
+<p>Let's add <code>GOBIN</code> to the <code>PATH</code> by running <code>export PATH=$PATH:~/go/bin</code></p>
+
+<p>In the case of <strong>macOS</strong>, the Xcode command line developer tools are needed to run Delve. Please run <code>xcode-select --install</code> to install the command line tools. Linux users can skip this step.</p>
+
+<p>Now we are set to install <code>Delve</code>. Please run  </p>
+
+<pre><code>go get github.com/go-delve/delve/cmd/dlv  
+</code></pre>
+
+<p>
+to install delve. After running this command, please test your installation by running <code>dlv version</code>. It will print the version of Delve on successful installation.</p>
+
+<pre><code>Delve Debugger  
+Version: 1.4.0  
+Build: $Id: 67422e6f7148fa1efa0eac1423ab5594b223d93b  
+</code></pre>
+
+<h3 id="startingdelve">Starting Delve</h3>
+
+<p>Let's write a simple program and then start debugging it using Delve.</p>
+
+<p>Let's create a directory for our sample program using the following command.</p>
+
+<pre><code>mkdir ~/Documents/debugsample  
+</code></pre>
+
+<p>Create a file <code>main.go</code> inside the <code>debugsample</code> directory we just created with the following contents.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    arr := []int{101, 95, 10, 188, 100}
+    max := arr[0]
+    for _, v := range arr {
+        if v &gt; max {
+            max = v
+        }
+    }
+    fmt.Printf("Max element is %d\n", max)
+}
+</code></pre>
+
+<p>The program above will print the biggest element of the <a href="https://golangbot.com/arrays-and-slices/#slices">slice</a> <code>arr</code>. <a href="https://golangbot.com/hello-world-gomod/#runningagoprogram">Running</a> the above program will output,  </p>
+
+<pre><code>Max element is 188  
+</code></pre>
+
+<p>We are now ready to debug the program. Let's move to the debugsample directory <code>cd ~/Documents/debugsample</code>. After that, type the following command to start Delve.</p>
+
+<pre><code>dlv debug  
+</code></pre>
+
+<p>The above command will start debugging the <code>main</code> <a href="https://golangbot.com/go-packages/">package</a> in the current directory. After typing the above command, you can see that the terminal has changed to <code>(dlv)</code> prompt. If you can see this change, it means that the debugger has started successfully and waiting for our commands :).</p>
+
+<p>Let's fire our first command.</p>
+
+<p>In the <code>dlv</code> prompt, type <code>continue</code>.</p>
+
+<pre><code>(dlv) continue
+</code></pre>
+
+<p><strong>The <code>continue</code> command will run the program until there is a breakpoint or till completion of the program. Since we do not have any breakpoints defined, the program will run till completion.</strong></p>
+
+<pre><code>Max element is 188  
+Process 1733 has exited with status 0  
+</code></pre>
+
+<p>If you see the above output, the debugger has run and the program is completed :). But this was not of any use to us. Let's go ahead and add a couple of breakpoints and watch the debugger do its magic.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="creatingbreakpoints">Creating Breakpoints</h3>
+
+<p><strong>Breakpoints pause the execution of the program at a specified line.</strong> When the execution is paused, we can send commands to the debugger to print the value of the variables, look at the stack trace of the program, and so on. </p>
+
+<p>The syntax for creating a breakpoint is provided below,</p>
+
+<pre><code>(dlv) break filename:lineno
+</code></pre>
+
+<p>The above command will create a breakpoint at line <code>lineno</code> in the file <code>filename</code>.</p>
+
+<p>Let's add a breakpoint to line no. 9 of our <code>main.go</code>. </p>
+
+<pre><code>(dlv) break main.go:9
+</code></pre>
+
+<p>When the above command is run, you can see the output, <code>Process 1733 has exited with status 0</code>. <strong>The breakpoint was not added actually</strong>. This is because the program has exited when we ran <code>continue</code> earlier since there were no breakpoints at that time. Let's restart the program and try setting the breakpoint again.</p>
+
+<pre><code>(dlv) restart
+Process restarted with PID 2028  
+(dlv) break main.go:9
+Breakpoint 1 set at 0x10c16e4 for main.main() ./main.go:9  
+</code></pre>
+
+<p>The <code>restart</code> command restarts the program and then the <code>break</code> command sets the breakpoint. The above output confirms that the breakpoint with name <code>1</code> is set at line no. 9 in main.go.</p>
+
+<p>Now let's <code>continue</code> our program and check whether the debugger pauses the program at the breakpoint.</p>
+
+<pre><code>(dlv) continue
+</code></pre>
+
+<pre><code>&gt; main.main() ./main.go:9 (hits goroutine(1):1 total:1) (PC: 0x10c16e4)
+     4:        "fmt"
+     5:    )
+     6:    
+     7:    func main() {
+     8:        arr := []int{101, 95, 10, 188, 100}
+=&gt;   9:        max := arr[0]
+    10:        for _, v := range arr {
+    11:            if v &gt; max {
+    12:                max = v
+    13:            }
+    14:        }
+</code></pre>
+
+<p>After <code>continue</code> is executed, we can see that the debugger has paused our program at line no 9. Just what we wanted :).</p>
+
+<h3 id="listingbreakpoints">Listing breakpoints</h3>
+
+<pre><code>(dlv) breakpoints
+</code></pre>
+
+<p>The above command lists the current breakpoints of the application. </p>
+
+<pre><code>(dlv) breakpoints
+Breakpoint runtime-fatal-throw at 0x102de10 for runtime.fatalthrow() /usr/local/Cellar/go/1.13.7/libexec/src/runtime/panic.go:820 (0)  
+Breakpoint unrecovered-panic at 0x102de80 for runtime.fatalpanic() /usr/local/Cellar/go/1.13.7/libexec/src/runtime/panic.go:847 (0)  
+    print runtime.curg._panic.arg
+Breakpoint 1 at 0x10c16e4 for main.main() ./main.go:9 (1)  
+</code></pre>
+
+<p>You might be surprised to see that there are two other breakpoints in addition to the one we added. The other two breakpoints are added by delve to ensure that the debugging session does not end abruptly when there is a runtime <em><a href="https://golangbot.com/panic-and-recover/">panic</a></em> that is not handled using <em><a href="https://golangbot.com/panic-and-recover/">recover</a></em>.</p>
+
+<h3 id="printingvariables">Printing variables</h3>
+
+<p>The program's execution has paused at line no. 9. <code>print</code> is the command used to print the value of a variable. Let's use <code>print</code> and print the element at the 0th index of the slice <code>arr</code>.</p>
+
+<pre><code>(dlv) print arr[0]
+</code></pre>
+
+<p>Running the above command will print <code>101</code> which is the element at the 0th index of the slice <code>arr</code>.</p>
+
+<p>Do note that if we try to print <code>max</code>, we will get a junk value printed.</p>
+
+<pre><code>(dlv) print max
+824634294736  
+</code></pre>
+
+<p>This is because the program has paused before line no. 9 is executed and hence printing <code>max</code> prints some random junk value. To print the actual value of max, we should move to the next line of the program. This can be done using the <code>next</code> command.</p>
+
+<h3 id="movetonextlineinthesource">Move to next line in the source</h3>
+
+<pre><code>(dlv) next
+</code></pre>
+
+<p>will move the debugger to the next line and it will output,</p>
+
+<pre><code>&gt; main.main() ./main.go:10 (PC: 0x10c16ee)
+     5:    )
+     6:    
+     7:    func main() {
+     8:        arr := []int{101, 95, 10, 188, 100}
+     9:        max := arr[0]
+=&gt;  10:        for _, v := range arr {
+    11:            if v &gt; max {
+    12:                max = v
+    13:            }
+    14:        }
+    15:        fmt.Printf("Max element is %d\n", max)
+</code></pre>
+
+<p>Now if we try <code>(dlv) print max</code> we can see the output <code>101</code>.</p>
+
+<p><strong>next</strong> command can be used to walk through a program line by line. </p>
+
+<p>If you keep typing <code>next</code>, you can see that the debugger walks you line by line in the program. When one iteration of the <code>for</code> loop in line no. 10 is over,  <code>next</code> will walk us through the next iteration and the program will terminate eventually.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="printingexpressions">Printing expressions</h3>
+
+<p><em>print</em> can also be used to evaluate expressions. For example, if we want to find the value of <code>max + 10</code>, it's possible using print.</p>
+
+<p>Let's add another breakpoint outside the <code>for</code> loop where the computation of <code>max</code> will be completed.</p>
+
+<pre><code>(dlv) break main.go:15
+</code></pre>
+
+<p>The above command adds another breakpoint to line no. 15 where the computation of max is finished.</p>
+
+<p>Type <code>continue</code> and the program will stop at this breakpoint.</p>
+
+<p><em>print max+10</em> command will output <em>198</em>.</p>
+
+<h3 id="clearingbreakpoints">Clearing breakpoints</h3>
+
+<p><strong>clear</strong> is the command to clear a single breakpoint and <strong>clearall</strong> is the command to clear all breakpoints in the program.</p>
+
+<p>Let's first list the breakpoints in our application.</p>
+
+<pre><code>(dlv) breakpoints
+
+Breakpoint runtime-fatal-throw at 0x102de10 for runtime.fatalthrow() /usr/local/Cellar/go/1.13.7/libexec/src/runtime/panic.go:820 (0)  
+Breakpoint unrecovered-panic at 0x102de80 for runtime.fatalpanic() /usr/local/Cellar/go/1.13.7/libexec/src/runtime/panic.go:847 (0)  
+    print runtime.curg._panic.arg
+Breakpoint 1 at 0x10c16e4 for main.main() ./main.go:9 (1)  
+Breakpoint 2 at 0x10c1785 for main.main() ./main.go:15 (1)  
+</code></pre>
+
+<p>We have two breakpoints named <code>1</code> and <code>2</code></p>
+
+<p>If we run <code>clear 1</code>, it will delete the breakpoint <code>1</code>.</p>
+
+<pre><code>(dlv) clear 1
+Breakpoint 1 cleared at 0x10c16e4 for main.main() ./main.go:9  
+</code></pre>
+
+<p>If we run <code>clearall</code>, it will delete all breakpoints. We have only one breakpoint named <code>2</code> remaining. </p>
+
+<pre><code>(dlv) clearall
+Breakpoint 2 cleared at 0x10c1785 for main.main() ./main.go:15  
+</code></pre>
+
+<p>From the above output, we can see that the remaining one breakpoint is also cleared. If we executed <code>continue</code> command now, the program will print the <code>max</code> value and terminate.</p>
+
+<pre><code>(dlv) continue
+Max element is 188  
+Process 3095 has exited with status 0  
+</code></pre>
+
+<h3 id="stepintoandoutofafunction">Step into and out of a function</h3>
+
+<p>It is possible to use Delve to step into a <a href="https://golangbot.com/functions/">function</a> or out of a function. Don't worry if it doesn't make sense now :). Let's try to understand this with the help of an example.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func max(arr []int) int {  
+    max := arr[0]
+    for _, v := range arr {
+        if v &gt; max {
+            max = v
+        }
+    }
+    return max
+}
+func main() {  
+    arr := []int{101, 95, 10, 188, 100}
+    m := max(arr)
+    fmt.Printf("Max element is %d\n", m)
+}
+</code></pre>
+
+<p>I have modified the program we have been using till now and moved the logic which finds the biggest element of the slice to its own function named <code>max</code>.</p>
+
+<p>Quit Delve using <code>(dlv) q</code>, replace <code>main.go</code> with the program above and then start debugging again using the command <code>dlv debug</code>.</p>
+
+<p>Let's add a breakpoint at line. no 18 where the <code>max</code> function is called.</p>
+
+<p><strong>b</strong> is the shorthand for adding a breakpoint. Let's use that.</p>
+
+<pre><code>(dlv) b main.go:18
+(dlv) continue
+</code></pre>
+
+<p>We have added the breakpoint at line no.18 and continued the execution of the program. Running the above commands will print,</p>
+
+<pre><code>&gt; main.main() ./main.go:18 (hits goroutine(1):1 total:1) (PC: 0x10c17ae)
+    13:        }
+    14:        return max
+    15:    }
+    16:    func main() {
+    17:        arr := []int{101, 95, 10, 188, 100}
+=&gt;  18:        m := max(arr)
+    19:        fmt.Printf("Max element is %d\n", m)
+    20:    }
+</code></pre>
+
+<p>The program execution has paused at line no. 18 as expected. Now we have two options.</p>
+
+<ul>
+<li>Continue debugging deeper into the <code>max</code> function</li>
+<li>Skip the max function and move to the next line.</li>
+</ul>
+
+<p>Depending on our requirement we can do either. Let's learn how to do both.</p>
+
+<p>First, let's skip the max function and move to the next line. To do this, you can just run <code>next</code> and the debugger will automatically move to the next line. By default, Delve doesn't go deeper into function calls.</p>
+
+<pre><code>(dlv) next
+&gt; main.main() ./main.go:19 (PC: 0x10c17d3)
+    14:        return max
+    15:    }
+    16:    func main() {
+    17:        arr := []int{101, 95, 10, 188, 100}
+    18:        m := max(arr)
+=&gt;  19:        fmt.Printf("Max element is %d\n", m)
+    20:    }
+</code></pre>
+
+<p>You can see from the above output that the debugger has moved to the next line. </p>
+
+<p>Type <code>continue</code> and the program will finish executing. </p>
+
+<p>Let's learn how to go deeper into the max function.</p>
+
+<p>Type <code>restart</code> and <code>continue</code> and we can see the program paused again at the already existing breakpoint.</p>
+
+<pre><code>(dlv) restart
+Process restarted with PID 5378  
+(dlv) continue
+&gt; main.main() ./main.go:18 (hits goroutine(1):1 total:1) (PC: 0x10c17ae)
+    13:        }
+    14:        return max
+    15:    }
+    16:    func main() {
+    17:        arr := []int{101, 95, 10, 188, 100}
+=&gt;  18:        m := max(arr)
+    19:        fmt.Printf("Max element is %d\n", m)
+    20:    }
+</code></pre>
+
+<p>Now type <code>step</code> and we can see that the control has moved into the <code>max</code> function now.</p>
+
+<pre><code>(dlv) step
+&gt; main.max() ./main.go:7 (PC: 0x10c1650)
+     2:    
+     3:    import (
+     4:        "fmt"
+     5:    )
+     6:    
+=&gt;   7:    func max(arr []int) int {
+     8:        max := arr[0]
+     9:        for _, v := range arr {
+    10:            if v &gt; max {
+    11:                max = v
+    12:            }
+</code></pre>
+
+<p>Type <code>next</code> and the control will move to the first line of the <code>max</code> function.</p>
+
+<pre><code>(dlv) next
+&gt; main.max() ./main.go:8 (PC: 0x10c1667)
+     3:    import (
+     4:        "fmt"
+     5:    )
+     6:    
+     7:    func max(arr []int) int {
+=&gt;   8:        max := arr[0]
+     9:        for _, v := range arr {
+    10:            if v &gt; max {
+    11:                max = v
+    12:            }
+    13:        }
+</code></pre>
+
+<p>If you keep typing <code>next</code> you can step through the execution path of the <code>max</code> function.</p>
+
+<p>You might be wondering whether it is possible to return to <code>main</code> without stepping through each line in the <code>max</code> function. Yes, this is possible using the <code>stepout</code> command.</p>
+
+<pre><code>(dlv) stepout
+&gt; main.main() ./main.go:18 (PC: 0x10c17c9)
+Values returned:  
+    ~r1: 188
+
+    13:        }
+    14:        return max
+    15:    }
+    16:    func main() {
+    17:        arr := []int{101, 95, 10, 188, 100}
+=&gt;  18:        m := max(arr)
+    19:        fmt.Printf("Max element is %d\n", m)
+    20:    }
+</code></pre>
+
+<p>Once you type <code>stepout</code>, the control returns back to main. Now you can continue debugging in <code>main</code> :).</p>
+
+<h3 id="printingstacktrace">Printing stack trace</h3>
+
+<p>A very important functionality needed when debugging is to print the current stack trace of the program. This is useful to find out the current code execution path. <code>stack</code> is the command used to print the current stack trace.</p>
+
+<p>Let's clear all breakpoints add a new breakpoint at line no. 11 and print the current stack trace of the program.</p>
+
+<pre><code>(dlv) restart
+(dlv) clearall
+(dlv) b main.go:11
+(dlv) continue
+</code></pre>
+
+<p>When the program is paused at the breakpoint, type</p>
+
+<pre><code>(dlv) stack
+</code></pre>
+
+<p>It will output the current stack trace of the program.  </p>
+
+<pre><code>0  0x00000000010c16e8 in main.max  
+   at ./main.go:11
+1  0x00000000010c17c9 in main.main  
+   at ./main.go:18
+2  0x000000000102f754 in runtime.main  
+   at /usr/local/Cellar/go/1.13.7/libexec/src/runtime/proc.go:203
+3  0x000000000105acc1 in runtime.goexit  
+   at /usr/local/Cellar/go/1.13.7/libexec/src/runtime/asm_amd64.s:1357
+</code></pre>
+
+<p>So far we have covered basic commands to help start debugging your application using Delve. In the upcoming tutorials, we will cover advanced features of Delve such as debugging goroutines, attaching the debugger to an existing process, remote debugging and also using Delve from the VSCode editor.</p>
+
+<p>Thanks for reading. Please leave your comments and feedback.</p>
+
+<p>Like my tutorials? Please <a href="https://golangbot.com/support-the-content/">support the content</a>.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Debugging%20Go%20Applications%20using%20Delve&amp;url=https://golangbot.com/debugging-go-delve/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/debugging-go-delve/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/debugging-go-delve/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/debugging-go-delve/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-91"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

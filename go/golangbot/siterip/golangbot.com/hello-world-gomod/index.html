@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Go (Golang) Hello World Tutorial Updated for Go 1.17 | golangbot.com</title>
+    <meta name="description" content="Learn to compile and run a simple hello world program using Go. You will learn how to run the program using go install, go build and go run." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/hello-world-gomod/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Go (Golang) Hello World Tutorial Updated for Go 1.17 | golangbot.com" />
+    <meta property="og:description" content="Learn to compile and run a simple hello world program using Go. You will learn how to run the program using go install, go build and go run." />
+    <meta property="og:url" content="https://golangbot.com/hello-world-gomod/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2022-01-30T08:48:00.000Z" />
+    <meta property="article:modified_time" content="2022-01-30T12:49:35.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Go (Golang) Hello World Tutorial Updated for Go 1.17 | golangbot.com" />
+    <meta name="twitter:description" content="Learn to compile and run a simple hello world program using Go. You will learn how to run the program using go install, go build and go run." />
+    <meta name="twitter:url" content="https://golangbot.com/hello-world-gomod/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Go (Golang) Hello World Tutorial Updated for Go 1.17 | golangbot.com",
+    "url": "https://golangbot.com/hello-world-gomod/",
+    "datePublished": "2022-01-30T08:48:00.000Z",
+    "dateModified": "2022-01-30T12:49:35.000Z",
+    "description": "Learn to compile and run a simple hello world program using Go. You will learn how to run the program using go install, go build and go run.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Hello World</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2022-01-30">30 January 2022</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>This is the second tutorial in our <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>. Please read our previous tutorial <a href="https://golangbot.com/golang-tutorial-part-1-introduction-and-installation/">Golang Introduction and Installation</a> to know about what is Golang and how to install Golang.</p>
+
+<p><em>This tutorial is for Go version 1.13 or later. If you are using an older version, please visit <a href="https://golangbot.com/hello-world/">https://golangbot.com/hello-world/</a>.</em></p>
+
+<p>There is no better way to learn a programming language than getting our hands dirty with code. Let's go ahead and write our first Go program. </p>
+
+<h3 id="settingupthedevelopmentenvironment">Setting up the development environment</h3>
+
+<p>Let's create a directory where we want to write our hello world program. Open the terminal and run the following command.</p>
+
+<pre><code>mkdir ~/Documents/learngo/  
+</code></pre>
+
+<p>The above command will create a directory named <code>learngo</code> inside the current user's Documents directory. Feel free to create the directory wherever you want the code to reside. </p>
+
+<h3 id="creatingagomodule">Creating a Go Module</h3>
+
+<p>Go modules are used to track our application's dependencies and their versions. Next step is to create a go module named <code>learngo</code> in the <code>~/Documents/learngo/</code> folder. </p>
+
+<p>Run <code>go mod init learngo</code> inside the <code>~/Documents/learngo/</code> directory. This will create a file named <code>go.mod</code>. The contents of the file are provided below.</p>
+
+<pre><code class="language-go line-numbers">module learngo
+
+go 1.17  
+</code></pre>
+
+<p>The first line <code>module learngo</code> specifies the module name. The next line <code>go 1.17</code> indicates that the files in this module use go version 1.17</p>
+
+<p>We will discuss Go modules in more detail when we learn about <a href="https://golangbot.com/go-packages/">packages</a>.</p>
+
+<h3 id="helloworld">Hello World</h3>
+
+<p>Create a file named <code>main.go</code> in the <code>learngo</code> directory using your favourite text editor with the following contents.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    fmt.Println("Hello World")
+} 
+</code></pre>
+
+<p>It's a convention in Go to name the file that contains the <code>main</code> function as <code>main.go</code>, but other names work as well.</p>
+
+<h3 id="runningagoprogram">Running a go program</h3>
+
+<p>There are a couple of different ways to run a Go program. Let's look at them one by one.</p>
+
+<h4 id="1goinstall">1. go install</h4>
+
+<p>The first method to run a Go program is using the <code>go install</code> command. <br />
+Let's <code>cd</code> into the <code>learngo</code> directory we just created. </p>
+
+<pre><code>cd ~/Documents/learngo/  
+</code></pre>
+
+<p>Run the following command next.</p>
+
+<pre><code>go install  
+</code></pre>
+
+<p>The above command will compile the program and install(copy) the binary to location <code>~/go/bin</code>. The name of the binary will be the folder containing <code>main.go</code>. In our case, it will be named <code>learngo</code>.</p>
+
+<p>You might encounter the following error when you try to install the program.</p>
+
+<pre><code>go install: no install location for directory /home/naveen/Documents/learngo outside GOPATH  
+For more details see: 'go help gopath'  
+</code></pre>
+
+<p>What the above error actually means is, <code>go install</code> is unable to find a location to install the compiled binary. So let's go ahead and give it a location. This location is governed by the <code>GOBIN</code> environment variable. </p>
+
+<pre><code>export GOBIN=~/go/bin/  
+</code></pre>
+
+<p>The above command specifies that <code>go install</code> should copy the compiled binary to the path <code>~/go/bin/</code>. This is the conventional location for a Go binary but feel free to change it to any location you want. Now try running <code>go install</code> again and the program should compile and run without any problems.</p>
+
+<p>You can type <code>ls -al ~/go/bin/learngo</code> in the terminal and you can find that in fact <code>go install</code> has placed the binary in the path <code>~/go/bin</code></p>
+
+<p>Now let's run the compiled binary.</p>
+
+<pre><code>~/go/bin/learngo
+</code></pre>
+
+<p>
+The above command will run the <code>learngo</code> binary and print the following output.</p>
+
+<pre><code>Hello World  
+</code></pre>
+
+<p>Congrats! You have successfully run your first Go Program.</p>
+
+<p>If you want to avoid typing the entire path <code>~/go/bin/learngo</code> each time you run the program, you can add <code>~/go/bin/</code> to your PATH.</p>
+
+<pre><code>export PATH=$PATH:~/go/bin  
+</code></pre>
+
+<p>Now you can just type <code>learngo</code> in the terminal to run the program. </p>
+
+<p>You might be wondering what will happen when the <code>learngo</code> directory contains muliple go files instead of just <code>main.go</code>. How will <code>go install</code> work in this case? Please hold on, we will discuss these when we learn about <a href="https://golangbot.com/go-packages/">packages and go modules</a>.</p>
+
+<h4 id="2gobuild">2. go build</h4>
+
+<p>The second option to run the program is using <code>go build</code>. <code>go build</code> is much similar to <code>go install</code> except that it doesn't install(copy) the compiled binary to the path <code>~/go/bin/</code>, rather it creates the binary inside the location from which <code>go build</code> was installed.</p>
+
+<p>Type the following command in the terminal </p>
+
+<pre><code>cd ~/Documents/learngo/  
+</code></pre>
+
+<p>to change the current directory to <code>learngo</code>. </p>
+
+<p>After that, enter the following command. </p>
+
+<pre><code>go build  
+</code></pre>
+
+<p>The above command will create a binary named <code>learngo</code> in the current directory. <code>ls -al</code> will reveal that a file named <code>learngo</code> is created.</p>
+
+<p>Type <code>./learngo</code> to run the program. This will also print</p>
+
+<pre><code>Hello World  
+</code></pre>
+
+<p>We have successfully run our first Go program using <code>go build</code> too :)</p>
+
+<h4 id="3gorun">3. go run</h4>
+
+<p>The third way to run the program is using <code>go run</code> command.</p>
+
+<p>Type the command <code>cd ~/Documents/learngo/</code> in the terminal to change the current directory to <code>learngo</code>. </p>
+
+<p>After that, enter the following command. </p>
+
+<pre><code>go run main.go  
+</code></pre>
+
+<p>After the above command is entered, we can see the output</p>
+
+<pre><code>Hello World  
+</code></pre>
+
+<p>One subtle difference between the <code>go run</code> and <code>go build/go install</code> commands is, <code>go run</code> requires the name of the <code>.go</code> file as an argument.</p>
+
+<p>Under the hood, <code>go run</code> works much similar to <code>go build</code>. Instead of compiling and installing the program to the current directory, it compiles the file to a temporary location and runs the file from that location. If you are interested to know the location where <code>go run</code> compiles the file to, please run <code>go run</code> with the <code>--work</code> argument. </p>
+
+<pre><code>go run --work main.go  
+</code></pre>
+
+<p>Running the above command in my case outputs</p>
+
+<pre><code>WORK=/var/folders/23/vdjz4kt972g5nzr86wzrj9740000gq/T/go-build698353814  
+Hello World  
+</code></pre>
+
+<p>The <code>WORK</code> key's value specifies the temporary location to which the program will be compiled. <br />
+In my case, the program has been compiled to the location <code>/var/folders/23/vdjz4kt972g5nzr86wzrj9740000gq/T/go-build698353814/b001/exe</code>. This might vary in your case :)</p>
+
+<h4 id="4goplayground">4. Go Playground</h4>
+
+<p>The final way of running the program is using the go playground. Although this has restrictions, this method comes in handy when we want to run simple programs since it uses the browser and doesn't need Go installed in your local :). I have created a playground for the hello world program. <a href="https://go.dev/play/p/oXGayDtoLPh" target=" _blank">Click here</a> to run the program online.</p>
+
+<p>You can also use the go playground to share your source code with others.</p>
+
+<p>Now that we know 4 different ways to run a program, you might be in a confusion to decide which method to use. The answer is, it depends. I generally use the <a href="https://go.dev/play/p/oXGayDtoLPh" target=" _blank">playground</a> when I want to do a quick check of logic or find out how a standard library function works. In most other cases, I prefer <code>go install</code> since it gives me an option to run the program from any directory in the terminal as it compiles all programs to the standard <code>~/go/bin/</code> path.</p>
+
+<h4 id="ashortexplanationofthehelloworldprogram">A short explanation of the hello world program</h4>
+
+<p>Here is the hello world program we just wrote</p>
+
+<pre><code class="language-go">package main 
+
+import "fmt" 
+
+func main() {  
+    fmt.Println("Hello World") 
+}
+</code></pre>
+
+<p>We will discuss in brief what each line of the program does. We will dwell deep into each section of the program in the upcoming tutorials.</p>
+
+<p><strong>package main</strong> -  <strong>Every go file must start with the <code>package name</code> statement.</strong> Packages are used to provide code compartmentalization and reusability. The package name  <strong><code>main</code></strong> is used here. The main function should always reside in the main package.</p>
+
+<p><strong>import "fmt"</strong> - The import statement is used to import other packages. In our case, <code>fmt</code> package is imported and it will be used inside the main function to print text to the standard output.</p>
+
+<p><strong>func main()</strong> - The <code>func</code> keyword marks the beginning of a function. The <code>main</code> is a special function. The program execution starts from the <code>main</code> function. The <code>{</code> and <code>}</code> braces indicate the start and end of the main function.</p>
+
+<p><strong>fmt.Println("Hello World")</strong> - The <code>Println</code> function of the <code>fmt</code> package is used to write text to the standard output. <code>package.Function()</code> is the syntax to call a function in a package.</p>
+
+<p>The code is available for download at <a href="https://github.com/golangbot/hello" target="_blank">github</a>.</p>
+
+<p>You can now move on to <a href="https://golangbot.com/variables/">Golang tutorial part 3: Variables</a> to learn about variables in Go.</p>
+
+<p>Please post your feedback and queries in the comments section. Thank you.</p>
+
+<p><strong>Next Tutorial - <a href="https://golangbot.com/variables/">Variables</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Hello%20World&amp;url=https://golangbot.com/hello-world-gomod/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/hello-world-gomod/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/hello-world-gomod/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/hello-world-gomod/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-79"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

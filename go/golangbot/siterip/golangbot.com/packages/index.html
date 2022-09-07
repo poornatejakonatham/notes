@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Golang Packages - golangbot.com</title>
+    <meta name="description" content="Packages are useful for code reuse and maintainability. We will learn how to create and use custom packages in Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/packages/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Golang Packages - golangbot.com" />
+    <meta property="og:description" content="Packages are useful for code reuse and maintainability. We will learn how to create and use custom packages in Go." />
+    <meta property="og:url" content="https://golangbot.com/packages/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2017-04-04T17:57:34.000Z" />
+    <meta property="article:modified_time" content="2021-05-20T19:05:11.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Golang Packages - golangbot.com" />
+    <meta name="twitter:description" content="Packages are useful for code reuse and maintainability. We will learn how to create and use custom packages in Go." />
+    <meta name="twitter:url" content="https://golangbot.com/packages/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Golang Packages - golangbot.com",
+    "url": "https://golangbot.com/packages/",
+    "datePublished": "2017-04-04T17:57:34.000Z",
+    "dateModified": "2021-05-20T19:05:11.000Z",
+    "description": "Packages are useful for code reuse and maintainability. We will learn how to create and use custom packages in Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Packages in Go</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2017-04-04">04 April 2017</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p><strong>This tutorial is now deprecated. Please visit <a href="https://golangbot.com/go-packages/">https://golangbot.com/go-packages/</a> for the updated version.</strong></p>
+
+<p>Welcome to tutorial number 7 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatarepackagesandwhyaretheyused">What are packages and why are they used?</h3>
+
+<p>So far we have seen go programs which have only one file which has a main <a href="https://golangbot.com/functions/">function</a> with a couple of other functions. In real world scenarios this approach to writing all source code in a single file will not work. It becomes impossible to reuse and maintain code written this way. This is where packages save the day.</p>
+
+<p><strong>Packages are used to organise go source code for better reusability and readability.</strong> Packages offer compartmentalisation of code and hence it becomes easy to maintain go applications. </p>
+
+<p>For example let's say we are creating a go image processing application which offers features such as image cropping, sharpening, blurring and color enhancement. One way to organise this application is to group all code related to a feature in its own package. For example cropping can be an individual package, sharpening can be another package. The advantage of this is, the color enhancement feature might need some of the functionalities of sharpening. The color enhancement code can simply import(we will discuss import in a minute) the sharpening package and start using its functionality. This way the code becomes easy to reuse. </p>
+
+<p>We will step by step create an application which calculates the area and diagonal of a rectangle.</p>
+
+<p>We will understand packages better through this application.</p>
+
+<h3 id="mainfunctionandmainpackage">main function and main package</h3>
+
+<p>Every executable go application must contain a main function. This function is the entry point for execution. The main function should reside in the main package.</p>
+
+<p><strong>The line of code to specify that a particular source file belongs to  a package is <code>package packagename</code>. This should be first line of every go source file.</strong></p>
+
+<p>Let's gets started by creating the main function and main package for our application. <strong>Create a folder inside the src folder of the go workspace and name it <code>geometry</code></strong>. Create a file <code>geometry.go</code> inside the <code>geometry</code> folder.</p>
+
+<p>Write the following code in geometry.go</p>
+
+<pre><code class="language-go">//geometry.go
+package main 
+
+import "fmt"
+
+func main() {  
+    fmt.Println("Geometrical shape properties")
+}
+</code></pre>
+
+<p>The line of code <code>package main</code> specifies that this file belongs to the main package. The <code>import "packagename"</code> statement is used to import an existing package. In this case we import the <code>fmt</code> package which contains the Println method. Then there is a main function which prints <code>Geometrical shape properties</code></p>
+
+<p>Compile the above program by typing <code>go install geometry</code>.  This command searches for a file with a main function inside the <code>geometry</code> folder. In this case it finds <code>geometry.go</code>. It then compiles it and generates a binary named <code>geometry</code>(<code>geometry.exe</code> in the case of windows) inside the bin folder of the workspace. Now the workspace structure will be</p>
+
+<pre><code>src  
+    geometry
+            gemometry.go
+bin  
+    geometry
+</code></pre>
+
+<p>Let's run the program by typing  <code>workspacepath/bin/geometry</code>. Replace <code>workspacepath</code> with the path of your go workspace. This command executes the <code>geometry</code> binary inside the bin folder. You should get <code>Geometrical shape properties</code> as the output.</p>
+
+<h3 id="creatingcustompackage">Creating custom package</h3>
+
+<p>We will structure the code in such a way that all functionalities related to a rectangle are in <code>rectangle</code> package.</p>
+
+<p>Let's create a custom package <code>rectangle</code> which has functions to determine the area and diagonal of a rectangle.</p>
+
+<p><strong>Source files belonging to a package should be placed in separate folders of their own. It is a convention in Go to name this folder with the same name of the package.</strong></p>
+
+<p>So let's create a folder named <code>rectangle</code> inside the <code>geometry</code> folder. All files inside the <code>rectangle</code> folder should start with the line <code>package rectangle</code> as they all belong to the rectangle package. </p>
+
+<p>Create a file <code>rectprops.go</code> inside the rectangle folder we just created and add the following code.</p>
+
+<pre><code class="language-go">//rectprops.go
+package rectangle
+
+import "math"
+
+func Area(len, wid float64) float64 {  
+    area := len * wid
+    return area
+}
+
+func Diagonal(len, wid float64) float64 {  
+    diagonal := math.Sqrt((len * len) + (wid * wid))
+    return diagonal
+}
+</code></pre>
+
+<p>In the above code we have created two functions which calculate <code>Area</code> and <code>Diagonal</code>. The area of the rectangle is the product of the length and width. The diagonal of the rectangle is the square root of the sum of squares of the length and width. The <code>Sqrt</code> function in the <code>math</code> package is used to calculate the square root. </p>
+
+<p><em>Note that the function names <strong>Area</strong> and <strong>Diagonal</strong> starts with caps. This is essential and we will explain shortly why this is needed.</em></p>
+
+<h3 id="importingcustompackage">Importing custom package</h3>
+
+<p>To use a custom package we must first import it. <code>import path</code> is the syntax to import a custom package. We must specify the path to the custom package with respect to the <code>src</code> folder inside the workspace. Our current folder structure is</p>
+
+<pre><code>src  
+   geometry
+           geometry.go
+           rectangle
+                    rectprops.go
+</code></pre>
+
+<p>The line <code>import "geometry/rectangle"</code> will import the rectangle package.</p>
+
+<p>Add the following code to geometry.go</p>
+
+<pre><code class="language-go">//geometry.go
+package main 
+
+import (  
+    "fmt"
+    "geometry/rectangle" //importing custom package
+)
+
+func main() {  
+    var rectLen, rectWidth float64 = 6, 7
+    fmt.Println("Geometrical shape properties")
+        /*Area function of rectangle package used
+        */
+    fmt.Printf("area of rectangle %.2f\n", rectangle.Area(rectLen, rectWidth))
+        /*Diagonal function of rectangle package used
+        */
+    fmt.Printf("diagonal of the rectangle %.2f ",rectangle.Diagonal(rectLen, rectWidth))
+}
+</code></pre>
+
+<p>The above code imports the <code>rectangle</code> package and uses the <code>Area</code> and <code>Diagonal</code> function of it to find the area and diagonal of the rectangle. The <code>%.2f</code> format specifier in Printf is to truncate the floating point to two decimal places. The output of the application is </p>
+
+<pre><code>Geometrical shape properties  
+area of rectangle 42.00  
+diagonal of the rectangle 9.22  
+</code></pre>
+
+<h3 id="exportednames">Exported Names</h3>
+
+<p>We capitalised the functions <code>Area</code> and <code>Diagonal</code> in the rectangle package. This has a special meaning in Go. Any variable or function which starts with a capital letter are exported names in go. Only exported functions and variables can be accessed from other packages. In this case we need to access <code>Area</code> and <code>Diagonal</code> functions from the main package. Hence they are capitalised. </p>
+
+<p>If the function names are changed from <code>Area(len, wid float64)</code> to <code>area(len, wid float64)</code> in <code>rectprops.go</code> and from <code>rectangle.Area(rectLen, rectWidth)</code> to <code>rectangle.area(rectLen, rectWidth)</code> in <code>geometry.go</code> and if the program is run, the compiler will throw error <code>geometry.go:11: cannot refer to unexported name rectangle.area</code>. Hence if you want to access a function outside of a package, it should be capitalised.</p>
+
+<h3 id="initfunction">init function</h3>
+
+<p>Every package can contain a <code>init</code> function.  The init function should not have any return type and should not have any parameters. The init function cannot be called explicitly in our source code. The init function looks like below</p>
+
+<pre><code>func init() {  
+}
+</code></pre>
+
+<p>The init function can be used to perform initialisation tasks and can also be used to verify the correctness of the program before the execution starts.</p>
+
+<p>The order of initialisation of a package is as follows  </p>
+
+<ol>  
+<li>Package level variables are initialised first</li>  
+<li>init function is called next. A package can have multiple init functions (either in a single file or distributed across multiple files) and they are called in the order in which they are presented to the compiler.</li>  
+</ol>
+
+<p>If a package imports other packages, the imported packages are initialised first. </p>
+
+<p>A package will be initialised only once even if it is imported from multiple packages.</p>
+
+<p>Let's make some modifications to our application to understand init functions.</p>
+
+<p>To start with let's add an init function to the <code>rectprops.go</code> file.</p>
+
+<pre><code class="language-go">//rectprops.go
+package rectangle
+
+import "math"  
+import "fmt"
+
+/*
+ * init function added
+ */
+func init() {  
+    fmt.Println("rectangle package initialized")
+}
+func Area(len, wid float64) float64 {  
+    area := len * wid
+    return area
+}
+
+func Diagonal(len, wid float64) float64 {  
+    diagonal := math.Sqrt((len * len) + (wid * wid))
+    return diagonal
+}
+</code></pre>
+
+<p>We have added a simple init function which just prints <code>rectangle package initialised</code></p>
+
+<p>Now let's modify the main package. We know that the length and width of a rectangle should be greater than zero. We will define this check using init function and package level variables in the <code>geometry.go</code> file.</p>
+
+<p>Modify the <code>geometry.go</code> file as shown below,</p>
+
+<pre><code class="language-go">//geometry.go
+package main 
+
+import (  
+    "fmt"
+    "geometry/rectangle" //importing custom package
+    "log"
+)
+/*
+ * 1. package variables
+*/
+var rectLen, rectWidth float64 = 6, 7 
+
+/*
+*2. init function to check if length and width are greater than zero
+*/
+func init() {  
+    println("main package initialized")
+    if rectLen &lt; 0 {
+        log.Fatal("length is less than zero")
+    }
+    if rectWidth &lt; 0 {
+        log.Fatal("width is less than zero")
+    }
+}
+
+func main() {  
+    fmt.Println("Geometrical shape properties")
+    fmt.Printf("area of rectangle %.2f\n", rectangle.Area(rectLen, rectWidth))
+    fmt.Printf("diagonal of the rectangle %.2f ",rectangle.Diagonal(rectLen, rectWidth))
+}
+</code></pre>
+
+<p>The following are the changes made to <code>geometry.go</code>  </p>
+
+<ol>  
+<li><b>rectLen</b> and <b>rectWidth</b> variables are moved to package level from the main function level.</li>  
+<li>An init function has been added. The init function prints a log and terminates the program execution if either the rectLen or rectWidth is less than zero by  using <b>log.Fatal</b> function.</li>  
+</ol>
+
+<p>The order of initialisation of the main package is  </p>
+
+<ol>  
+<li>The imported packages are first initialised. Hence rectangle package is initialised first. </li>  
+<li>Package level variables <b>rectLen</b> and <b>rectWidth</b> are initialised next.</li>  
+<li><b>init</b> function is called.</li>  
+<li>main function is called at last</li>  
+</ol>
+
+<p>If you run the program, you will get the following output.</p>
+
+<pre><code>rectangle package initialized  
+main package initialized  
+Geometrical shape properties  
+area of rectangle 42.00  
+diagonal of the rectangle 9.22  
+</code></pre>
+
+<p>As expected the init function of the rectangle package is called first followed by the initialisation of the package level variables <strong>rectLen</strong> and <strong>rectWidth</strong>. The init function of the main package is called next. It checks whether rectLen and rectWidth are lesser than zero and terminates if the condition is true. We will learn about <code>if</code> statement in detail in a separate tutorial. For now you can assume that <code>if rectLen &lt; 0</code> will check whether <code>rectLen</code> is less than 0 and if it is so, the program will be terminated. We have written a similar condition for <code>rectWidth</code>. In this case both the conditions are false and the program execution continues. Finally the main function is called.</p>
+
+<p>Let's modify this program a bit to learn the use of the init function.</p>
+
+<p>Change the line <code>var rectLen, rectWidth float64 = 6, 7</code> in <code>geometry.go</code> to <code>var rectLen, rectWidth float64 = -6, 7</code>. We have initialised <code>rectLen</code> to negative.</p>
+
+<p>Now if you run the application, you will see  </p>
+
+<pre><code>rectangle package initialized  
+main package initialized  
+2017/04/04 00:28:20 length is less than zero  
+</code></pre>
+
+<p>As usual the rectangle package is initialised followed by the package level variables rectLen and rectWidth in the main package. rectLen is negative. Hence when the init function runs next, the program terminates after printing <code>length is less than zero</code>.</p>
+
+<p>The code is available for download at <a href="https://github.com/golangbot/geometry" target="_blank">github</a>.</p>
+
+<h3 id="useofblankidentifier">Use of blank identifier</h3>
+
+<p>It is illegal in Go to import a package and not to use it anywhere in the code. The compiler will complain if you do so. The reason for this is to avoid bloating of unused packages which will significantly increase the compilation time. Replace the code in <code>geometry.go</code> with the following,</p>
+
+<pre><code class="language-go">//geometry.go
+package main 
+
+import (   
+
+     "geometry/rectangle" //importing custom package
+
+)
+func main() {
+
+}
+</code></pre>
+
+<p>The above program will throw error <code>geometry.go:6: imported and not used: "geometry/rectangle"</code></p>
+
+<p>But it is quite common to import packages when the application is under active development and use them somewhere in the code later if not now. The <code>_</code> blank identifier saves us in those situations.</p>
+
+<p>The error in the above program can be silenced by the following code,</p>
+
+<pre><code class="language-go">package main
+
+import (  
+    "geometry/rectangle" 
+)
+
+var _ = rectangle.Area //error silencer
+
+func main() {
+
+}
+</code></pre>
+
+<p>The line <code>var _ = rectangle.Area</code> silences the error. We should keep track of these kind of error silencers and remove them including the imported package at the end of application development  if the package is not used. Hence it is recommended to write error silencers in the package level just after the import statement.</p>
+
+<p>Sometimes we need to import a package just to make sure the initialisation takes place even though we do not need to use any function or variable from the package. For example, we might need to ensure that the init function of the rectangle package is called even though we do not use that package anywhere in our code. The _ blank identifier can be used in this case too as show below. </p>
+
+<pre><code class="language-go">package main 
+
+import (   
+
+     _ "geometry/rectangle" 
+
+)
+func main() {
+
+}
+</code></pre>
+
+<p>Running the above program will output <code>rectangle package initialized</code>. We have successfully initialised package even though it is not used anywhere in the code.</p>
+
+<p>Thats it for packages. Hope you enjoyed reading. Please leave your valuable comments and feedback :).</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/if-statement/">if else statement</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Packages%20in%20Go&amp;url=https://golangbot.com/packages/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/packages/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/packages/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/packages/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-15"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

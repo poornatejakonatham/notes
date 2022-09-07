@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Golang Panic and Recover Tutorial with Examples | golangbot.com</title>
+    <meta name="description" content="Panics are used to prematurely terminate a Go application when an abnormal condition is encountered. An example is a web server that fails to bind to the required port." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/panic-and-recover/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Golang Panic and Recover Tutorial with Examples | golangbot.com" />
+    <meta property="og:description" content="Panics are used to prematurely terminate a Go application when an abnormal condition is encountered. An example is a web server that fails to bind to the required port." />
+    <meta property="og:url" content="https://golangbot.com/panic-and-recover/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-07-08T19:40:00.000Z" />
+    <meta property="article:modified_time" content="2020-07-08T19:52:38.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Golang Panic and Recover Tutorial with Examples | golangbot.com" />
+    <meta name="twitter:description" content="Panics are used to prematurely terminate a Go application when an abnormal condition is encountered. An example is a web server that fails to bind to the required port." />
+    <meta name="twitter:url" content="https://golangbot.com/panic-and-recover/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Golang Panic and Recover Tutorial with Examples | golangbot.com",
+    "url": "https://golangbot.com/panic-and-recover/",
+    "datePublished": "2020-07-08T19:40:00.000Z",
+    "dateModified": "2020-07-08T19:52:38.000Z",
+    "description": "Panics are used to prematurely terminate a Go application when an abnormal condition is encountered. An example is a web server that fails to bind to the required port.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Panic and Recover</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-07-08">08 July 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p><img src="/content/images/2017/12/panic-recover-golang-2-2.png" alt="Golang panic and recover" />
+Welcome to tutorial no. 32 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatispanic">What is Panic?</h3>
+
+<p>The idiomatic way of handling abnormal conditions in a Go program is using <a href="https://golangbot.com/error-handling/">errors</a>. Errors are sufficient for most of the abnormal conditions arising in the program. </p>
+
+<p><strong>But there are some situations where the program cannot continue execution after an abnormal condition. In this case, we use <code>panic</code> to prematurely terminate the program. When a <a href="https://golangbot.com/functions/">function</a> encounters a panic, its execution is stopped, any <a href="https://golangbot.com/defer/">deferred</a> functions are executed and then the control returns to its caller. This process continues until all the functions of the current <a href="https://golangbot.com/goroutines/">goroutine</a> have returned at which point the program prints the panic message, followed by the stack trace and then terminates.</strong> This concept will be more clear when we write an example program. </p>
+
+<p><strong>It is possible to regain control of a panicking program using <code>recover</code></strong> which we will discuss later in this tutorial.</p>
+
+<p>panic and recover can be considered similar to try-catch-finally idiom in other languages such as Java except that they are rarely used in Go.</p>
+
+<h3 id="whenshouldpanicbeused">When Should Panic Be Used?</h3>
+
+<p>One important factor is that you should avoid panic and recover and use <a href="https://golangbot.com/error-handling/">errors</a> where ever possible. Only in cases where the program just cannot continue execution should panic and recover mechanism be used.</p>
+
+<p>There are two valid use cases for panic.</p>
+
+<ol>
+<li><p><strong>An unrecoverable error where the program cannot simply continue its execution.</strong> <br />
+One example is a web server that fails to bind to the required port. In this case, it's reasonable to panic as there is nothing else to do if the port binding itself fails. </p></li>
+<li><p><strong>A programmer error.</strong> <br />
+Let's say we have a <a href="https://golangbot.com/methods/">method</a> that accepts a pointer as a parameter and someone calls this method using a <code>nil</code> argument. In this case, we can panic as it's a programmer error to call a method with <code>nil</code> argument which was expecting a valid pointer.</p></li>
+</ol>
+
+<h3 id="panicexample">Panic Example</h3>
+
+<p>The signature of the built-in <code>panic</code> function is provided below,</p>
+
+<pre><code class="language-go">func panic(interface{})  
+</code></pre>
+
+<p>The argument passed to the panic function will be printed when the program terminates. The use of this will be clear when we write a sample program. So let's do that right away.</p>
+
+<p>We will start with a contrived example which shows how panic works.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func fullName(firstName *string, lastName *string) {  
+    if firstName == nil {
+        panic("runtime error: first name cannot be nil")
+    }
+    if lastName == nil {
+        panic("runtime error: last name cannot be nil")
+    }
+    fmt.Printf("%s %s\n", *firstName, *lastName)
+    fmt.Println("returned normally from fullName")
+}
+
+func main() {  
+    firstName := "Elon"
+    fullName(&amp;firstName, nil)
+    fmt.Println("returned normally from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/xQJYRSCu8S " target=_"blank">Run in playground</a></p>
+
+<p>The above is a simple program to print the full name of a person. The <code>fullName</code> function in line no. 7 prints the full name of a person. This function checks whether the firstName and lastName pointers are <code>nil</code> in line nos. 8 and 11 respectively. If it is <code>nil</code> the function calls <code>panic</code> with a corresponding message. This message will be printed when the program terminates. </p>
+
+<p>Running this program will print the following output,</p>
+
+<pre><code>panic: runtime error: last name cannot be nil
+
+goroutine 1 [running]:  
+main.fullName(0xc00006af58, 0x0)  
+    /tmp/sandbox210590465/prog.go:12 +0x193
+main.main()  
+    /tmp/sandbox210590465/prog.go:20 +0x4d
+</code></pre>
+
+<p>Let's analyze this output to understand how panic works and how the stack trace is printed when the program panics.</p>
+
+<p>In line no. 19 we assign <code>Elon</code> to <code>firstName</code>. We call <code>fullName</code> function with <code>lastName</code> as <code>nil</code> in line no. 20. Hence the condition in line no. 11 will be satisfied and the program will panic. When panic is encountered, the program execution terminates, the argument passed to the panic function is printed followed by the stack trace. Since the program terminates following the panic function call in line no. 12, the code in line nos. 13, 14, and 15 will not be executed. </p>
+
+<p>This program first prints the message passed to the <code>panic</code> function,</p>
+
+<pre><code>panic: runtime error: last name cannot be nil  
+</code></pre>
+
+<p>and then prints the stack trace. </p>
+
+<p>The program panicked in line no. 12 of <code>fullName</code> function and hence,  </p>
+
+<pre><code>goroutine 1 [running]:  
+main.fullName(0xc00006af58, 0x0)  
+    /tmp/sandbox210590465/prog.go:12 +0x193
+</code></pre>
+
+<p>will be printed first. Then the next item in the stack will be printed. In our case, line no. 20 where the <code>fullName</code> is called is the next item in the stack trace. Hence it is printed next.</p>
+
+<pre><code>main.main()  
+    /tmp/sandbox210590465/prog.go:20 +0x4d
+</code></pre>
+
+<p>Now we have reached the top level function which caused the panic and there are no more levels above, hence there is nothing more to print.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="onemoreexample">One More Example</h3>
+
+<p>Panics can also be caused by errors that happen during the runtime such as trying to access an index that is not present in a slice. </p>
+
+<p>Let's write a contrived example which creates a panic due to out of bounds slice access.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func slicePanic() {  
+    n := []int{5, 7, 4}
+    fmt.Println(n[4])
+    fmt.Println("normally returned from a")
+}
+func main() {  
+    slicePanic()
+    fmt.Println("normally returned from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/__PAabvchxt" target=_"blank">Run in playground</a></p>
+
+<p>In the program above, in line no. 9 we are trying to access <code>n[4]</code> which is an invalid index in the <a href="https://golangbot.com/arrays-and-slices/#slices">slice</a>. This program will panic with the following output,</p>
+
+<pre><code>panic: runtime error: index out of range [4] with length 3
+
+goroutine 1 [running]:  
+main.slicePanic()  
+    /tmp/sandbox942516049/prog.go:9 +0x1d
+main.main()  
+    /tmp/sandbox942516049/prog.go:13 +0x22
+</code></pre>
+
+<h3 id="defercallsduringapanic">Defer Calls During a Panic</h3>
+
+<p>Let's recollect what panic does. <strong>When a function encounters a panic, its execution is stopped, any deferred functions are executed and then the control returns to its caller. This process continues until all the functions of the current goroutine have returned at which point the program prints the panic message, followed by the stack trace and then terminates.</strong>  </p>
+
+<p>In the example above, we did not defer any function calls. If a deferred function call is present, it is executed and then the control returns to its caller.</p>
+
+<p>Let's modify the example above a little and use a defer statement.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func fullName(firstName *string, lastName *string) {  
+    defer fmt.Println("deferred call in fullName")
+    if firstName == nil {
+        panic("runtime error: first name cannot be nil")
+    }
+    if lastName == nil {
+        panic("runtime error: last name cannot be nil")
+    }
+    fmt.Printf("%s %s\n", *firstName, *lastName)
+    fmt.Println("returned normally from fullName")
+}
+
+func main() {  
+    defer fmt.Println("deferred call in main")
+    firstName := "Elon"
+    fullName(&amp;firstName, nil)
+    fmt.Println("returned normally from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/oUFnu-uTmC" target=_"blank">Run in playground</a></p>
+
+<p>The only changes made are the addition of the deferred function calls in line nos. 8 and 20.</p>
+
+<p>This program prints,</p>
+
+<pre><code>deferred call in fullName  
+deferred call in main  
+panic: runtime error: last name cannot be nil
+
+goroutine 1 [running]:  
+main.fullName(0xc00006af28, 0x0)  
+    /tmp/sandbox451943841/prog.go:13 +0x23f
+main.main()  
+    /tmp/sandbox451943841/prog.go:22 +0xc6
+</code></pre>
+
+<p>When the program panics in line no. 13, any deferred function calls are first executed and then the control returns to the caller whose deferred calls are executed and so on until the top level caller is reached. </p>
+
+<p>In our case, <code>defer</code> statement in line no. 8 of <code>fullName</code> function is executed first. This prints the following message.</p>
+
+<pre><code>deferred call in fullName  
+</code></pre>
+
+<p>And then the control returns to the <code>main</code> function whose deferred calls are executed and hence this prints,</p>
+
+<pre><code>deferred call in main  
+</code></pre>
+
+<p>Now the control has reached the top level function and hence the program prints the panic message followed by the stack trace and then terminates.</p>
+
+<h3 id="recoveringfromapanic">Recovering from a Panic</h3>
+
+<p><em>recover</em> is a builtin function that is used to regain control of a panicking program. </p>
+
+<p>The signature of recover function is provided below,</p>
+
+<pre><code class="language-go">func recover() interface{}  
+</code></pre>
+
+<p>Recover is useful only when called inside deferred functions. Executing a call to recover inside a deferred function stops the panicking sequence by restoring normal execution and retrieves the error message passed to the panic function call. If recover is called outside the deferred function, it will not stop a panicking sequence.</p>
+
+<p>Let's modify our program and use recover to restore normal execution after a panic.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func recoverFullName() {  
+    if r := recover(); r!= nil {
+        fmt.Println("recovered from ", r)
+    }
+}
+
+func fullName(firstName *string, lastName *string) {  
+    defer recoverFullName()
+    if firstName == nil {
+        panic("runtime error: first name cannot be nil")
+    }
+    if lastName == nil {
+        panic("runtime error: last name cannot be nil")
+    }
+    fmt.Printf("%s %s\n", *firstName, *lastName)
+    fmt.Println("returned normally from fullName")
+}
+
+func main() {  
+    defer fmt.Println("deferred call in main")
+    firstName := "Elon"
+    fullName(&amp;firstName, nil)
+    fmt.Println("returned normally from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/enCM-dd5DUr" target=_"blank">Run in playground</a></p>
+
+<p>The <code>recoverFullName()</code> function in line no. 7 calls <code>recover()</code> which returns the value passed to <code>panic</code> function call. Here we are just printing the value returned by recover in line no. 9. <code>recoverFullName()</code> is being deferred in line no. 14 of the <code>fullName</code> function. </p>
+
+<p>When <code>fullName</code> panics, the deferred function <code>recoverName()</code> will be called which uses <code>recover()</code> to stop the panicking sequence.</p>
+
+<p>This program will print,</p>
+
+<pre><code>recovered from  runtime error: last name cannot be nil  
+returned normally from main  
+deferred call in main  
+</code></pre>
+
+<p>When the program panics in line no. 19, the deferred <code>recoverFullName</code> function is called which in turn calls <code>recover()</code> to regain control of the panicking sequence. The call to <code>recover()</code> in line no. 8 returns the argument passed to <code>panic()</code> and hence it prints,</p>
+
+<pre><code>recovered from  runtime error: last name cannot be nil  
+</code></pre>
+
+<p>After execution of <code>recover()</code>, the panicking stops and the control returns to the caller, in this case, the <code>main</code> function. The program continues to execute normally from line 29 in <code>main</code> since the panic has been recovered 😃. It prints <code>returned normally from main</code>  followed by <code>deferred call in main</code></p>
+
+<p>Let's look at one more example where we recover from a panic caused by accessing an invalid index of a slice.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func recoverInvalidAccess() {  
+    if r := recover(); r != nil {
+        fmt.Println("Recovered", r)
+    }
+}
+
+func invalidSliceAccess() {  
+    defer recoverInvalidAccess()
+    n := []int{5, 7, 4}
+    fmt.Println(n[4])
+    fmt.Println("normally returned from a")
+}
+
+func main() {  
+    invalidSliceAccess()
+    fmt.Println("normally returned from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Bth98An9Ah0" target=_"blank">Run in playground</a></p>
+
+<p>Running the above program will output,</p>
+
+<pre><code>Recovered runtime error: index out of range [4] with length 3  
+normally returned from main  
+</code></pre>
+
+<p>From the output, you can understand that we have recovered from the panic.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="gettingstacktraceafterrecover">Getting Stack Trace after Recover</h3>
+
+<p>If we recover from a panic, we lose the stack trace about the panic. Even in the program above after recovery, we lost the stack trace.</p>
+
+<p>There is a way to print the stack trace using the <a href="https://golang.org/pkg/runtime/debug/#PrintStack" target=_"blank">PrintStack</a> function of the Debug <a href="https://golangbot.com/go-packages/">package</a></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "runtime/debug"
+)
+
+func recoverFullName() {  
+    if r := recover(); r != nil {
+        fmt.Println("recovered from ", r)
+        debug.PrintStack()
+    }
+}
+
+func fullName(firstName *string, lastName *string) {  
+    defer recoverFullName()
+    if firstName == nil {
+        panic("runtime error: first name cannot be nil")
+    }
+    if lastName == nil {
+        panic("runtime error: last name cannot be nil")
+    }
+    fmt.Printf("%s %s\n", *firstName, *lastName)
+    fmt.Println("returned normally from fullName")
+}
+
+func main() {  
+    defer fmt.Println("deferred call in main")
+    firstName := "Elon"
+    fullName(&amp;firstName, nil)
+    fmt.Println("returned normally from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/9VxcG4Gt-MU" target=_"blank">Run in playground</a></p>
+
+<p>In the program above, we use <code>debug.PrintStack()</code> in line no.11 to print the stack trace.</p>
+
+<p>This program will print,</p>
+
+<pre><code>recovered from  runtime error: last name cannot be nil  
+goroutine 1 [running]:  
+runtime/debug.Stack(0x37, 0x0, 0x0)  
+    /usr/local/go-faketime/src/runtime/debug/stack.go:24 +0x9d
+runtime/debug.PrintStack()  
+    /usr/local/go-faketime/src/runtime/debug/stack.go:16 +0x22
+main.recoverFullName()  
+    /tmp/sandbox771195810/prog.go:11 +0xb4
+panic(0x4a1b60, 0x4dc300)  
+    /usr/local/go-faketime/src/runtime/panic.go:969 +0x166
+main.fullName(0xc0000a2f28, 0x0)  
+    /tmp/sandbox771195810/prog.go:21 +0x1cb
+main.main()  
+    /tmp/sandbox771195810/prog.go:30 +0xc6
+returned normally from main  
+deferred call in main  
+</code></pre>
+
+<p>From the output, you can understand that the panic is recovered and <code>recovered from runtime error: last name cannot be nil</code> is printed. Following that, the stack trace is printed. Then  </p>
+
+<pre><code>returned normally from main  
+deferred call in main  
+</code></pre>
+
+<p>
+is printed after the panic has recovered.</p>
+
+<h3 id="panicrecoverandgoroutines">Panic, Recover and Goroutines</h3>
+
+<p>Recover works only when it is called from the same <a href="https://golangbot.com/goroutines/">goroutine</a> which is panicking. <strong>It's not possible to recover from a panic that has happened in a different goroutine.</strong> Let's understand this using an example.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func recovery() {  
+    if r := recover(); r != nil {
+        fmt.Println("recovered:", r)
+    }
+}
+
+func sum(a int, b int) {  
+    defer recovery()
+    fmt.Printf("%d + %d = %d\n", a, b, a+b)
+    done := make(chan bool)
+    go divide(a, b, done)
+    &lt;-done
+}
+
+func divide(a int, b int, done chan bool) {  
+    fmt.Printf("%d / %d = %d", a, b, a/b)
+    done &lt;- true
+
+}
+
+func main() {  
+    sum(5, 0)
+    fmt.Println("normally returned from main")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/yCPL_4lqbzk" target=_"blank">Run in playground</a></p>
+
+<p>In the program above, the function <code>divide()</code> will panic in line no. 22 since b is zero and it is not possible to divide a number by zero. The <code>sum()</code> function calls a deferred function <code>recovery()</code> which is used to recover from panic. The function <code>divide()</code> is called as a separate goroutine in line no. 17. We wait on the <code>done</code> <a href="/channels">channel</a> in line no. 18 to ensure that <code>divide()</code> completes execution. </p>
+
+<p>What do you think will be the output of the program. Will the panic be recovered? The answer is no. The panic will not be recovered. This is because the <code>recovery</code> function is present in the different goroutine and the panic is happening in the <code>divide()</code> function in a different goroutine. Hence recovery is not possible.</p>
+
+<p>Running this program will print,</p>
+
+<pre><code>5 + 0 = 5  
+panic: runtime error: integer divide by zero
+
+goroutine 18 [running]:  
+main.divide(0x5, 0x0, 0xc0000a2000)  
+    /tmp/sandbox877118715/prog.go:22 +0x167
+created by main.sum  
+    /tmp/sandbox877118715/prog.go:17 +0x1a9
+</code></pre>
+
+<p>You can see from the output that the recovery has not happened.</p>
+
+<p>If the <code>divide()</code> function is called in the same goroutine, we would have recovered from the panic.</p>
+
+<p>If line no. 17 of the program is changed from</p>
+
+<pre><code class="language-go">go divide(a, b, done)  
+</code></pre>
+
+<p>to </p>
+
+<pre><code class="language-go">divide(a, b, done)  
+</code></pre>
+
+<p>the recovery will happen since the panic is happening in the same goroutine. If the program is run with the above change, it will print</p>
+
+<pre><code>5 + 0 = 5  
+recovered: runtime error: integer divide by zero  
+normally returned from main  
+</code></pre>
+
+<p>This brings us to the end of this tutorial. </p>
+
+<p>Here is a quick recap of what we learned in this tutorial,</p>
+
+<ul>
+<li>What is Panic?</li>
+<li>When Should Panic Be Used?</li>
+<li>Examples of Panic Usage</li>
+<li>Defer Calls During a Panic</li>
+<li>Recovering from a Panic</li>
+<li>Getting Stack Trace after Recover</li>
+<li>Panic, Recover and Goroutines</li>
+</ul>
+
+<p>If you would like to advertise on this website, hire me, or just want to say hi, please email me at <em>naveen[at]golangbot[dot]com</em>.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/first-class-functions/">First Class Functions</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Panic%20and%20Recover&amp;url=https://golangbot.com/panic-and-recover/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/panic-and-recover/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/panic-and-recover/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/panic-and-recover/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-47"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

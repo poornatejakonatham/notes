@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Golang Maps Tutorial with Examples - golangbot.com</title>
+    <meta name="description" content="A map is a builtin type in Go that is used to store key-value pairs. A map can be created by passing the type of key and value to the make function." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/maps/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Golang Maps Tutorial with Examples - golangbot.com" />
+    <meta property="og:description" content="A map is a builtin type in Go that is used to store key-value pairs. A map can be created by passing the type of key and value to the make function." />
+    <meta property="og:url" content="https://golangbot.com/maps/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-05-20T13:55:00.000Z" />
+    <meta property="article:modified_time" content="2020-05-20T19:50:17.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Golang Maps Tutorial with Examples - golangbot.com" />
+    <meta name="twitter:description" content="A map is a builtin type in Go that is used to store key-value pairs. A map can be created by passing the type of key and value to the make function." />
+    <meta name="twitter:url" content="https://golangbot.com/maps/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Golang Maps Tutorial with Examples - golangbot.com",
+    "url": "https://golangbot.com/maps/",
+    "datePublished": "2020-05-20T13:55:00.000Z",
+    "dateModified": "2020-05-20T19:50:17.000Z",
+    "description": "A map is a builtin type in Go that is used to store key-value pairs. A map can be created by passing the type of key and value to the make function.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Golang Maps Tutorial</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-05-20">20 May 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 13 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatisamap">What is a map?</h3>
+
+<p>A map is a builtin type in Go that is used to store key-value pairs. Let's take the example of a startup with a few employees. For simplicity, let's assume that the first name of all these employees is unique. We are looking for a data structure to store the salary of each employee. A map will be a perfect fit for this use case. The name of the employee can be the key and the salary can be the value. Maps are similar to dictionaries in other languages such as Python. </p>
+
+<h3 id="howtocreateamap">How to create a map?</h3>
+
+<p>A map can be created by passing the <a href="/types">type</a> of key and value to the <code>make</code> function. The following is the syntax to create a new map.</p>
+
+<pre><code>make(map[type of key]type of value)  
+</code></pre>
+
+<pre><code class="language-go">employeeSalary := make(map[string]int)  
+</code></pre>
+
+<p>The above line of code creates a map named <code>employeeSalary</code> which has <code>string</code> keys and <code>int</code> values.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := make(map[string]int)
+    fmt.Println(employeeSalary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/EoaQ_Xwz66Z" target="_blank">Run in Playground</a></p>
+
+<p>The program above creates a map named <code>employeeSalary</code> with <code>string</code> key and <code>int</code> value. The above program will print,</p>
+
+<pre><code>map[]  
+</code></pre>
+
+<p>Since we have not added any elements to the map, it's empty.</p>
+
+<h3 id="addingitemstoamap">Adding items to a map</h3>
+
+<p>The syntax for adding new items to a map is the same as that of <a href="/arrays-and-slices/">arrays</a>. The program below adds some new employees to the <code>employeeSalary</code> map.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := make(map[string]int)
+    employeeSalary["steve"] = 12000
+    employeeSalary["jamie"] = 15000
+    employeeSalary["mike"] = 9000
+    fmt.Println("employeeSalary map contents:", employeeSalary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/-IUSnvdgF2I "target ="_blank">Run in playground</a></p>
+
+<p>We have added three employees <code>steve</code>, <code>jamie</code> and <code>mike</code> and their corresponding salaries.</p>
+
+<p>The above program prints, </p>
+
+<pre><code>employeeSalary map contents: map[steve:12000 jamie:15000 mike:9000]  
+</code></pre>
+
+<p>It is also possible to initialize a map during the declaration itself.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int {
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    employeeSalary["mike"] = 9000
+    fmt.Println("employeeSalary map contents:", employeeSalary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/oR_j4jkJflf "target="_blank">Run in playground</a></p>
+
+<p>The above program declares <code>employeeSalary</code> and adds two elements to it during the declaration itself. Later one more element with key <code>mike</code> is added. The program prints</p>
+
+<pre><code>employeeSalary map contents: map[jamie:15000 mike:9000 steve:12000]  
+</code></pre>
+
+<p>It's not necessary that only <a href="/strings">string</a> types should be keys. All comparable types such as boolean, integer, float, complex, string, ... can also be keys. Even user-defined types such as <a href="/structs">structs</a> can be keys. If you would like to know more about comparable types, please visit <a href="http://golang.org/ref/spec#Comparison_operators" target="_blank">http://golang.org/ref/spec#Comparison_operators</a></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="zerovalueofamap">Zero value of a map</h3>
+
+<p>The zero value of a map is <code>nil</code>. If you try to add elements to a <code>nil</code> map, a run-time <a href="https://golangbot.com/panic-and-recover/">panic</a> will occur. Hence the map has to be initialized before adding elements.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+func main() {  
+    var employeeSalary map[string]int
+    employeeSalary["steve"] = 12000
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/DH8gJVjn6M2" target="_blank">Run in playground</a></p>
+
+<p>In the above program, <code>employeeSalary</code> is <code>nil</code> and we are trying to add a new key to the map. The program will panic with error</p>
+
+<p><code>panic: assignment to entry in nil map</code></p>
+
+<h3 id="retrievingvalueforakeyfromamap">Retrieving value for a key from a map</h3>
+
+<p>Now that we have added some elements to the map, let's learn how to retrieve them. <code>map[key]</code> is the syntax to retrieve elements of a map.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+        "mike": 9000,
+    }
+    employee := "jamie"
+    salary := employeeSalary[employee]
+    fmt.Println("Salary of", employee, "is", salary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/qthGPQ6pj0Z "target="_blank">Run in playground</a> </p>
+
+<p>The above program is pretty straightforward. The salary of the employee <code>jamie</code> is retrieved and printed. The program prints </p>
+
+<pre><code>Salary of jamie is 15000  
+</code></pre>
+
+<p>What will happen if an element is not present? The map will return the zero value of the type of that element. In the case of <code>employeeSalary</code> map, if we try to access an element which is not present, the zero value of <code>int</code> which is <code>0</code> will be returned.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    fmt.Println("Salary of joe is", employeeSalary["joe"])
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/iVal_ll7iN7 "target="_blank">Run in playground</a></p>
+
+<p>The output of the above program is </p>
+
+<pre><code>Salary of joe is 0  
+</code></pre>
+
+<p>The above program returns the salary of joe as <code>0</code>. There will be no runtime error when we try to retrieve the value for a key that is not present in the map.  </p>
+
+<h3 id="checkingifakeyexists">Checking if a key exists</h3>
+
+<p>In the above section we learned that when a key is not present, the zero value of the type will be returned.  This doesn't help when we want to find out whether the key actually exists in the map. </p>
+
+<p>For example, we want to know whether an key is present in the <code>employeeSalary</code> map.</p>
+
+<pre><code class="language-go">value, ok := map[key]  
+</code></pre>
+
+<p>The above is the syntax to find out whether a particular key is present in a map. If <code>ok</code> is true, then the key is present and its value is present in the variable <code>value</code>, else the key is absent. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    newEmp := "joe"
+    value, ok := employeeSalary[newEmp]
+    if ok == true {
+        fmt.Println("Salary of", newEmp, "is", value)
+        return
+    }
+    fmt.Println(newEmp, "not found")
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Y4n1p4yfdVi" target=_"blank">Run in playground</a></p>
+
+<p>In the above program, in line no. 13, <code>ok</code> will be false since <code>joe</code> is not present. Hence the program will print,</p>
+
+<pre><code>joe not found  
+</code></pre>
+
+<h3 id="iterateoverallelementsinamap">Iterate over all elements in a map</h3>
+
+<p>The <code>range</code> form of the <code>for</code> loop is used to iterate over all elements of a map.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+        "mike":  9000,
+    }
+    fmt.Println("Contents of the map")
+    for key, value := range employeeSalary {
+        fmt.Printf("employeeSalary[%s] = %d\n", key, value)
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/rz8U_g2slb0 "target=_"blank">Run in playground</a> </p>
+
+<p>The above program outputs,</p>
+
+<pre><code>Contents of the map  
+employeeSalary[mike] = 9000  
+employeeSalary[steve] = 12000  
+employeeSalary[jamie] = 15000  
+</code></pre>
+
+<p><em>One important fact is that the order of the retrieval of values from a map when using <code>for range</code> is not guaranteed to be the same for each execution of the program. It is also not the same as the order in which the elements were added to the map</em></p>
+
+<h3 id="deletingitemsfromamap">Deleting items from a map</h3>
+
+<p><em><a href="https://golang.org/pkg/builtin/#delete" target="_blank">delete(map, key)</a></em> is the syntax to delete <code>key</code> from a <code>map</code>. The delete <a href="/functions">function</a> does not return any value.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,     
+        "mike": 9000,
+    }
+    fmt.Println("map before deletion", employeeSalary)
+    delete(employeeSalary, "steve")
+    fmt.Println("map after deletion", employeeSalary)
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/u0WCB-Ta_dB "target="_blank">Run in playground</a></p>
+
+<p>The above program deletes the key <code>steve</code> and it prints</p>
+
+<pre><code>map before deletion map[steve:12000 jamie:15000 mike:9000]  
+map after deletion map[mike:9000 jamie:15000]  
+</code></pre>
+
+<p>If we try to delete a key that is not present in the map, there will be no runtime error.</p>
+
+<h3 id="mapofstructs">Map of structs</h3>
+
+<p>So far we have only been storing the salary of the employee in the map. Wouldn't it be nice if we are able to store the country of each employee in the map too? This can be achieved by using a map of <a href="/structs">structs</a>. The employee can be represented as a struct containing fields salary and country and they will be stored in the map with a string key and struct value. Let's write a program to understand how this can be done.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type employee struct {  
+    salary  int
+    country string
+}
+
+func main() {  
+    emp1 := employee{
+        salary:  12000,
+        country: "USA",
+    }
+    emp2 := employee{
+        salary:  14000,
+        country: "Canada",
+    }
+    emp3 := employee{
+        salary:  13000,
+        country: "India",
+    }
+    employeeInfo := map[string]employee{
+        "Steve": emp1,
+        "Jamie": emp2,
+        "Mike":  emp3,
+    }
+
+    for name, info := range employeeInfo {
+        fmt.Printf("Employee: %s Salary:$%d  Country: %s\n", name, info.salary, info.country)
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/wbGhkyZld1a "target="_blank">Run in playground</a></p>
+
+<p>In the above program, <code>employee</code> struct contains fields <code>salary</code> and <code>country</code>. We create three employees <code>emp1</code>, <code>emp2</code> and <code>emp3</code>.</p>
+
+<p>In line no. 25, we initialize a map with key type <code>string</code> and value type <code>employee</code> with the three employees we created. </p>
+
+<p>The map is iterated in line no. 31 and the employee details are printed in the next line. This program will print,</p>
+
+<pre><code>Employee: Mike Salary:$13000  Country: India  
+Employee: Steve Salary:$12000  Country: USA  
+Employee: Jamie Salary:$14000  Country: Canada  
+</code></pre>
+
+<h3 id="lengthofthemap">Length of the map</h3>
+
+<p>Length of the map can be determined using the <a href="https://golang.org/pkg/builtin/#len" target="_blank">len</a> function.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    fmt.Println("length is", len(employeeSalary))
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/vDxsqn6g-0p "target=_"blank">Run in playground</a></p>
+
+<p><em>len(employeeSalary)</em> in the above program returns the length of the map. The above program prints, </p>
+
+<pre><code>length is 2  
+</code></pre>
+
+<h3 id="mapsarereferencetypes">Maps are reference types</h3>
+
+<p>Similar to <a href="https://golangbot.com/arrays-and-slices/">slices</a>, maps are reference types. When a map is assigned to a new variable, they both point to the same internal data structure. Hence changes made in one will reflect in the other.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,     
+        "mike": 9000,
+    }
+    fmt.Println("Original employee salary", employeeSalary)
+    modified := employeeSalary
+    modified["mike"] = 18000
+    fmt.Println("Employee salary changed", employeeSalary)
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/hWouI1KvEb_i "target="_blank">Run in playground</a></p>
+
+<p>In line no. 14 of the above program, <code>employeeSalary</code> is assigned to <code>modified</code>. In the next line, the salary of <code>mike</code> is changed to <code>18000</code> in the <code>modified</code> map. Mike's salary will now be <code>18000</code> in <code>employeeSalary</code> too. The program outputs,</p>
+
+<pre><code>Original employee salary map[jamie:15000 mike:9000 steve:12000]  
+Employee salary changed map[jamie:15000 mike:18000 steve:12000]  
+</code></pre>
+
+<p>Similar is the case when maps are passed as parameters to functions. When any change is made to the map inside the function, it will be visible to the caller also.</p>
+
+<h3 id="mapsequality">Maps equality</h3>
+
+<p>Maps can't be compared using the <code>==</code> operator. The <code>==</code> can be only used to check if a map is <code>nil</code>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+func main() {  
+    map1 := map[string]int{
+        "one": 1,
+        "two": 2,
+    }
+
+    map2 := map1
+
+    if map1 == map2 {
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/MALqDyWkcT "target="_blank">Run in playground</a></p>
+
+<p>The above program will fail to compile with error </p>
+
+<pre><code>invalid operation: map1 == map2 (map can only be compared to nil)  
+</code></pre>
+
+<p>One way to check whether two maps are equal is to compare each one's individual elements one by one. The other way is using <a href="https://golangbot.com/reflection/">reflection</a>. I would encourage you to write a program for this and make it work :).</p>
+
+<p>I have compiled all the concepts we have discussed in a single program. You can download it from <a href="https://github.com/golangbot/maps" target="_blank">github</a>.</p>
+
+<p>This brings us to the end of this tutorial. Hope you enjoyed it. Please leave your comments.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/strings/">Strings</a></strong></p>
+
+<p>Like my tutorials? Please show your support by <a href="https://golangbot.com/support-the-content/">donating</a>. Your donations will help me create more awesome tutorials. </p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Golang%20Maps%20Tutorial&amp;url=https://golangbot.com/maps/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/maps/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/maps/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/maps/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-21"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

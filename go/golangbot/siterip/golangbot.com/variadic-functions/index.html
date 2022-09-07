@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Go Variadic Functions Tutorial with Examples | golangbot.com</title>
+    <meta name="description" content="A function that can accept a variable number of arguments is called a variadic function. Learn how to create variadic functions in Go with examples." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/variadic-functions/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Go Variadic Functions Tutorial with Examples | golangbot.com" />
+    <meta property="og:description" content="A function that can accept a variable number of arguments is called a variadic function. Learn how to create variadic functions in Go with examples." />
+    <meta property="og:url" content="https://golangbot.com/variadic-functions/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2021-06-19T00:10:00.000Z" />
+    <meta property="article:modified_time" content="2021-06-19T08:35:05.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Go Variadic Functions Tutorial with Examples | golangbot.com" />
+    <meta name="twitter:description" content="A function that can accept a variable number of arguments is called a variadic function. Learn how to create variadic functions in Go with examples." />
+    <meta name="twitter:url" content="https://golangbot.com/variadic-functions/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Go Variadic Functions Tutorial with Examples | golangbot.com",
+    "url": "https://golangbot.com/variadic-functions/",
+    "datePublished": "2021-06-19T00:10:00.000Z",
+    "dateModified": "2021-06-19T08:35:05.000Z",
+    "description": "A function that can accept a variable number of arguments is called a variadic function. Learn how to create variadic functions in Go with examples.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Variadic Functions</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2021-06-19">19 June 2021</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to part 12 of our <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatisavariadicfunction">What is a variadic function?</h3>
+
+<p><a href="/functions/">Functions</a> in general accept only a fixed number of arguments. <em>A variadic function is a function that accepts a variable number of arguments. If the last parameter of a function definition is prefixed by ellipsis <strong>...</strong>, then the function can accept any number of arguments for that parameter.</em></p>
+
+<p><strong>Only the last parameter of a function can be variadic. We will learn why this is the case in the next section of this tutorial.</strong></p>
+
+<h3 id="syntax">Syntax</h3>
+
+<pre><code class="language-go line-numbers">func hello(a int, b ...int) {  
+}
+</code></pre>
+
+<p>In the above function, the parameter <code>b</code> is variadic since it's prefixed by ellipsis and it can accept any number of arguments. This function can be called by using the syntax.</p>
+
+<pre><code class="language-go line-numbers">hello(1, 2) //passing one argument "2" to b  
+hello(5, 6, 7, 8, 9) //passing arguments "6, 7, 8 and 9" to b  
+</code></pre>
+
+<p>In the above piece of code, in line no. 1 we call <code>hello</code> with one argument <code>2</code> for the parameter <code>b</code> and we pass four arguments <code>6, 7, 8, 9</code> to <code>b</code> in the next line.</p>
+
+<p>It is also possible to pass zero arguments to a variadic function. </p>
+
+<pre><code class="language-lanaguage-go">hello(1)  
+</code></pre>
+
+<p>In the above code, we call <code>hello</code> with zero arguments for <code>b</code>. This is perfectly fine.</p>
+
+<p>By now I guess you would have understood why the variadic parameter should only be at the last. </p>
+
+<p>Let's try to make the first parameter of the <code>hello</code> function variadic.</p>
+
+<p>The syntax will look like</p>
+
+<pre><code class="language-go">func hello(b ...int, a int) {  
+}
+</code></pre>
+
+<p>In the above function, it is not possible to pass arguments to the parameter <code>a</code> because whatever argument we pass will be assigned to the first parameter <code>b</code> since it's variadic. Hence variadic parameters can only be present at the last in the function definition. The above function will fail to compile with error <code>syntax error: cannot use ... with non-final parameter b</code></p>
+
+<h3 id="examplesandunderstandinghowvariadicfunctionswork">Examples and understanding how variadic functions work</h3>
+
+<p>Let's create our own variadic function. We will write a simple program to find whether an integer exists in an input list of integers.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func find(num int, nums ...int) {  
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {  
+    find(89, 89, 90, 95)
+    find(45, 56, 67, 45, 90, 109)
+    find(78, 38, 56, 98)
+    find(87)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/7occymiS6s " target="_blank">Run in playground</a></p>
+
+<p>In the above program, <code>func find(num int, nums ...int)</code> in line no.7, accepts variable number of arguments for the <code>nums</code> parameter. Inside the function <em>find</em>, the type of <code>nums</code> is  <code>[]int</code> i.e, an integer slice.</p>
+
+<p><strong>The way variadic functions work is by converting the variable number of arguments to a slice of the type of the variadic parameter. For instance, in line no. 22 of the program above, the variable number of arguments to the <code>find</code> function are 89, 90, 95. The find function expects a variadic <code>int</code> argument. Hence these three arguments will be converted by the compiler to a slice of type int <code>[]int{89, 90, 95}</code> and then it will be passed to the <code>find</code> function.</strong></p>
+
+<p>In line no. 10, the <code>for</code> loop ranges over the <code>nums</code> slice and prints the position of <code>num</code> if it is present in the slice. If not, it prints that the number is not found.</p>
+
+<p>The above program outputs,</p>
+
+<pre><code>type of nums is []int  
+89 found at index 0 in [89 90 95]
+
+type of nums is []int  
+45 found at index 2 in [56 67 45 90 109]
+
+type of nums is []int  
+78 not found in  [38 56 98]
+
+type of nums is []int  
+87 not found in  []  
+</code></pre>
+
+<p>In line no. 25 of the above program, the find function call has only one argument. We have not passed any argument to the variadic <code>nums ...int</code> parameter. As discussed earlier, this is perfectly legal and in this case, <code>nums</code> will be a <code>nil</code> slice with length and capacity 0.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="sliceargumentsvsvariadicarguments">Slice arguments vs Variadic arguments</h3>
+
+<p>We should definitely have a question lingering in your mind now. In the above section, we learned that the variadic arguments to a function are in fact converted a slice. Then why do we even need variadic functions when we can achieve the same functionality using slices? I have rewritten the program above using slices below.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func find(num int, nums []int) {  
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {  
+    find(89, []int{89, 90, 95})
+    find(45, []int{56, 67, 45, 90, 109})
+    find(78, []int{38, 56, 98})
+    find(87, []int{})
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/rG-XRL3yycJ " target="_blank">Run in playground</a></p>
+
+<p>The following of the advantages of using variadic arguments instead of slices.</p>
+
+<ol>
+<li>There is no need to create a slice during each function call. If you look at the program above, we have created new slices during each function call in line nos. 22, 23, 24 and 25. This additional slice creation can be avoided when using variadic functions  </li>
+<li>In line no.25 of the program above, we are creating an empty slice just to satisfy the signature of the <code>find</code> function. This is totally not needed in the case of variadic functions. This line can just be <code>find(87)</code> when variadic function is used.  </li>
+<li>I personally feel that the program with variadic functions is more readable than the once with slices :)</li>
+</ol>
+
+<h3 id="appendisavariadicfunction">Append is a variadic function</h3>
+
+<p>Have you ever wondered how the <a href="https://golang.org/pkg/builtin/#append" target="_blank">append</a> function in the standard library used to append values to a <a href="https://golangbot.com/arrays-and-slices/">slice</a> accepts any number of arguments. It's because it's a variadic function. </p>
+
+<pre><code>func append(slice []Type, elems ...Type) []Type  
+</code></pre>
+
+<p>The above is the definition of <code>append</code> function. In this definition <code>elems</code> is a variadic parameter. Hence append can accept a variable number of arguments.</p>
+
+<h3 id="passingaslicetoavariadicfunction">Passing a slice to a variadic function</h3>
+
+<p>Let's pass a slice to a variadic function and find out what happens from the below example.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func find(num int, nums ...int) {  
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {  
+    nums := []int{89, 90, 95}
+    find(89, nums)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/A-DNilpH2L" target="_blank">Run in playground</a></p>
+
+<p>In line no. 23, we are passing a slice to a function that expects a variable number of arguments. </p>
+
+<p>This will not work. The above program will fail with compilation error <code>./prog.go:23:10: cannot use nums (type []int) as type int in argument to find</code></p>
+
+<p>Why does this don't work? Well, it's pretty straight forward. The signature of the <code>find</code> function is provided below,</p>
+
+<pre><code class="language-go line-numbers">func find(num int, nums ...int)  
+</code></pre>
+
+<p>According to the definition of a variadic function, <code>nums ...int</code> means that it will accept a variable number of arguments of type <code>int</code>. </p>
+
+<p>In line no. 23 of the program above, <code>nums</code> which is []int slice is passed to the <code>find</code> function which is expecting a variadic <code>int</code> argument. As we already discussed, these variadic arguments will be converted to a slice of type <code>int</code> since <code>find</code> expects variadic int arguments. In this case, <code>nums</code> is already a <code>[]int</code> slice and the compiler tries to create a new <code>[]int</code> i.e the compiler tries to do </p>
+
+<pre><code>find(89, []int{nums})  
+</code></pre>
+
+<p>which will fail since <code>nums</code> is a <code>[]int</code> and not a <code>int</code>.</p>
+
+<p>So is there a way to pass a slice to a variadic function? The answer is yes. </p>
+
+<p><strong>There is a syntactic sugar which can be used to pass a slice to a variadic function. You have to suffix the slice with ellipsis <code>...</code> If that is done, the slice is directly passed to the function without a new slice being created.</strong></p>
+
+<p>In the above program if you replace <code>find(89, nums)</code> in line no. 23 with <code>find(89, nums...)</code>, the program will compile and print the following output.</p>
+
+<pre><code>type of nums is []int  
+89 found at index 0 in [89 90 95]  
+</code></pre>
+
+<p>Here is the full program for your reference.  </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func find(num int, nums ...int) {  
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {  
+    nums := []int{89, 90, 95}
+    find(89, nums...)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/IvzwhzhFsT" target=_"blank">Run in playground</a></p>
+
+<h3 id="gotcha">Gotcha</h3>
+
+<p>Just be sure you know what you are doing when you are modifying a slice inside a variadic function.</p>
+
+<p>Let's look at a simple example.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func change(s ...string) {  
+    s[0] = "Go"
+}
+
+func main() {  
+    welcome := []string{"hello", "world"}
+    change(welcome...)
+    fmt.Println(welcome)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/R0GsuW7rdd" target=_"blank">Run in playground</a></p>
+
+<p>What do you think will be the output of the above program? If you think it will be <code>[Go world]</code> Congrats! you have understood variadic functions and slices. If you got it wrong, no big deal, let me explain how we get this output.</p>
+
+<p>In line no. 13 of the program above, we are using the syntactic sugar <code>...</code> and passing the slice as a variadic argument to the <code>change</code> function. </p>
+
+<p>As we have already discussed, if <code>...</code> is used, the <code>welcome</code> slice itself will be passed as an argument without a new slice being created. Hence <code>welcome</code> will be passed to the <code>change</code> function as argument.</p>
+
+<p>Inside the change function, the first element of the slice is changed to <code>Go</code>. Hence this program outputs</p>
+
+<pre><code>[Go world]
+</code></pre>
+
+<p>Here is one more program to understand variadic functions.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func change(s ...string) {  
+    s[0] = "Go"
+    s = append(s, "playground")
+    fmt.Println(s)
+}
+
+func main() {  
+    welcome := []string{"hello", "world"}
+    change(welcome...)
+    fmt.Println(welcome)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/WdbFIkdLoe" target=_"blank">Run in playground</a></p>
+
+<p>I would leave it as an exercise for you to figure out how the above program works :).</p>
+
+<p>That's it for variadic function. Thanks for reading. Please leave your valuable feedback and comments. Have a good day.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/maps/">Maps</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Variadic%20Functions&amp;url=https://golangbot.com/variadic-functions/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/variadic-functions/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/variadic-functions/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/variadic-functions/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-20"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

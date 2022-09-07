@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Learn to create and use Go packages - golangbot.com</title>
+    <meta name="description" content="Learn how Go packages work and how to import them in your code. This tutorial also deals with creating custom packages using Go modules." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/go-packages/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Learn to create and use Go packages - golangbot.com" />
+    <meta property="og:description" content="Learn how Go packages work and how to import them in your code. This tutorial also deals with creating custom packages using Go modules." />
+    <meta property="og:url" content="https://golangbot.com/go-packages/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-02-16T15:11:13.000Z" />
+    <meta property="article:modified_time" content="2020-03-02T04:24:31.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Learn to create and use Go packages - golangbot.com" />
+    <meta name="twitter:description" content="Learn how Go packages work and how to import them in your code. This tutorial also deals with creating custom packages using Go modules." />
+    <meta name="twitter:url" content="https://golangbot.com/go-packages/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Learn to create and use Go packages - golangbot.com",
+    "url": "https://golangbot.com/go-packages/",
+    "datePublished": "2020-02-16T15:11:13.000Z",
+    "dateModified": "2020-03-02T04:24:31.000Z",
+    "description": "Learn how Go packages work and how to import them in your code. This tutorial also deals with creating custom packages using Go modules.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Go Packages</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-02-16">16 February 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p><em>This tutorial is for Go version 1.13 or later and uses Go modules. If you are using an older version of Go or looking for the GOPATH version of this tutorial, please visit <a href="https://golangbot.com/packages/">https://golangbot.com/packages/</a>.</em></p>
+
+<p>Welcome to tutorial number 7 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatarepackagesandwhyaretheyused">What are packages and why are they used?</h3>
+
+<p>So far we have seen Go programs that have only one file with a main <a href="https://golangbot.com/functions/">function</a> and a couple of other functions. In real-world scenarios, this approach of writing all source code in a single file is not scalable. It becomes impossible to reuse and maintain code written this way. This is where packages are helpful.</p>
+
+<p><strong>Packages are used to organize Go source code for better reusability and readability. Packages are a collection of Go sources files that reside in the same directory. Packages provide code compartmentalization and hence it becomes easy to maintain Go projects.</strong></p>
+
+<p>For example, let's say we are writing a finance application in Go and some of the functionalities are simple interest calculation, compound interest calculation and loan calculation. One simple way to organize this application is by functionality. We can create packages <code>simpleinterest</code>, <code>compoundinterest</code> and  <code>loan</code>. If the <code>loan</code> package needs to calculate the simple interest, it can simply do so by importing the <code>simpleinterest</code> package. This way the code is reused. </p>
+
+<p>We will learn packages by creating a simple application to determine the simple interest given principal, interest rate and the time duration in years.</p>
+
+<h3 id="mainfunctionandmainpackage">main function and main package</h3>
+
+<p>Every executable Go application must contain the main function. This function is the entry point for execution. The main function should reside in the main package.</p>
+
+<p><strong><code>package packagename</code> specifies that a particular source file belongs to package <code>packagename</code>. This should be the first line of every go source file.</strong></p>
+
+<p>Let's get started by creating the main function and main package for our application. </p>
+
+<p>Run the command below to create a directory named <code>learnpackage</code> inside the current user's <code>Documents</code> directory.</p>
+
+<pre><code>mkdir ~/Documents/learnpackage/  
+</code></pre>
+
+<p>Create a file named <code>main.go</code> inside our <code>learnpackage</code> directory with the following contents.</p>
+
+<pre><code class="language-go line-numbers">package main 
+
+import "fmt"
+
+func main() {  
+    fmt.Println("Simple interest calculation")
+}
+</code></pre>
+
+<p>The line of code <code>package main</code> specifies that this file belongs to the main package. The <code>import "packagename"</code> statement is used to import an existing package. <code>packagename.FunctionName()</code> is the syntax to call a function in a package.</p>
+
+<p>In line no. 3, we import the <code>fmt</code> package to use the <code>Println</code> function. The <code>fmt</code> is a standard package and is available inbuilt as a part of the Go standard library. Then there is the main function which prints <code>Simple interest calculation</code></p>
+
+<p>Compile the above program by moving to the <code>learnpackage</code> directory using  </p>
+
+<pre><code>cd ~/Documents/learnpackage/  
+</code></pre>
+
+<p>and typing the following command</p>
+
+<pre><code>go install  
+</code></pre>
+
+<p>If all went well, our binary will be compiled and will be ready for execution. Type the command <code>learnpackage</code> in the terminal and you will see the following output.</p>
+
+<pre><code>Simple interest calculation  
+</code></pre>
+
+<p>If you don't understand how <code>go install</code> works or if you get the error  </p>
+
+<pre><code>go install: no install location for directory /home/naveen/Documents/learnpackage outside GOPATH  
+For more details see: 'go help gopath'  
+</code></pre>
+
+<p>please visit <a href="https://golangbot.com/hello-world-gomod/">https://golangbot.com/hello-world-gomod/</a> to know more.</p>
+
+<h3 id="gomodule">Go Module</h3>
+
+<p>We will structure the code in such a way that all functionalities related to simple interest are in <code>simpleinterest</code> package. To do that we need to create a custom package <code>simpleinterest</code> which will contain the function to calculate the simple interest. Before creating custom packages, we need to understand <strong><a href="https://golangbot.com/books/">Go Modules</a></strong> first, since <strong>Go Modules</strong> are needed to create custom packages.</p>
+
+<p><strong>A Go Module is nothing but a collection of Go packages.</strong> Now this question might come to your mind. Why do we need Go modules to create a custom package? The answer is <strong>the import path for the custom package we create is derived from the name of the go module</strong>. In addition to this, all the other third-party packages(such as source code from github) which our application uses will be present in the <code>go.mod</code> file along with the version. This <code>go.mod</code> file is created when we create a new module. You will understand this better in the next section.</p>
+
+<p>Another question might popup in our minds. How come we got away without creating a <a href="https://golangbot.com/books/">Go module</a> till now? The answer is, we never created our own custom package till now in this <a href="https://golangbot.com/learn-golang-series/">tutorial series</a> and hence no Go module was needed. </p>
+
+<p>Enough of theory :). Let's get into action and create our go module and custom package.</p>
+
+<h3 id="creatingagomodule">Creating a Go module</h3>
+
+<p>Make sure you are inside the directory <code>learnpackage</code> by typing <code>cd ~/Documents/learnpackage/</code>. Inside this directory run the following command to create a go module named <em>learnpackage</em>.</p>
+
+<pre><code>go mod init learnpackage  
+</code></pre>
+
+<p>The above command will create a file named <code>go.mod</code>. The following will be the contents of the file.</p>
+
+<pre><code>module learnpackage
+
+go 1.13  
+</code></pre>
+
+<p>The line <code>module learnpackage</code> specifies that the module's name is <code>learnpackage</code>. As we mentioned earlier, <code>learnpackage</code> will be the base path to import any package created inside this module. The line <code>go 1.13</code> specifies that the files in this module use go version <code>1.13</code>.</p>
+
+<h3 id="createthesimpleinterestcustompackage">Create the simple interest custom package</h3>
+
+<p><strong>Source files belonging to a package should be placed in separate folders of their own. It is a convention in Go to name this folder with the same name as the package.</strong></p>
+
+<p>Let's create a folder named <code>simpleinterest</code> inside the <code>learnpackage</code> folder.  <code>mkdir simpleinterest</code> will create this folder for us.</p>
+
+<p>All files inside the <em>simpleinterest</em> folder should start with the line <code>package simpleinterest</code> as they all belong to the <code>simpleinterest</code> package. </p>
+
+<p>Create a file <code>simpleinterest.go</code> inside the <em>simpleinterest</em> folder.</p>
+
+<p>The following will be the directory structure of our application.</p>
+
+<pre><code>├── learnpackage
+│   ├── go.mod
+│   ├── main.go
+│   └── simpleinterest
+│       └── simpleinterest.go
+</code></pre>
+
+<p>Add the following code to the <code>simpleinterest.go</code> file.</p>
+
+<pre><code class="language-go line-numbers">package simpleinterest
+
+//Calculate calculates and returns the simple interest for a principal p, rate of interest r for time duration t years
+func Calculate(p float64, r float64, t float64) float64 {  
+    interest := p * (r / 100) * t
+    return interest
+}
+</code></pre>
+
+<p>In the above code, we have created a function <code>Calculate</code> which calculates and returns the simple interest. This function is self-explanatory. It calculates and returns the simple interest.</p>
+
+<p><em>Note that the function name <strong>Calculate</strong> starts with caps. This is essential and we will explain shortly why this is needed.</em></p>
+
+<h3 id="importingcustompackage">Importing custom package</h3>
+
+<p>To use a custom package we must import it first. The import path is the name of the module appended by the subdirectory of the package and the package name. In our case the module name is <code>learnpackage</code> and the package  <code>simpleinterest</code> is in the <code>simpleinterest</code> folder directly under <code>learnpackage</code>  </p>
+
+<pre><code>├── learnpackage
+│   └── simpleinterest
+</code></pre>
+
+<p>So the line <code>import "learnpackage/simpleinterest"</code> will import the <em>simpleinterest</em> package.</p>
+
+<p>In case we have a directory structure like this  </p>
+
+<pre><code>learnpackage  
+│   └── finance
+│       └── simpleinterest 
+</code></pre>
+
+<p>then the import statement would be <code>import "learnpackage/finance/simpleinterest"</code></p>
+
+<p>Add the following code to <code>main.go</code></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "learnpackage/simpleinterest"
+)
+
+func main() {  
+    fmt.Println("Simple interest calculation")
+    p := 5000.0
+    r := 10.0
+    t := 1.0
+    si := simpleinterest.Calculate(p, r, t)
+    fmt.Println("Simple interest is", si)
+}
+</code></pre>
+
+<p>The above code imports the <code>simpleinterest</code> package and uses the <code>Calculate</code> function to find the simple interest.  Packages in the standard library don't need the module name prefix and hence "fmt" works without the module prefix. When the application is run, the output will be</p>
+
+<pre><code>Simple interest calculation  
+Simple interest is 500  
+</code></pre>
+
+<h3 id="abitmoreongoinstall">A bit more on go install</h3>
+
+<p>Now that we understand how packages work, it's time to talk a little bit more about <code>go install</code>. Go tools like <code>go install</code> work in the context of the current directory. Let's understand what that means. Till now we have been running <code>go install</code> from the directory <code>~/Documents/learnpackage/</code>. If we try to run it from any other directory, it will fail.</p>
+
+<p>Try cding into <code>cd ~/Documents/</code> and then running <code>go install learnpackage</code>. It will fail with the following error.</p>
+
+<pre><code>can't load package: package learnpackage: cannot find package "learnpackage" in any of:  
+    /usr/local/Cellar/go/1.13.7/libexec/src/learnpackage (from $GOROOT)
+    /Users/nramanathan/go/src/learnpackage (from $GOPATH)
+</code></pre>
+
+<p>Let's understand the reason behind this error. <code>go install</code> takes an optional package name as a parameter(in our case the package name is <code>learnpackage</code>) and it tries to compile the main function if the package exists in the current directory from which it is run or in the parent directory or it's parent directory and so on. </p>
+
+<p>We are in <code>Documents</code> directory and there is no <code>go.mod</code> file there and hence <code>go install</code> complains that it cannot find the package <code>learnpackage</code>. </p>
+
+<p>When we move to <code>~/Documents/learnpackage/</code>, there is a <code>go.mod</code> file there and our module name is <code>learnpackage</code> in that <code>go.mod</code> file.</p>
+
+<p>so <code>go install learnpackage</code> will work from inside the <code>~/Documents/learnpackage/</code> directory.</p>
+
+<p>But so far we have just been using <code>go install</code> and we did not specify the package name. If no package name is specified, <code>go install</code> will default to the module name in the current working directory. That's why when <code>go install</code> is run without any package name from <code>~/Documents/learnpackage/</code> it worked. So the following 3 commands are equivalent when run from <code>~/Documents/learnpackage/</code></p>
+
+<pre><code>go install
+
+go install .
+
+go install learnpackage  
+</code></pre>
+
+<p>I also mentioned that <code>go install</code> has the ability to recursively search the parent directory for a go.mod file. Let's check whether that works.</p>
+
+<pre><code>cd ~/Documents/learnpackage/simpleinterest/  
+</code></pre>
+
+<p>The above command will take us to the <code>simpleinterest</code> directory. From that directory run  </p>
+
+<pre><code class="language- ">go install learnpackage  
+</code></pre>
+
+<p>Go install will successfully find a <code>go.mod file</code> in the parent directory <code>learnpackage</code> that has the module <code>learnpackage</code> defined and hence it works :).</p>
+
+<h3 id="exportednames">Exported Names</h3>
+
+<p>We capitalized the function <code>Calculate</code> in the Simple interest package. This has a special meaning in Go. Any <a href="https://golangbot.com/variables/">variable</a> or function which starts with a capital letter are exported names in go. Only exported functions and variables can be accessed from other packages. In our case, we want to access <code>Calculate</code> function from the main package. Hence this is capitalized. </p>
+
+<p>If the function name is changed from <code>Calculate</code> to <code>calculate</code> in <code>simpleinterest.go</code>, and if we try to call the function using <code>simpleinterest.calculate(p, r, t)</code> in main.go, the compiler will error </p>
+
+<pre><code># learnpackage
+./main.go:13:8: cannot refer to unexported name simpleinterest.calculate
+./main.go:13:8: undefined: simpleinterest.calculate
+</code></pre>
+
+<p>
+Hence if you want to access a function outside of a package, it should be capitalized.</p>
+
+<h3 id="initfunction">init function</h3>
+
+<p>Each package in Go can contain an <code>init</code> function.  The <code>init</code> function must not have any return type and it must not have any parameters. The init function cannot be called explicitly in our source code. It will be called automatically when the package is initialized. The init function has the following syntax</p>
+
+<pre><code class="language-go line-numbers">func init() {  
+}
+</code></pre>
+
+<p>The <code>init</code> function can be used to perform initialization tasks and can also be used to verify the correctness of the program before the execution starts.</p>
+
+<p>The order of initialization of a package is as follows  </p>
+
+<ol>  
+<li>Package level variables are initialised first</li>  
+<li>init function is called next. A package can have multiple init functions (either in a single file or distributed across multiple files) and they are called in the order in which they are presented to the compiler.</li>  
+</ol>
+
+<p>If a package imports other packages, the imported packages are initialized first. </p>
+
+<p>A package will be initialized only once even if it is imported from multiple packages.</p>
+
+<p>Let's make some modifications to our application to understand <code>init</code> functions.</p>
+
+<p>To start with let's add the <code>init</code> function to the <code>simpleinterest.go</code> file.</p>
+
+<pre><code class="language-go line-numbers">package simpleinterest
+
+import "fmt"
+
+/*
+ * init function added
+ */
+func init() {  
+    fmt.Println("Simple interest package initialized")
+}
+//Calculate calculates and returns the simple interest for principal p, rate of interest r for time duration t years
+func Calculate(p float64, r float64, t float64) float64 {  
+    interest := p * (r / 100) * t
+    return interest
+}
+</code></pre>
+
+<p>We have added a simple init function which just prints <code>Simple interest package initialised</code></p>
+
+<p>Now let's modify the main package. We know that the principal, rate of interest and time duration should be greater than zero when calculating simple interest. We will define this check using init function and package level variables in the <code>main.go</code> file.</p>
+
+<p>Modify the <code>main.go</code> to the following,</p>
+
+<pre><code class="language-go">package main 
+
+import (  
+    "fmt"
+    "learnpackage/simpleinterest" //importing custom package
+    "log"
+)
+var p, r, t = 5000.0, 10.0, 1.0
+
+/*
+* init function to check if p, r and t are greater than zero
+ */
+func init() {  
+    println("Main package initialized")
+    if p &lt; 0 {
+        log.Fatal("Principal is less than zero")
+    }
+    if r &lt; 0 {
+        log.Fatal("Rate of interest is less than zero")
+    }
+    if t &lt; 0 {
+        log.Fatal("Duration is less than zero")
+    }
+}
+
+func main() {  
+    fmt.Println("Simple interest calculation")
+    si := simpleinterest.Calculate(p, r, t)
+    fmt.Println("Simple interest is", si)
+}
+</code></pre>
+
+<p>The following are the changes made to <code>main.go</code>  </p>
+
+<ol>  
+<li><b>p</b>, <b>r</b> and <b>t</b> variables are moved to package level from the main function level.</li>  
+<li>An init function has been added. The <i>init</i> function prints a log and terminates the program execution if either the principal, rate of interest or time duration is less than zero using <b>log.Fatal</b> function.</li>  
+</ol>
+
+<p>The order of initialisation of the is as follows,  </p>
+
+<ol>  
+<li>The imported packages are initialized first. Hence <b>simpleinterest</b> package is initialized first and it's init method is called. </li>  
+<li>Package level variables <b>p</b>, <b>r</b> and <b>t</b> are initialized next.</li>  
+<li><b>init</b> function is called in main.</li>  
+<li><b>main</b> function is called at last.</li>  
+</ol>
+
+<p>If you run the program, you will get the following output.</p>
+
+<pre><code>Simple interest package initialized  
+Main package initialized  
+Simple interest calculation  
+Simple interest is 500  
+</code></pre>
+
+<p>As expected the init function of the <code>simpleinterest</code> package is called first followed by the initialization of the package level variables <code>p</code>, <code>r</code> and <code>t</code>. The init function of the main package is called next. It checks whether <code>p</code>, <code>r</code> and <code>t</code> are lesser than zero and terminates if the condition is true. We will learn about <code>if</code> statement in detail in a <a href="https://golangbot.com/if-statement/">separate tutorial</a>. For now you can assume that <code>if p &lt; 0</code> will check whether <code>p</code> is less than 0 and if it is, the program will be terminated. We have written a similar condition for <code>r</code> and <code>t</code>. In this case, all these conditions are false and the program execution continues. Finally, the main function is called.</p>
+
+<p>Let's modify this program a bit to learn the use of the init function.</p>
+
+<p>Change the line  </p>
+
+<pre><code>var p, r, t = 5000.0, 10.0, 1.0  
+</code></pre>
+
+<p>
+in <code>main.go</code> to  </p>
+
+<pre><code>var p, r, t = -5000.0, 10.0, 1.0  
+</code></pre>
+
+<p>We have initialised <code>p</code> to negative.</p>
+
+<p>Now if you run the application, you will see  </p>
+
+<pre><code>Simple interest package initialized  
+Main package initialized  
+2020/02/15 21:25:12 Principal is less than zero  
+</code></pre>
+
+<p><em>p</em> is negative. Hence when the init function runs, the program terminates after printing <code>Principal is less than zero</code>.</p>
+
+<h3 id="useofblankidentifier">Use of blank identifier</h3>
+
+<p>It is illegal in Go to import a package and not to use it anywhere in the code. The compiler will complain if you do so. The reason for this is to avoid bloating of unused packages which will significantly increase the compilation time. Replace the code in <code>main.go</code> with the following,</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+        "learnpackage/simpleinterest"
+)
+
+func main() {
+
+}
+</code></pre>
+
+<p>The above program will error  </p>
+
+<pre><code># learnpackage
+./main.go:4:2: imported and not used: "learnpackage/simpleinterest"
+</code></pre>
+
+<p>But it is quite common to import packages when the application is under active development and use them somewhere in the code later if not now. The <code>_</code> blank identifier saves us in those situations.</p>
+
+<p>The error in the above program can be silenced by the following code,</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+        "learnpackage/simpleinterest"
+)
+
+var _ = simpleinterest.Calculate
+
+func main() {
+
+}
+</code></pre>
+
+<p>The line <code>var _ = simpleinterest.Calculate</code> mutes the error. We should keep track of these kinds of error silencers and remove them including the imported package at the end of application development if the package is not used. Hence it is recommended to write error silencers in the package level just after the import statement.</p>
+
+<p>Sometimes we need to import a package just to make sure the initialization takes place even though we do not need to use any function or variable from the package. For example, we might need to ensure that the <code>init</code> function of the <code>simpleinterest</code> package is called even though we plan not to use that package anywhere in our code. The _ blank identifier can be used in this case too as shown below. </p>
+
+<pre><code class="language-go">package main
+
+import (  
+    _ "learnpackage/simpleinterest"
+)
+
+func main() {
+
+}
+</code></pre>
+
+<p>Running the above program will output <code>Simple interest package initialized</code>. We have successfully initialized the <code>simpleinterest</code> package even though it is not used anywhere in the code.</p>
+
+<p>That's it for packages. Hope you enjoyed reading. Please leave your valuable comments and feedback :).</p>
+
+<p>Like my tutorials? Please <a href="https://golangbot.com/support-the-content/">support the content</a>.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/if-statement/">if else statement</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Go%20Packages&amp;url=https://golangbot.com/go-packages/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/go-packages/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/go-packages/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/go-packages/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-81"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>A Practical Guide to Interfaces in Go (Golang) - golangbot.com</title>
+    <meta name="description" content="Learn how interfaces work in Go with the help of practical examples. This tutorial also covers empty interface, type assertion and type switch." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/interfaces-part-1/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="A Practical Guide to Interfaces in Go (Golang) - golangbot.com" />
+    <meta property="og:description" content="Learn how interfaces work in Go with the help of practical examples. This tutorial also covers empty interface, type assertion and type switch." />
+    <meta property="og:url" content="https://golangbot.com/interfaces-part-1/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-03-01T13:06:00.000Z" />
+    <meta property="article:modified_time" content="2021-06-19T08:43:57.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="A Practical Guide to Interfaces in Go (Golang) - golangbot.com" />
+    <meta name="twitter:description" content="Learn how interfaces work in Go with the help of practical examples. This tutorial also covers empty interface, type assertion and type switch." />
+    <meta name="twitter:url" content="https://golangbot.com/interfaces-part-1/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "A Practical Guide to Interfaces in Go (Golang) - golangbot.com",
+    "url": "https://golangbot.com/interfaces-part-1/",
+    "datePublished": "2020-03-01T13:06:00.000Z",
+    "dateModified": "2021-06-19T08:43:57.000Z",
+    "description": "Learn how interfaces work in Go with the help of practical examples. This tutorial also covers empty interface, type assertion and type switch.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Interfaces - I</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-03-01">01 March 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 18 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>. This is the first part in our 2 part interface tutorial.</p>
+
+<h3 id="whatisaninterface">What is an interface?</h3>
+
+<p><strong>In Go, an interface is a set of method signatures. When a type provides definition for all the methods in the interface, it is said to implement the interface.</strong> It is much similar to the OOP world.  Interface specifies what <a href="https://golangbot.com/methods/">methods</a> a type should have and the type decides how to implement these methods.</p>
+
+<p>For example <em>WashingMachine</em> can be an interface with <a href="https://golangbot.com/methods/">method</a> signatures <em>Cleaning()</em> and <em>Drying()</em>. Any type which provides definition for <em>Cleaning()</em> and <em>Drying()</em> methods is said to implement the <em>WashingMachine</em> interface.</p>
+
+<h3 id="declaringandimplementinganinterface">Declaring and implementing an interface</h3>
+
+<p>Let's dive right into a program that creates an interface and implements it.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+//interface definition
+type VowelsFinder interface {  
+    FindVowels() []rune
+}
+
+type MyString string
+
+//MyString implements VowelsFinder
+func (ms MyString) FindVowels() []rune {  
+    var vowels []rune
+    for _, rune := range ms {
+        if rune == 'a' || rune == 'e' || rune == 'i' || rune == 'o' || rune == 'u' {
+            vowels = append(vowels, rune)
+        }
+    }
+    return vowels
+}
+
+func main() {  
+    name := MyString("Sam Anderson")
+    var v VowelsFinder
+    v = name // possible since MyString implements VowelsFinder
+    fmt.Printf("Vowels are %c", v.FindVowels())
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/F-T3S_wNNB" target=_"blank">Run in playground</a></p>
+
+<p>Line no. 8 of the program above creates a interface type named <code>VowelsFinder</code> which has one method <code>FindVowels() []rune</code>.</p>
+
+<p>In the next line, a type <code>MyString</code> is created.</p>
+
+<p><strong>In line no. 15 we add the method <code>FindVowels() []rune</code> to the receiver type <code>MyString</code>. Now <code>MyString</code> is said to implement the interface <code>VowelsFinder</code>.</strong> This is quite different from other languages like Java where a class has to explicitly state that it implements an interface using the <code>implements</code> keyword. <strong>This is not needed in Go and Go interfaces are implemented implicitly if a type contains all the methods declared in the interface.</strong></p>
+
+<p>In line no.28, we assign <code>name</code> which is of type <code>MyString</code> to v of type <code>VowelsFinder</code>. This is possible since <code>MyString</code> implements the <code>VowelsFinder</code> interface. <code>v.FindVowels()</code> in the next line calls the FindVowels method on <code>MyString</code> type and prints all the vowels in the string <code>Sam Anderson</code>. This program outputs </p>
+
+<pre><code>Vowels are [a e o]  
+</code></pre>
+
+<p>Congrats! You have created and implemented your first interface.</p>
+
+<h3 id="practicaluseofaninterface">Practical use of an interface</h3>
+
+<p>The above example taught us how to create and implement interfaces, but it didn't really show the practical use of an interface. Instead of <code>v.FindVowels()</code>, if we used <code>name.FindVowels()</code> in the program above, it would have also worked and there would have been no use for interface.</p>
+
+<p>Now let's look at a practical use of interface. </p>
+
+<p>We will write a simple program that calculates the total expense for a company based on the individual salaries of the employees. For brevity, we have assumed that all expenses are in USD.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type SalaryCalculator interface {  
+    CalculateSalary() int
+}
+
+type Permanent struct {  
+    empId    int
+    basicpay int
+    pf       int
+}
+
+type Contract struct {  
+    empId    int
+    basicpay int
+}
+
+//salary of permanent employee is the sum of basic pay and pf
+func (p Permanent) CalculateSalary() int {  
+    return p.basicpay + p.pf
+}
+
+//salary of contract employee is the basic pay alone
+func (c Contract) CalculateSalary() int {  
+    return c.basicpay
+}
+
+/*
+total expense is calculated by iterating through the SalaryCalculator slice and summing  
+the salaries of the individual employees  
+*/
+func totalExpense(s []SalaryCalculator) {  
+    expense := 0
+    for _, v := range s {
+        expense = expense + v.CalculateSalary()
+    }
+    fmt.Printf("Total Expense Per Month $%d", expense)
+}
+
+func main() {  
+    pemp1 := Permanent{
+        empId:    1,
+        basicpay: 5000,
+        pf:       20,
+    }
+    pemp2 := Permanent{
+        empId:    2,
+        basicpay: 6000,
+        pf:       30,
+    }
+    cemp1 := Contract{
+        empId:    3,
+        basicpay: 3000,
+    }
+    employees := []SalaryCalculator{pemp1, pemp2, cemp1}
+    totalExpense(employees)
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/3DZQH_Xh_Pl" target="_blank">Run in playground</a></p>
+
+<p>Line no. 7 of the above program declares the <code>SalaryCalculator</code> interface with a single method <code>CalculateSalary() int</code>.  </p>
+
+<p>We have two kinds of employees in the company, <code>Permanent</code> and <code>Contract</code> defined by <a href="https://golangbot.com/structs/">structs</a> in line no. 11 and 17. The salary of permanent employees is the sum of the <code>basicpay</code> and <code>pf</code> whereas for contract employees it's just the basic pay <code>basicpay</code>. This is expressed in the corresponding <code>CalculateSalary</code> methods in line. no 23 and 28 respectively. By declaring this method, both <code>Permanent</code> and <code>Contract</code> structs now implement the <code>SalaryCalculator</code> interface.</p>
+
+<p>The <code>totalExpense</code> <a href="https://golangbot.com/functions/">function</a> declared in line no.36 expresses the beauty of interfaces. This method takes a <a href="https://golangbot.com/arrays-and-slices/">slice</a> of SalaryCalculator interface <code>[]SalaryCalculator</code> as a parameter. In line no. 59 we pass a slice that contains both <code>Permanent</code> and <code>Contract</code> types to the <code>totalExpense</code> function. The <code>totalExpense</code> function calculates the expense by calling the <code>CalculateSalary</code> method of the corresponding type. This is done in line. no 39. </p>
+
+<p>The program outputs  </p>
+
+<pre><code>Total Expense Per Month $14050  
+</code></pre>
+
+<p>The biggest advantage of this is that <code>totalExpense</code> can be extended to any new employee type without any code changes. Let's say the company adds a new type of employee <code>Freelancer</code> with a different salary structure. This <code>Freelancer</code> can just be passed in the slice argument to <code>totalExpense</code>  without even a single line of code change to the <code>totalExpense</code> function. This method will do what it's supposed to do as <code>Freelancer</code> will also implement the <code>SalaryCalculator</code> interface :). </p>
+
+<p>Let's modify this program and add the new <code>Freelancer</code> employee. Salary for the Freelancer is the product of rate per hour and total no of hours worked.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type SalaryCalculator interface {  
+    CalculateSalary() int
+}
+
+type Permanent struct {  
+    empId    int
+    basicpay int
+    pf       int
+}
+
+type Contract struct {  
+    empId    int
+    basicpay int
+}
+
+type Freelancer struct {  
+    empId       int
+    ratePerHour int
+    totalHours  int
+}
+
+//salary of permanent employee is sum of basic pay and pf
+func (p Permanent) CalculateSalary() int {  
+    return p.basicpay + p.pf
+}
+
+//salary of contract employee is the basic pay alone
+func (c Contract) CalculateSalary() int {  
+    return c.basicpay
+}
+
+//salary of freelancer
+func (f Freelancer) CalculateSalary() int {  
+    return f.ratePerHour * f.totalHours
+}
+
+/*
+total expense is calculated by iterating through the SalaryCalculator slice and summing  
+the salaries of the individual employees  
+*/
+func totalExpense(s []SalaryCalculator) {  
+    expense := 0
+    for _, v := range s {
+        expense = expense + v.CalculateSalary()
+    }
+    fmt.Printf("Total Expense Per Month $%d", expense)
+}
+
+func main() {  
+    pemp1 := Permanent{
+        empId:    1,
+        basicpay: 5000,
+        pf:       20,
+    }
+    pemp2 := Permanent{
+        empId:    2,
+        basicpay: 6000,
+        pf:       30,
+    }
+    cemp1 := Contract{
+        empId:    3,
+        basicpay: 3000,
+    }
+    freelancer1 := Freelancer{
+        empId:       4,
+        ratePerHour: 70,
+        totalHours:  120,
+    }
+    freelancer2 := Freelancer{
+        empId:       5,
+        ratePerHour: 100,
+        totalHours:  100,
+    }
+    employees := []SalaryCalculator{pemp1, pemp2, cemp1, freelancer1, freelancer2}
+    totalExpense(employees)
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/J48P5g8ArLn" target="_blank">Run in playground</a></p>
+
+<p>We have added the <code>Freelancer</code> struct in line no. 22 and declared the <code>CalculateSalary</code> method in line no. 39. No other code change is required in the <code>totalExpense</code> method since <code>Freelancer</code> struct also implements the <code>SalaryCalculator</code> interface. We added a couple of <code>Freelancer</code> employees in the <code>main</code> method. This program prints,</p>
+
+<pre><code>Total Expense Per Month $32450  
+</code></pre>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="interfaceinternalrepresentation">Interface internal representation</h3>
+
+<p>An interface can be thought of as being represented internally by a tuple <code>(type, value)</code>. <code>type</code> is the underlying concrete type of the interface and <code>value</code> holds the value of the concrete type.</p>
+
+<p>Let's write a program to understand better.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Worker interface {  
+    Work()
+}
+
+type Person struct {  
+    name string
+}
+
+func (p Person) Work() {  
+    fmt.Println(p.name, "is working")
+}
+
+func describe(w Worker) {  
+    fmt.Printf("Interface type %T value %v\n", w, w)
+}
+
+func main() {  
+    p := Person{
+        name: "Naveen",
+    }
+    var w Worker = p
+    describe(w)
+    w.Work()
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/kweC7_oELzE" target=_"blank">Run in playground</a></p>
+
+<p><em>Worker</em> interface has one method <code>Work()</code> and <em>Person</em> struct type implements that interface. In line no. 27, we assign the <a href="https://golangbot.com/variables/">variable</a> <code>p</code> of type <code>Person</code> to <code>w</code> which is of type <code>Worker</code>. Now the concrete type of <code>w</code> is <code>Person</code> and it contains a <code>Person</code> with <code>name</code> field <code>Naveen</code>. The <code>describe</code> function in line no.17 prints the value and concrete type of the interface. This program outputs </p>
+
+<pre><code>Interface type main.Person value {Naveen}  
+Naveen is working  
+</code></pre>
+
+<p>We discuss more on how to extract the underlying value of the interface in the upcoming sections.</p>
+
+<h3 id="emptyinterface">Empty interface</h3>
+
+<p><strong>An interface that has zero methods is called an empty interface. It is represented as <code>interface{}</code>.</strong> Since the empty interface has zero methods, all types implement the empty interface.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func describe(i interface{}) {  
+    fmt.Printf("Type = %T, value = %v\n", i, i)
+}
+
+func main() {  
+    s := "Hello World"
+    describe(s)
+    i := 55
+    describe(i)
+    strt := struct {
+        name string
+    }{
+        name: "Naveen R",
+    }
+    describe(strt)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Fm5KescoJb" target="_blank">Run in playground</a></p>
+
+<p>In the program above, in line no.7, the <code>describe(i interface{})</code> function takes an empty interface as an argument and hence any type can be passed.</p>
+
+<p>We pass <code>string</code>, <code>int</code> and <code>struct</code> to the <code>describe</code> function in line nos. 13, 15 and 21 respectively. This program prints,</p>
+
+<pre><code>Type = string, value = Hello World  
+Type = int, value = 55  
+Type = struct { name string }, value = {Naveen R}  
+</code></pre>
+
+<h3 id="typeassertion">Type assertion</h3>
+
+<p>Type assertion is used to extract the underlying value of the interface. </p>
+
+<p><strong>i.(T)</strong> is the syntax which is used to get the underlying value of interface <code>i</code> whose concrete type is <code>T</code>.</p>
+
+<p>A program is worth a thousand words 😀. Let's write one for type assertion.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func assert(i interface{}) {  
+    s := i.(int) //get the underlying int value from i
+    fmt.Println(s)
+}
+func main() {  
+    var s interface{} = 56
+    assert(s)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/YstKXEeSBL" target=_"blank">Run in playground</a></p>
+
+<p>The concrete type of <code>s</code> in line no. 12 is <code>int</code>. We use the syntax <code>i.(int)</code> in line no. 8 to fetch the underlying int value of i. This program prints <code>56</code>.</p>
+
+<p>What will happen if the concrete type in the above program is not int? Well, let's find out.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func assert(i interface{}) {  
+    s := i.(int) 
+    fmt.Println(s)
+}
+func main() {  
+    var s interface{} = "Steven Paul"
+    assert(s)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/88KflSceHK" target=_"blank">Run in playground</a></p>
+
+<p>In the program above we pass <code>s</code> of concrete type <code>string</code> to the <code>assert</code> function which tries to extract a int value from it. This program will panic with the message <code>panic: interface conversion: interface {} is string, not int</code>.</p>
+
+<p>To solve the above problem, we can use the syntax </p>
+
+<pre><code>v, ok := i.(T)  
+</code></pre>
+
+<p>If the concrete type of <code>i</code> is <code>T</code> then <code>v</code> will have the underlying value of <code>i</code> and <code>ok</code> will be true.</p>
+
+<p>If the concrete type of <code>i</code> is not <code>T</code> then <code>ok</code> will be false and <code>v</code> will have the zero value of type <code>T</code> and <strong>the program will not panic</strong>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func assert(i interface{}) {  
+    v, ok := i.(int)
+    fmt.Println(v, ok)
+}
+func main() {  
+    var s interface{} = 56
+    assert(s)
+    var i interface{} = "Steven Paul"
+    assert(i)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/0sB-KlVw8A" target=_"blank">Run in playground</a></p>
+
+<p>When <code>Steven Paul</code> is passed to the <code>assert</code> function, <code>ok</code> will be false since the concrete type of <code>i</code> is not <code>int</code> and <code>v</code> will have the value 0 which is the zero value of <code>int</code>. This program will print,</p>
+
+<pre><code>56 true  
+0 false  
+</code></pre>
+
+<h3 id="typeswitch">Type switch</h3>
+
+<p><strong>A type switch is used to compare the concrete type of an interface against multiple types specified in various case statements. It is similar to <a href="https://golangbot.com/switch/">switch case</a>. The only difference being the cases specify types and not values as in normal switch.</strong></p>
+
+<p>The syntax for type switch is similar to Type assertion. In the syntax <code>i.(T)</code> for Type assertion, the type <code>T</code> should be replaced by the keyword <code>type</code> for type switch. Let's see how this works in the program below. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func findType(i interface{}) {  
+    switch i.(type) {
+    case string:
+        fmt.Printf("I am a string and my value is %s\n", i.(string))
+    case int:
+        fmt.Printf("I am an int and my value is %d\n", i.(int))
+    default:
+        fmt.Printf("Unknown type\n")
+    }
+}
+func main() {  
+    findType("Naveen")
+    findType(77)
+    findType(89.98)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/XYPDwOvoCh" target=_"blank">Run in playground</a></p>
+
+<p>In line no. 8 of the above program, <code>switch i.(type)</code> specifies a type switch. Each of the case statements compare the concrete type of <code>i</code> to a specific type. If any case matches, the corresponding statement is printed. This program outputs,</p>
+
+<pre><code>I am a string and my value is Naveen  
+I am an int and my value is 77  
+Unknown type  
+</code></pre>
+
+<p><em>89.98</em> in line no. 20 is of type <code>float64</code> and does not match any of the cases and hence <code>Unknown type</code> is printed in the last line.</p>
+
+<p><strong>It is also possible to compare a type to an interface. If we have a type and if that type implements an interface, it is possible to compare this type with the interface it implements.</strong></p>
+
+<p>Let's write a program for more clarity.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+type Describer interface {  
+    Describe()
+}
+type Person struct {  
+    name string
+    age  int
+}
+
+func (p Person) Describe() {  
+    fmt.Printf("%s is %d years old", p.name, p.age)
+}
+
+func findType(i interface{}) {  
+    switch v := i.(type) {
+    case Describer:
+        v.Describe()
+    default:
+        fmt.Printf("unknown type\n")
+    }
+}
+
+func main() {  
+    findType("Naveen")
+    p := Person{
+        name: "Naveen R",
+        age:  25,
+    }
+    findType(p)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/o6aHzIz4wC" target=_"blank">Run in playground</a></p>
+
+<p>In the program above, the <code>Person</code> struct implements the <code>Describer</code> interface. In the case statement in line no. 19, <code>v</code> is compared to the <code>Describer</code> interface type. <code>p</code> implements <code>Describer</code> and hence this case is satisfied and <code>Describe()</code> method is called. </p>
+
+<p>This program prints  </p>
+
+<pre><code>unknown type  
+Naveen R is 25 years old  
+</code></pre>
+
+<p>This brings us to the end of Interfaces Part I. We will continue our discussion about interfaces in Part II. Please leave your valuable feedback in the comments.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/interfaces-part-2/">Interfaces - II</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Interfaces%20-%20I&amp;url=https://golangbot.com/interfaces-part-1/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/interfaces-part-1/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/interfaces-part-1/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/interfaces-part-1/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-27"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

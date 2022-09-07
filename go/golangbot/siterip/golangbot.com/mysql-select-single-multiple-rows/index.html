@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Go (Golang) MySQL tutorial to select single and multiple rows | golangbot.com</title>
+    <meta name="description" content="In this tutorial, we will learn how to select a single row as well as multiple rows from a MySQL table using Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/mysql-select-single-multiple-rows/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Go (Golang) MySQL tutorial to select single and multiple rows | golangbot.com" />
+    <meta property="og:description" content="In this tutorial, we will learn how to select a single row as well as multiple rows from a MySQL table using Go." />
+    <meta property="og:url" content="https://golangbot.com/mysql-select-single-multiple-rows/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2021-10-16T18:00:04.000Z" />
+    <meta property="article:modified_time" content="2021-10-19T18:08:25.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Go (Golang) MySQL tutorial to select single and multiple rows | golangbot.com" />
+    <meta name="twitter:description" content="In this tutorial, we will learn how to select a single row as well as multiple rows from a MySQL table using Go." />
+    <meta name="twitter:url" content="https://golangbot.com/mysql-select-single-multiple-rows/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Go (Golang) MySQL tutorial to select single and multiple rows | golangbot.com",
+    "url": "https://golangbot.com/mysql-select-single-multiple-rows/",
+    "datePublished": "2021-10-16T18:00:04.000Z",
+    "dateModified": "2021-10-19T18:08:25.000Z",
+    "description": "In this tutorial, we will learn how to select a single row as well as multiple rows from a MySQL table using Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">MySQL Tutorial: Selecting Single and Multiple Rows</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2021-10-16">16 October 2021</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <h4 id="mysqlseriesindex">MySQL Series Index</h4>
+
+<p><a href="https://golangbot.com/connect-create-db-mysql/">Connecting to MySQL and creating a Database</a><br>
+<a href="https://golangbot.com/mysql-create-table-insert-row/">Creating a Table and Inserting Rows</a><br>
+<a href="">Selecting Single Row and Multiple rows</a><br>
+Prepared statements - WIP <br />
+Updating rows - WIP <br />
+Deleting rows - WIP</p>
+
+<p>Welcome to tutorial no. 3 in our MySQL tutorial series. In the <a href="https://golangbot.com/mysql-create-table-insert-row/">previous tutorial</a>, we discussed creating a table and inserting rows into the table. In this tutorial, we will learn how to select a single row as well as multiple rows from a table.</p>
+
+<h3 id="selectingasinglerow">Selecting a single row</h3>
+
+<p>The <code>product</code> table we created in the <a href="https://golangbot.com/mysql-create-table-insert-row/">previous tutorial</a> has three rows. Running <code>select * from product;</code> on the table returns the following rows.</p>
+
+<p><img src="/content/images/2021/10/Screenshot-2021-10-16-at-6.54.44-PM.png" alt="" /></p>
+
+<p>In this section of the tutorial, we will write code to select a single row from this table. We will write a <a href="https://golangbot.com/functions/">function</a> that will return the product price when the product name is given as the input. The query to do this is provided below.</p>
+
+<pre><code>select product_price from product where product_name = "iphone";  
+</code></pre>
+
+<p>The above query will return one row and will return the <code>product_price</code> column from that row. The above query will return <code>950</code></p>
+
+<p>Now that we have the query ready, let's go ahead and code it.</p>
+
+<p>The first step is to create a <a href="https://en.wikipedia.org/wiki/Prepared_statement" target=_"blank">prepared statement</a>. Prepared statements are used to parametrize a SQL query so that the same query can be run with different arguments efficiently. It also prevents <a href="https://en.wikipedia.org/wiki/SQL_injection" target=_"blank">sql injection</a>. </p>
+
+<p>The template for the prepared statement is provided below.</p>
+
+<pre><code>select product_price from product where product_name = ?  
+</code></pre>
+
+<p>We have replaced <code>iphone</code> with <code>?</code> to create the prepared statement template.</p>
+
+<p>The next step is to create the prepared statement. This is done using the PrepareContext method.</p>
+
+<pre><code class="language-go line-numbers">func selectPrice(db *sql.DB, productName string) (int, error) {  
+    query := `select product_price from product where product_name = ?`
+    ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancelfunc()
+    stmt, err := db.PrepareContext(ctx, query)
+    if err != nil {
+        log.Printf("Error %s when preparing SQL statement", err)
+        return 0, err
+    }
+    defer stmt.Close()
+    ...
+}
+</code></pre>
+
+<p>We pass a context with a <code>5</code> second timeout to the <code>PrepareContext</code> method in line no. 5. This method returns a prepared statement. We defer closing the statement in line no. 10. </p>
+
+<p>The next step is to execute this prepared statement. This is done using the QueryRowContext method.</p>
+
+<pre><code class="language-go line-numbers">var price int  
+row := stmt.QueryRowContext(ctx, productName)  
+if err := row.Scan(&amp;price); err != nil {  
+    return 0, err
+}
+</code></pre>
+
+<p>The <code>QueryRowContext</code> method is called on the prepared statement <code>stmt</code>. This method takes a context and a variadic list of arguments as parameter. In our case, we have only one argument in the query which is the product name and we pass this as the argument to this method. </p>
+
+<p>The <code>QueryRowContext</code> returns a single row. We then need to call <code>Scan</code> on the <code>row</code> to copy the columns returned by the query to the pointer passed to the <code>Scan</code> method. Here we pass an integer pointer in line no. 3 of the above code snippet to which the price will be stored. If the query returns more than one row, the <code>Scan</code> method will return only the first row and there will be no error. If there are no rows returned, <code>Scan</code> will return an error. We will discuss <a href="https://golangbot.com/error-handling/">error handling</a> in the next section. </p>
+
+<p>The complete function is provided below.</p>
+
+<pre><code class="language-go line-numbers">func selectPrice(db *sql.DB, productName string) (int, error) {  
+    log.Printf("Getting product price")
+    query := `select product_price from product where product_name = ?`
+    ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancelfunc()
+    stmt, err := db.PrepareContext(ctx, query)
+    if err != nil {
+        log.Printf("Error %s when preparing SQL statement", err)
+        return 0, err
+    }
+    defer stmt.Close()
+    var price int
+    row := stmt.QueryRowContext(ctx, productName)
+    if err := row.Scan(&amp;price); err != nil {
+        return 0, err
+    }
+    return price, nil
+}
+</code></pre>
+
+<h3 id="errorhandling">Error handling</h3>
+
+<p>The <code>Scan</code> method used in line no. 14 of the above function will return error <code>ErrNoRows</code> when no rows are returned by the query. Let's call our <code>selectPrice</code> function from <code>main</code> where will handle errors.</p>
+
+<pre><code class="language-go line-numbers">func main() {  
+...
+    productName := "iphone"
+    price, err := selectPrice(db, productName)
+    switch {
+    case err == sql.ErrNoRows:
+        log.Printf("Product %s not found in DB", productName)
+    case err != nil:
+        log.Printf("Encountered err %s when fetching price from DB", err)
+    default:
+        log.Printf("Price of %s is %d", productName, price)
+    }
+}
+</code></pre>
+
+<p>We pass product name as <code>iphone</code> to <code>selectPrice</code> and then <a href="https://golangbot.com/switch/">switch case</a> on the error. If the error is of type <code>ErrNoRows</code> we print a message saying that the product is not found. In case of any other error, we print the error message. And in the <code>default</code> case we print the result. </p>
+
+<p>This program will print</p>
+
+<pre><code>Price of iphone is 950  
+</code></pre>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="selectingmultiplerows">Selecting multiple rows</h3>
+
+<p>In this section, we will learn how to select multiple rows from a table. We will write a function that will take minimum price and maximum price as parameters and return the name and price of the products that match the query.</p>
+
+<p>The query that does that is provided below.</p>
+
+<pre><code>select product_name, product_price from product where product_price &gt;= 900 &amp;&amp; product_price &lt;= 1000;  
+</code></pre>
+
+<p>The above query will return the name and price of all products whose prices fall between <code>900</code> and <code>1000</code>.</p>
+
+<p>Most of the steps for selecting multiple rows are similar to selecting a single row which we discussed in the previous section. I have provided the complete function to select multiple rows below.</p>
+
+<pre><code class="language-go line-numbers">func selectProductsByPrice(db *sql.DB, minPrice int, maxPrice int) ([]product, error) {  
+    log.Printf("Getting products by price")
+    query := `select product_name, product_price from product where product_price &gt;= ? &amp;&amp; product_price &lt;= ?;`
+    ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancelfunc()
+    stmt, err := db.PrepareContext(ctx, query)
+    if err != nil {
+        log.Printf("Error %s when preparing SQL statement", err)
+        return []product{}, err
+    }
+    defer stmt.Close()
+    rows, err := stmt.QueryContext(ctx, minPrice, maxPrice)
+    if err != nil {
+        return []product{}, err
+    }
+    defer rows.Close() 
+    var products = []product{}
+    for rows.Next() {
+        var prd product
+        if err := rows.Scan(&amp;prd.name, &amp;prd.price); err != nil {
+            return []product{}, err
+        }
+        products = append(products, prd)
+    }
+    if err := rows.Err(); err != nil {
+        return []product{}, err
+    }
+    return products, nil
+}
+</code></pre>
+
+<p>Similar to the previous section, we first created a prepared statement in line no. 6 of the above function. After that we call <code>QueryContext</code> method on the prepared statement <code>stmt</code> in line no. 12. This method will return the list of rows selected by the query. We defer closing the rows in line no. 16.</p>
+
+<p>After getting the row list, we call <code>Next</code> method on <code>rows</code> in line no. 18. This prepares the result for reading using the <code>Scan</code> method. If there is any error when calling <code>Next()</code>, it will return <code>false</code> and the <a href="https://golangbot.com/loops/">for loop</a> will terminate. In case of error, <code>Err()</code> method on <code>rows</code> will return a non <code>nil</code> value and we need to call that to find out if there was any error when <code>Next()</code> was called. This is done in line no. 25.</p>
+
+<p>If there is no error when fetching the rows, <code>rows</code> is closed automatically by the <code>Next()</code> method call in line no. 18. If there is any error, it is necessary to call <code>Close</code> explicitly. Since the call to <code>Close()</code> is idempotent, it's ok to call it twice i.e once during the successfully <code>Next()</code> call and again during defer in line no. 16. Hence we have deferred the rows close in line no. 16.</p>
+
+<p>In line no. 19 we create <code>prd</code> of type <code>product</code> to store the result. </p>
+
+<p>In case you don't remember, <code>product</code> struct has the following fields.</p>
+
+<pre><code class="language-go line-numbers">type product struct {  
+    name  string
+    price int
+}
+</code></pre>
+
+<p>In line no. 20, the result columns are copied to the <code>name</code> and <code>price</code> fields of the <code>prd</code> struct and in line no. 23, <code>prd</code> is appended to the <code>products</code> <a href="https://golangbot.com/arrays-and-slices/#slices">slice</a>. </p>
+
+<p><code>products</code> is returned in line no. 28.</p>
+
+<p>The next step is to call this function from main.</p>
+
+<pre><code class="language-go line-numbers">func main() {  
+...
+    minPrice := 900
+    maxPrice := 1000
+    products, err := selectProductsByPrice(db, minPrice, maxPrice)
+    if err != nil {
+        log.Printf("Error %s when selecting product by price", err)
+        return
+    }
+    for _, product := range products {
+        log.Printf("Name: %s Price: %d", product.name, product.price)
+    }
+</code></pre>
+
+<p>We pass <code>900</code> and <code>1000</code> as the minimum and maximum price to the <code>selectProductsByPrice</code> function in line no. 5. </p>
+
+<p>If there is any error, we return after printing the error.</p>
+
+<p>If there is no error, the name and price of the products matching the query are printed in line no. 11.</p>
+
+<p>This program will print,</p>
+
+<pre><code>2021/10/16 21:10:52 Getting products by price  
+2021/10/16 21:10:52 Name: iphone Price: 950  
+2021/10/16 21:10:52 Name: Galaxy Price: 990  
+</code></pre>
+
+<p>This brings us to the end of this tutorial. Please share your valuable feedback in the comments. </p>
+
+<p>The entire code is available at <a href="https://github.com/golangbot/mysqltutorial/blob/master/select/main.go" target=_"blank">https://github.com/golangbot/mysqltutorial/blob/master/select/main.go</a></p>
+
+<p>If you would like to advertise on this website, hire me, or if you have any other development requirements, please email to <em>naveen[at]golangbot[dot]com</em>.</p>
+
+<p>Like my tutorials? Please show your support by <a href="https://golangbot.com/support-the-content/">donating</a>. Your donations will help me create more awesome tutorials. </p>
+
+<p><strong>Previous tutorial - <a href="https://golangbot.com/mysql-create-table-insert-row/">Creating a Table and Inserting Rows</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=MySQL%20Tutorial%3A%20Selecting%20Single%20and%20Multiple%20Rows&amp;url=https://golangbot.com/mysql-select-single-multiple-rows/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/mysql-select-single-multiple-rows/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/mysql-select-single-multiple-rows/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/mysql-select-single-multiple-rows/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-156"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

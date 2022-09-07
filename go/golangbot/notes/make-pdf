@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+pandoc \
+    --latex-engine=xelatex \
+    -V geometry:margin=1in \
+    -f markdown+pandoc_title_block \
+    README.md -s -o book.pdf

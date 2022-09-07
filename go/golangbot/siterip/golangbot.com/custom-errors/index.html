@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Creating custom errors in Golang - golangbot.com</title>
+    <meta name="description" content="The simplest way to create a custom error in Go is to use the New function of the errors package. Errors can also be represented by struct types implementing the error interface." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/custom-errors/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Creating custom errors in Golang - golangbot.com" />
+    <meta property="og:description" content="The simplest way to create a custom error in Go is to use the New function of the errors package. Errors can also be represented by struct types implementing the error interface." />
+    <meta property="og:url" content="https://golangbot.com/custom-errors/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2017-11-12T18:59:56.000Z" />
+    <meta property="article:modified_time" content="2021-06-19T08:43:16.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Creating custom errors in Golang - golangbot.com" />
+    <meta name="twitter:description" content="The simplest way to create a custom error in Go is to use the New function of the errors package. Errors can also be represented by struct types implementing the error interface." />
+    <meta name="twitter:url" content="https://golangbot.com/custom-errors/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Creating custom errors in Golang - golangbot.com",
+    "url": "https://golangbot.com/custom-errors/",
+    "datePublished": "2017-11-12T18:59:56.000Z",
+    "dateModified": "2021-06-19T08:43:16.000Z",
+    "description": "The simplest way to create a custom error in Go is to use the New function of the errors package. Errors can also be represented by struct types implementing the error interface.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Custom Errors</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2017-11-12">12 November 2017</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p><img src="/content/images/2017/11/custom-errors-golang-1.png" alt="Custom errors in golang" />
+Welcome to tutorial no. 31 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<p>In the <a href="https://golangbot.com/error-handling/">last tutorial</a> we learnt how errors are represented in Go and how to handle errors from the standard library. We also learnt how to extract more information from the standard library errors.</p>
+
+<p>This tutorial deals with how to create our own custom errors which we can use in functions and packages we create. We will also use the same techniques employed by the standard library to provide more details about our custom errors.</p>
+
+<h3 id="creatingcustomerrorsusingthenewfunction">Creating custom errors using the New function</h3>
+
+<p>The simplest way to create a custom error is to use the <a href="https://golang.org/pkg/errors/#New" target=_"blank">New</a> function of the <a href="https://golang.org/pkg/errors/" target=_"blank">errors</a> package.</p>
+
+<p>Before we use the New <a href="https://golangbot.com/functions/">function</a> to create a custom error, let's understand how it is implemented. The implementation of the New function in the <a href="https://golang.org/src/errors/errors.go?s=293:320#L1" target=_"blank">errors package</a> is provided below.</p>
+
+<pre><code class="language-go line-numbers">// Package errors implements functions to manipulate errors.
+  package errors
+
+  // New returns an error that formats as the given text.
+  func New(text string) error {
+      return &amp;errorString{text}
+  }
+
+  // errorString is a trivial implementation of error.
+  type errorString struct {
+      s string
+  }
+
+  func (e *errorString) Error() string {
+      return e.s
+  }
+</code></pre>
+
+<p>The implementation is pretty simple. <code>errorString</code> is a <a href="https://golangbot.com/structs/">struct</a> type with a single string field <code>s</code>. The <code>Error() string</code> <a href="https://golangbot.com/methods/">method</a> of the <code>error</code> interface is implemented using a <code>errorString</code> <a href="https://golangbot.com/methods/#pointerreceiversvsvaluereceivers">pointer receiver</a> in line no. 14.</p>
+
+<p>The <code>New</code> function in line no. 5 takes a <code>string</code> parameter, creates a value of type <code>errorString</code> using that parameter and returns the address of it. Thus a new error is created and returned.</p>
+
+<p>Now that we know how the <code>New</code> function works, lets use it in a program of our own to create a custom error.</p>
+
+<p>We will create a simple program which calculates the area of a circle and will return an error if the radius is negative.  </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "errors"
+    "fmt"
+    "math"
+)
+
+func circleArea(radius float64) (float64, error) {  
+    if radius &lt; 0 {
+        return 0, errors.New("Area calculation failed, radius is less than zero")
+    }
+    return math.Pi * radius * radius, nil
+}
+
+func main() {  
+    radius := -20.0
+    area, err := circleArea(radius)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Printf("Area of circle %0.2f", area)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/_vuf6fgkqm" target=_"blank">Run in playground</a></p>
+
+<p>In the program above, we check whether the radius is less than zero in line no. 10. If so we return zero for the area along with the corresponding error message. If the radius is greater than 0, then the area is calculated and <code>nil</code> is returned as the error in line no. 13.</p>
+
+<p>In the main function, we check whether the error is not nil in line no. 19. If it's not nil, we print the error and return, else the area of the circle is printed.</p>
+
+<p>In this program the radius is less than zero and hence it will print,</p>
+
+<pre><code>Area calculation failed, radius is less than zero  
+</code></pre>
+
+<h3 id="addingmoreinformationtotheerrorusingerrorf">Adding more information to the error using Errorf</h3>
+
+<p>The above program works well but wouldn't it be nice if we print the actual radius which caused the error. This is where the <a href="https://golang.org/pkg/fmt/#Errorf" target=_"blank">Errorf</a> function of the <a href="https://golang.org/pkg/fmt/"target=_"blank">fmt</a> package comes in handy. This function formats the error according to a format specifier and returns a <a href="https://golangbot.com/strings/">string</a> as value that satisfies error. </p>
+
+<p>Let's use the <code>Errorf</code> function and make the program better.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "math"
+)
+
+func circleArea(radius float64) (float64, error) {  
+    if radius &lt; 0 {
+        return 0, fmt.Errorf("Area calculation failed, radius %0.2f is less than zero", radius)
+    }
+    return math.Pi * radius * radius, nil
+}
+
+func main() {  
+    radius := -20.0
+    area, err := circleArea(radius)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Printf("Area of circle %0.2f", area)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/HQ7bvjT4o2" target=_"blank">Run in playground</a></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<p>In the program above, the <code>Errorf</code> is used in line no. 10 to print the actual radius which caused the error. Running this program will output,</p>
+
+<pre><code>Area calculation failed, radius -20.00 is less than zero  
+</code></pre>
+
+<h3 id="providingmoreinformationabouttheerrorusingstructtypeandfields">Providing more information about the error using struct type and fields</h3>
+
+<p>It is also possible to use struct types which implement the error <a href="https://golangbot.com/interfaces-part-1/">interface</a> as errors. This gives us more flexibility with error handling. In our example, if we want to access the radius which caused the error, the only way now is to parse the error description <code>Area calculation failed, radius -20.00 is less than zero</code>. This is not a proper way to do this since if the description changes, our code will break.</p>
+
+<p>We will use the strategy followed by the standard library explained in the previous tutorial under the section "<a href="https://golangbot.com/error-handling/#1assertingtheunderlyingstructtypeandgettingmoreinformationfromthestructfields">Asserting the underlying struct type and getting more information from the struct fields</a>" and use struct fields to provide access to the radius which caused the error. We will create a struct type that implements the error interface and use its fields to provide more information about the error.</p>
+
+<p>The first step would be create a struct type to represent the error. The naming convention for error types is that the name should end with the text <code>Error</code>. So let's name our struct type as <code>areaError</code></p>
+
+<pre><code class="language-go line-numbers">type areaError struct {  
+    err    string
+    radius float64
+}
+</code></pre>
+
+<p>The above struct type has a field <code>radius</code> which stores the value of the radius responsible for the error and <code>err</code> field stores the actual error message.</p>
+
+<p>The next step is to implement the error interface.</p>
+
+<pre><code class="language-go line-numbers">func (e *areaError) Error() string {  
+    return fmt.Sprintf("radius %0.2f: %s", e.radius, e.err)
+}
+</code></pre>
+
+<p>In the above snippet, we implement the <code>Error() string</code> method of the error interface using a pointer receiver *areaError. This method prints the radius and the error description.  </p>
+
+<p>Let's complete the program by writing the <code>main</code> function and <code>circleArea</code> function.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "math"
+)
+
+type areaError struct {  
+    err    string
+    radius float64
+}
+
+func (e *areaError) Error() string {  
+    return fmt.Sprintf("radius %0.2f: %s", e.radius, e.err)
+}
+
+func circleArea(radius float64) (float64, error) {  
+    if radius &lt; 0 {
+        return 0, &amp;areaError{"radius is negative", radius}
+    }
+    return math.Pi * radius * radius, nil
+}
+
+func main() {  
+    radius := -20.0
+    area, err := circleArea(radius)
+    if err != nil {
+        if err, ok := err.(*areaError); ok {
+            fmt.Printf("Radius %0.2f is less than zero", err.radius)
+            return
+        }
+        fmt.Println(err)
+        return
+    }
+    fmt.Printf("Area of rectangle1 %0.2f", area)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/OTs7J0adQg" target=_"blank">Run in playground</a></p>
+
+<p>In the program above, <code>circleArea</code> in line no. 17 is used to calculate the area of the circle. This function first checks if the radius is less than zero, if so it creates a value of type <code>areaError</code> using the radius responsible for the error and the corresponding error message  and then returns the address of it in line no. 19 along with <code>0</code> as area. <strong>Thus we have provide more information about the error, in this case the radius which caused the error using the fields of a custom error struct.</strong></p>
+
+<p>If the radius is not negative, this function calculates and returns the area along with a <code>nil</code> error in line no. 21.</p>
+
+<p>In line no. 26 of the main function, we are trying to find the area of a circle with radius -20. Since the radius is less than zero, an error will be returned. </p>
+
+<p>We check whether the error is not nil in line no. 27 and in the next line we assert it to type <code>*areaError</code>. <strong>If the error is of type <code>*areaError</code>, we get the radius which caused the error in line no. 29 using <code>err.radius</code>, print a custom error message and return from the program.</strong> </p>
+
+<p>If the assertion fails, we simply print the error in line no. 32 and return. If there is no error, the area will be printed in line no.35.</p>
+
+<p>The program will print,  </p>
+
+<pre><code>Radius -20.00 is less than zero  
+</code></pre>
+
+<p>Now lets use the <a href="https://golangbot.com/error-handling/#2assertingtheunderlyingstructtypeandgettingmoreinformationusingmethods">second strategy</a> described in the previous tutorial and use methods on custom error types to provide more information about the error.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="providingmoreinformationabouttheerrorusingmethodsonstructtypes">Providing more information about the error using methods on struct types</h3>
+
+<p>In this section we will write a program which calculates the area of a rectangle. This program will print an error if either the length or width is less than zero.</p>
+
+<p>The first step would be create a struct to represent the error.</p>
+
+<pre><code class="language-go line-numbers">type areaError struct {  
+    err    string //error description
+    length float64 //length which caused the error
+    width  float64 //width which caused the error
+}
+</code></pre>
+
+<p>The above error struct type contains an error description field along with the length and width which caused the error.</p>
+
+<p>Now that we have the error type, lets implement the error interface and add a couple of methods on the error type to provide more information about the error.</p>
+
+<pre><code class="language-go line-numbers">func (e *areaError) Error() string {  
+    return e.err
+}
+
+func (e *areaError) lengthNegative() bool {  
+    return e.length &lt; 0
+}
+
+func (e *areaError) widthNegative() bool {  
+    return e.width &lt; 0
+}
+</code></pre>
+
+<p>In the above snippet, we return the description of the error from the <code>Error() string</code> method. The <code>lengthNegative() bool</code> method returns true when the length is less than zero and <code>widthNegative() bool</code> method returns true when the width is less than zero. <strong>These two methods provide more information about the error, in this case they say whether the area calculation failed because of the length being negative or width being negative. Thus we have used methods on struct error types to provide more information about the error.</strong></p>
+
+<p>The next step is to write the area calculation function.</p>
+
+<pre><code class="language-go line-numbers">func rectArea(length, width float64) (float64, error) {  
+    err := ""
+    if length &lt; 0 {
+        err += "length is less than zero"
+    }
+    if width &lt; 0 {
+        if err == "" {
+            err = "width is less than zero"
+        } else {
+            err += ", width is less than zero"
+        }
+    }
+    if err != "" {
+        return 0, &amp;areaError{err, length, width}
+    }
+    return length * width, nil
+}
+</code></pre>
+
+<p>The <code>rectArea</code> function above checks if either the length or width is less than zero, if so it returns an error message, else it returns the area of the rectangle with <code>nil</code> as error.</p>
+
+<p>Let's finish this program by creating the main function.</p>
+
+<pre><code class="language-go line-numbers">func main() {  
+    length, width := -5.0, -9.0
+    area, err := rectArea(length, width)
+    if err != nil {
+        if err, ok := err.(*areaError); ok {
+            if err.lengthNegative() {
+                fmt.Printf("error: length %0.2f is less than zero\n", err.length)
+
+            }
+            if err.widthNegative() {
+                fmt.Printf("error: width %0.2f is less than zero\n", err.width)
+
+            }
+            return
+        }
+        fmt.Println(err)
+        return
+    }
+    fmt.Println("area of rect", area)
+}
+</code></pre>
+
+<p>In the main function, we check whether the error is not nil in line no. 4. If it is not nil, we assert it to type <code>*areaError</code> in the next line. Then using the <code>lengthNegative()</code> and <code>widthNegative()</code> methods, check whether the error is because of the fact that the length is negative or width is negative. We print the corresponding error message and return from the program. <em>Thus we have used the methods on the error struct type to provide more information about the error.</em></p>
+
+<p>If there is no error, the area of the rectangle will be printed. </p>
+
+<p>Here is the full program for your reference.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+type areaError struct {  
+    err    string  //error description
+    length float64 //length which caused the error
+    width  float64 //width which caused the error
+}
+
+func (e *areaError) Error() string {  
+    return e.err
+}
+
+func (e *areaError) lengthNegative() bool {  
+    return e.length &lt; 0
+}
+
+func (e *areaError) widthNegative() bool {  
+    return e.width &lt; 0
+}
+
+func rectArea(length, width float64) (float64, error) {  
+    err := ""
+    if length &lt; 0 {
+        err += "length is less than zero"
+    }
+    if width &lt; 0 {
+        if err == "" {
+            err = "width is less than zero"
+        } else {
+            err += ", width is less than zero"
+        }
+    }
+    if err != "" {
+        return 0, &amp;areaError{err, length, width}
+    }
+    return length * width, nil
+}
+
+func main() {  
+    length, width := -5.0, -9.0
+    area, err := rectArea(length, width)
+    if err != nil {
+        if err, ok := err.(*areaError); ok {
+            if err.lengthNegative() {
+                fmt.Printf("error: length %0.2f is less than zero\n", err.length)
+
+            }
+            if err.widthNegative() {
+                fmt.Printf("error: width %0.2f is less than zero\n", err.width)
+
+            }
+            return
+        }
+    }
+    fmt.Println("area of rect", area)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/5-5CagJKW67" target=_"blank">Run in playground</a></p>
+
+<p>This program will print the output,</p>
+
+<pre><code>error: length -5.00 is less than zero  
+error: width -9.00 is less than zero  
+</code></pre>
+
+<p>We have seen examples for two of the three ways described in the <a href="https://golangbot.com/error-handling/">error handling</a> tutorial to provide more information about the errors.</p>
+
+<p>The third way using <a href="https://golangbot.com/error-handling/#3directcomparison">direct comparison</a> is pretty straightforward. I would leave it as an exercise for you to figure out how to use this strategy to provide more information about our custom errors.</p>
+
+<p>This brings us to an end of this tutorial.</p>
+
+<p>Here is a quick recap of what we learnt in this tutorial,</p>
+
+<ul>
+<li>Creating custom errors using the New function</li>
+<li>Adding more information to the error using Errorf</li>
+<li>Providing more information about the error using struct type and fields</li>
+<li>Providing more information about the error using methods on struct types</li>
+</ul>
+
+<p>Have a good day.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/panic-and-recover/">Panic and Recover</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Custom%20Errors&amp;url=https://golangbot.com/custom-errors/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/custom-errors/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/custom-errors/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/custom-errors/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-43"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

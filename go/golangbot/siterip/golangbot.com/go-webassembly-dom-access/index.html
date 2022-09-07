@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Access the browser&#x27;s DOM from Go (Golang) using WebAssembly | golangbot.com</title>
+    <meta name="description" content="This tutorial deals with how to access the browser&#x27;s DOM from Go using JavaScript mapping functions. Also learn how to handle errors returned from Go in JavaScript." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/go-webassembly-dom-access/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Access the browser&#x27;s DOM from Go (Golang) using WebAssembly | golangbot.com" />
+    <meta property="og:description" content="This tutorial deals with how to access the browser&#x27;s DOM from Go using JavaScript mapping functions. Also learn how to handle errors returned from Go in JavaScript." />
+    <meta property="og:url" content="https://golangbot.com/go-webassembly-dom-access/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-06-23T18:45:15.000Z" />
+    <meta property="article:modified_time" content="2020-06-23T19:00:37.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Access the browser&#x27;s DOM from Go (Golang) using WebAssembly | golangbot.com" />
+    <meta name="twitter:description" content="This tutorial deals with how to access the browser&#x27;s DOM from Go using JavaScript mapping functions. Also learn how to handle errors returned from Go in JavaScript." />
+    <meta name="twitter:url" content="https://golangbot.com/go-webassembly-dom-access/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Access the browser&#x27;s DOM from Go (Golang) using WebAssembly | golangbot.com",
+    "url": "https://golangbot.com/go-webassembly-dom-access/",
+    "datePublished": "2020-06-23T18:45:15.000Z",
+    "dateModified": "2020-06-23T19:00:37.000Z",
+    "description": "This tutorial deals with how to access the browser&#x27;s DOM from Go using JavaScript mapping functions. Also learn how to handle errors returned from Go in JavaScript.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">WebAssembly: DOM Access and Error Handling</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-06-23">23 June 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 2 of our WebAssembly tutorial series. </p>
+
+<h3 id="seriesindex">Series Index</h3>
+
+<p><a href="/webassembly-using-go/">Introduction to WebAssembly Using Go</a><br>
+<a href="/go-webassembly-dom-access/">Accessing DOM from Go using Javascript</a></p>
+
+<p>In the <a href="/webassembly-using-go/">first tutorial</a> of this tutorial series, we created and exposed a function from Go and called it using JavaScript. I highly recommend reading the first part <a href="https://golangbot.com/webassembly-using-go/">https://golangbot.com/webassembly-using-go/</a> if you have not read it yet.</p>
+
+<p>In this tutorial, we will develop a UI for our application, handle errors, and also manipulate the DOM of the browser from Go.</p>
+
+<h3 id="creatingtheuiandcallingthewasmfunction">Creating the UI and calling the wasm function</h3>
+
+<p>Let's create a very simple UI using HTML. It will contain a text area to get the input JSON, a submit button to format the input JSON, and another text area to display the output.</p>
+
+<p>Let's modify the existing <code>~/Documents/webassembly/assets/index.html</code> in the <code>assets</code> folder to include the UI.</p>
+
+<pre><code class="language-html line-numbers">&lt;html&gt;  
+    &lt;head&gt;
+        &lt;meta charset="utf-8"/&gt;
+        &lt;script src="wasm_exec.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+            const go = new Go();
+            WebAssembly.instantiateStreaming(fetch("json.wasm"), go.importObject).then((result) =&gt; {
+                go.run(result.instance);
+            });
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+         &lt;textarea id="jsoninput" name="jsoninput" cols="80" rows="20"&gt;&lt;/textarea&gt;
+         &lt;input id="button" type="submit" name="button" value="pretty json" onclick="json(jsoninput.value)"/&gt;
+         &lt;textarea id="jsonoutput" name="jsonoutput" cols="80" rows="20"&gt;&lt;/textarea&gt;
+    &lt;/body&gt;
+    &lt;script&gt;
+        var json = function(input) {
+            jsonoutput.value = formatJSON(input)
+        }
+     &lt;/script&gt;
+&lt;/html&gt;  
+</code></pre>
+
+<p>In line no. 13 of the above HTML, we create a text area with id <code>jsoninput</code>. This will be our text area where we input the JSON to be formatted.</p>
+
+<p>Next, we create a submit button and when the button is clicked, the <code>json</code> JavaScript function in line no. 18 will be called. This function takes the input JSON as a parameter, calls the <code>formatJSON</code> wasm function which we created in the <a href="/webassembly-using-go/">previous tutorial</a> and sets the output to the <code>jsonoutput</code> text area defined in line no. 15. </p>
+
+<p>Let's compile and run this program and see if it works.</p>
+
+<pre><code>cd ~/Documents/webassembly/cmd/wasm/  
+GOOS=js GOARCH=wasm go build -o  ../../assets/json.wasm  
+cd ~/Documents/webassembly/cmd/server/  
+go run main.go  
+</code></pre>
+
+<p>Go to the browser and type <code>localhost:9090</code>. You can see the UI with two text areas and a button.</p>
+
+<p>Input the following text in the first text area.</p>
+
+<pre><code>{"website":"golangbot.com", "tutorials": {"string":"https://golangbot.com/strings/", "maps":"https://golangbot.com/maps/", "goroutine":"https://golangbot.com/goroutines/", "channels":"https://golangbot.com/channels/"}}
+</code></pre>
+
+<p>Now tap on the <code>pretty json</code> button. You can see that the JSON is formatted and printed in the output text area.</p>
+
+<p><img src="/content/images/2020/06/tutorial2-1.png" alt="call Go function from JavaScript" />
+You can see the above output in the browser. We have successfully called the wasm function and formatted the JSON.</p>
+
+<h3 id="accessingthedomfromgousingjavascript">Accessing the DOM from Go using JavaScript</h3>
+
+<p>In the above section, we called the wasm function, got the formatted JSON string output, and set the output text area with the formatted JSON using JavaScript. </p>
+
+<p>There is one more way to achieve the same output. Instead of passing the formatted JSON string to javascript, it is possible to access the browser's <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" target=_"blank">DOM</a> from Go and set the formatted JSON string to the output text area.</p>
+
+<p>Let's see how this is done.</p>
+
+<p>We need to modify the <code>jsonWrapper</code> function in <code>~/Documents/webassembly/cmd/wasm/main.go</code> to achieve this.</p>
+
+<pre><code class="language-go line-numbers">func jsonWrapper() js.Func {  
+    jsonfunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+        if len(args) != 1 {
+            return "Invalid no of arguments passed"
+        }
+        jsDoc := js.Global().Get("document")
+        if !jsDoc.Truthy() {
+            return "Unable to get document object"
+        }
+        jsonOuputTextArea := jsDoc.Call("getElementById", "jsonoutput")
+        if !jsonOuputTextArea.Truthy() {
+            return "Unable to get output text area"
+        }
+        inputJSON := args[0].String()
+        fmt.Printf("input %s\n", inputJSON)
+        pretty, err := prettyJson(inputJSON)
+        if err != nil {
+            errStr := fmt.Sprintf("unable to parse JSON. Error %s occurred\n", err)
+            return errStr
+        }
+        jsonOuputTextArea.Set("value", pretty)
+        return nil
+    })
+
+    return jsonfunc
+}
+</code></pre>
+
+<p>In line no. 6, we try to get the <code>document</code> property of JavaScript from the <code>global</code> scope. This property is needed to access the output JSON text area. The <a href="https://www.godoc.org/syscall/js#Value.Truthy" target=_"blank">Truthy</a> function in line no. 7 is JavaScript's way of testing for <code>nil</code>. If truthy returns false, it means the property doesn't exist. Hence the appropriate error string is returned to JavaScript. We do not explicitly return a Go error type. The reason for this and how to handle errors is covered in the next section.</p>
+
+<p>In line no. 10, we use the <a href="https://www.godoc.org/syscall/js#Value.Call" target=_"blank">call</a> method to call the <code>getElementById</code> function on the <code>jsDoc</code> JavaScript object and pass it the <code>jsonoutput</code> argument. In JavaScript, this line of code corresponds to,</p>
+
+<pre><code>jsDoc.getElementById("jsonoutput")  
+</code></pre>
+
+<p>If you recollect, <code>jsonoutput</code> is the <code>id</code> of the output text area in <code>index.html</code>. </p>
+
+<p>This will return the reference to the <code>jsonoutput</code> text area. As we did earlier, we check for <code>truthy</code>.</p>
+
+<p>Now we have access to the <code>jsonoutput</code> text area. In line no. 21, we use the <a href="https://www.godoc.org/syscall/js#Value.Set" target=_"blank">set</a> method to set the <code>value</code> property of the <code>jsonoutput</code> text area to the formatted JSON string. This will display the formatted JSON in the output text area.</p>
+
+<p>The changes to the Go side of the program is done. </p>
+
+<p>A minor change is needed in the <code>~/Documents/webassembly/assets/index.html</code>. Since the JSON is set from Go directly by manipulating the browser's DOM rather than JavaScript, we can remove the following piece of code.</p>
+
+<p>Change line no. 19 from</p>
+
+<pre><code class="language-html line-numbers">jsonoutput.value = formatJSON(input)  
+</code></pre>
+
+<p>to  </p>
+
+<pre><code class="language-html line-numbers">var result = formatJSON(input)  
+console.log("Value returned from Go", result)  
+</code></pre>
+
+<p>We have removed the code that sets <code>jsonoutput</code> value from JavaScript since this is done from the Go side. We just log the result to the console. If there is an error in the JSON input, the error string that was returned from  <code>jsonfunc</code> will be logged to the console. <br />
+<em>Do note that the output text area will not be cleared if there is an error. It will still keep showing its existing content. This will be fixed in the next section.</em></p>
+
+<p>Try running the program again using the following commands and then opening  <code>localhost:9090</code> in the browser.  </p>
+
+<pre><code>cd ~/Documents/webassembly/cmd/wasm/  
+GOOS=js GOARCH=wasm go build -o  ../../assets/json.wasm  
+cd ~/Documents/webassembly/cmd/server/  
+go run main.go  
+</code></pre>
+
+<p>The output will be the same. If a Valid JSON is passed, it will be formatted and printed. This is now done from the Go code by manipulating the DOM rather than from the JavaScript. If you pass an invalid JSON, the corresponding error will be logged to the console. </p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="errorhandling">Error Handling</h3>
+
+<p>In the previous section, we just returned a string from the <code>jsonfunc</code> function when an error occurred during the JSON formatting.</p>
+
+<p>The idiomatic way of <a href="/error-handling/">handling errors</a> in Go is to return the error. Let's modify the <code>jsonWrapper</code> function in <code>~/Documents/webassembly/cmd/wasm/main.go</code> to return an error and see what happens.</p>
+
+<pre><code class="language-go line-numbers">func jsonWrapper() js.Func {  
+    jsonfunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+        if len(args) != 1  {
+            return errors.New("Invalid no of arguments passed")
+        }
+        jsDoc := js.Global().Get("document")
+        if !jsDoc.Truthy() {
+            return errors.New("Unable to get document object")
+        }
+        jsonOuputTextArea := jsDoc.Call("getElementById", "jsonoutput")
+        if !jsonOuputTextArea.Truthy() {
+            return errors.New("Unable to get output text area")
+        }
+        inputJSON := args[0].String()
+        fmt.Printf("input %s\n", inputJSON)
+        pretty, err := prettyJson(inputJSON)
+        if err != nil {
+            errStr := fmt.Sprintf("unable to parse JSON. Error %s occurred\n", err)
+            return errors.New(errStr)
+        }
+        jsonOuputTextArea.Set("value", pretty)
+        return nil
+    })
+    return jsonfunc
+}
+</code></pre>
+
+<p>Line no. 4 is changed to return an <code>error</code> instead of a <code>string</code>. Similar changes are done in other places where error needs to be returned.</p>
+
+<p>Compile and run the code and try inputting an incorrect JSON and see what happens. I have provided the invalid JSON string <code>dfs333{"website</code> as input.</p>
+
+<p><img src="/content/images/2020/06/tutorial2-changed.png" alt="panic: ValueOf: invalid value wasm_exec.js" /></p>
+
+<p>The program has crashed with the following stack trace.  </p>
+
+<pre><code>input dfs333{"website wasm_exec.js:47:14  
+panic: ValueOf: invalid value wasm_exec.js:47:14  
+&lt;empty string&gt; wasm_exec.js:47:14  
+goroutine 6 [running]: wasm_exec.js:47:14  
+syscall/js.ValueOf(0x1db00, 0x40e390, 0x6, 0x7ff8000100000017) wasm_exec.js:47:14  
+    /usr/local/go/src/syscall/js/js.go:219 +0x13f wasm_exec.js:47:14
+syscall/js.Value.Set(0x7ff8000100000012, 0x41a0d0, 0x3b31e, 0x6, 0x1db00, 0x40e390) wasm_exec.js:47:14  
+    /usr/local/go/src/syscall/js/js.go:314 +0x7 wasm_exec.js:47:14
+syscall/js.handleEvent() wasm_exec.js:47:14  
+    /usr/local/go/src/syscall/js/func.go:91 +0x25 wasm_exec.js:47:14
+exit code: 2 wasm_exec.js:138:14  
+Value returned from Go undefined  
+</code></pre>
+
+<p>As we already discussed in the <a href="/webassembly-using-go/">last tutorial</a>, any value returned by <code>jsonfunc</code> will automatically be mapped to the corresponding JavaScript value using the <a href="https://www.godoc.org/syscall/js#ValueOf" target=_"blank">ValueOf</a> function. If you take a quick look at the <a href="https://www.godoc.org/syscall/js#ValueOf" target=_"blank">documentation</a> of this function, you can see that there is no mapping for Go's <code>error</code> type to a corresponding JavaScript type. This is the reason the program is crashing with error <code>panic: ValueOf: invalid value</code> when an <code>error</code> type is returned from Go. There is no way to pass errors from Go to Javascript currently. This feature could be added in the future, but currently, it's not available. We have to look at other options when returning errors.</p>
+
+<p>One way to do this is to establish a contract between Go and JavaScript. For example, we can return a <a href="/maps">map</a> from Go to JavaScript. If the map contains an <code>error</code> key, it can be considered as an error by JavaScript and handled appropriately.</p>
+
+<p>Let's modify the <code>jsonWrapper</code> function to do this.</p>
+
+<pre><code class="language-go line-numbers">func jsonWrapper() js.Func {  
+    jsonfunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+        if len(args) != 1 {
+            result := map[string]interface{}{
+                "error": "Invalid no of arguments passed",
+            }
+            return result
+        }
+        jsDoc := js.Global().Get("document")
+        if !jsDoc.Truthy() {
+            result := map[string]interface{}{
+                "error": "Unable to get document object",
+            }
+            return result
+        }
+        jsonOuputTextArea := jsDoc.Call("getElementById", "jsonoutput")
+        if !jsonOuputTextArea.Truthy() {
+            result := map[string]interface{}{
+                "error": "Unable to get output text area",
+            }
+            return result
+        }
+        inputJSON := args[0].String()
+        fmt.Printf("input %s\n", inputJSON)
+        pretty, err := prettyJson(inputJSON)
+        if err != nil {
+            errStr := fmt.Sprintf("unable to parse JSON. Error %s occurred\n", err)
+            result := map[string]interface{}{
+                "error": errStr,
+            }
+            return result
+        }
+        jsonOuputTextArea.Set("value", pretty)
+        return nil
+    })
+    return jsonfunc
+}
+</code></pre>
+
+<p>In the above snippet, in line no. 4, a map named <code>result</code> with an <code>error</code> key is created and returned with the corresponding error. Similar changes are done in other places. The JavaScript side can now check for the existence of this key. If this key is present, it means an error has occurred and it can be handled appropriately.</p>
+
+<p>The modified <code>index.html</code> file is provided below. Changes are done only to the JavaScript section starting at line no. 17.</p>
+
+<pre><code class="language-html line-numbers">...
+    &lt;script&gt;
+         var json = function(input) {
+                var result = formatJSON(input)
+                if (( result != null) &amp;&amp; ('error' in result)) {
+                    console.log("Go return value", result)
+                    jsonoutput.value = ""
+                    alert(result.error)
+                }
+        }
+    &lt;/script&gt;
+&lt;/html&gt;  
+</code></pre>
+
+<p>The return value from Go is first validated for <code>null</code> and then it is checked to find whether the <code>error</code> key is present. If the error key is present, it means some error has occurred when processing the JSON. The output text area is first cleared and then a popup alert is shown to the user with the error message.</p>
+
+<p>Compile and run the program again. Try passing an invalid JSON. You can see an alert with the error message. The output text area is also cleared.</p>
+
+<p><img src="/content/images/2020/06/tutorial2-3.png" alt="Go WebAssembly error handling" /></p>
+
+<p>This brings us to the end of this tutorial. </p>
+
+<p>The source code is available at <a href="https://github.com/golangbot/webassembly/tree/tutorial2" target=_"blank">https://github.com/golangbot/webassembly/tree/tutorial2</a></p>
+
+<p>Please leave your comments and feedback.</p>
+
+<p>If you would like to advertise on this website, hire me, or if you have any other development requirements please email to <em>naveen[at]golangbot[dot]com</em>.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=WebAssembly%3A%20DOM%20Access%20and%20Error%20Handling&amp;url=https://golangbot.com/go-webassembly-dom-access/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/go-webassembly-dom-access/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/go-webassembly-dom-access/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/go-webassembly-dom-access/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-126"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

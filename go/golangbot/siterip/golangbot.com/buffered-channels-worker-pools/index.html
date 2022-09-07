@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Buffered Channels and Worker Pools in Go - golangbot.com</title>
+    <meta name="description" content="A detailed tutorial about how buffered channels work and how they can be used to create worker pools in Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/buffered-channels-worker-pools/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Buffered Channels and Worker Pools in Go - golangbot.com" />
+    <meta property="og:description" content="A detailed tutorial about how buffered channels work and how they can be used to create worker pools in Go." />
+    <meta property="og:url" content="https://golangbot.com/buffered-channels-worker-pools/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2021-10-15T01:00:00.000Z" />
+    <meta property="article:modified_time" content="2021-10-15T13:41:13.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Buffered Channels and Worker Pools in Go - golangbot.com" />
+    <meta name="twitter:description" content="A detailed tutorial about how buffered channels work and how they can be used to create worker pools in Go." />
+    <meta name="twitter:url" content="https://golangbot.com/buffered-channels-worker-pools/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Buffered Channels and Worker Pools in Go - golangbot.com",
+    "url": "https://golangbot.com/buffered-channels-worker-pools/",
+    "datePublished": "2021-10-15T01:00:00.000Z",
+    "dateModified": "2021-10-15T13:41:13.000Z",
+    "description": "A detailed tutorial about how buffered channels work and how they can be used to create worker pools in Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Buffered Channels and Worker Pools</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2021-10-15">15 October 2021</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 23 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h2 id="whatarebufferedchannels">What are buffered channels?</h2>
+
+<p>All the channels we discussed in the <a href="https://golangbot.com/channels/">previous tutorial</a> were basically unbuffered. As we discussed in the <a href="https://golangbot.com/channels/">channels</a> tutorial in detail, sends and receives to an unbuffered channel are blocking. </p>
+
+<p>It is possible to create a channel with a buffer. Sends to a buffered channel are blocked only when the buffer is full. Similarly receives from a buffered channel are blocked only when the buffer is empty. </p>
+
+<p>Buffered channels can be created by passing an additional capacity parameter to the <code>make</code> function which specifies the size of the buffer.</p>
+
+<pre><code>ch := make(chan type, capacity)  
+</code></pre>
+
+<p><em>capacity</em> in the above syntax should be greater than 0 for a channel to have a buffer. The capacity for an unbuffered channel is 0 by default and hence we omitted the capacity parameter while creating channels in the <a href="https://golangbot.com/channels/">previous tutorial</a>.</p>
+
+<p>Let's write some code and create a buffered channel.</p>
+
+<h3 id="example">Example</h3>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+
+func main() {  
+    ch := make(chan string, 2)
+    ch &lt;- "naveen"
+    ch &lt;- "paul"
+    fmt.Println(&lt;- ch)
+    fmt.Println(&lt;- ch)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/It-em11etK" target=_"blank">Run program in playground</a></p>
+
+<p>In the program above, in line no. 9 we create a buffered channel with a capacity of 2. Since the channel has a capacity of 2, it is possible to write 2 strings into the channel without being blocked. We write 2 strings to the channel in line no. 10 and 11 and the channel does not block. We read the 2 strings written in line nos. 12 and 13 respectively. This program prints,</p>
+
+<pre><code>naveen  
+paul  
+</code></pre>
+
+<h3 id="anotherexample">Another Example</h3>
+
+<p>Let's look at one more example of the buffered channel in which the values to the channel are written in a concurrent Goroutine and read from the main Goroutine. This example will help us better understand when writes to a buffered channel block.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "time"
+)
+
+func write(ch chan int) {  
+    for i := 0; i &lt; 5; i++ {
+        ch &lt;- i
+        fmt.Println("successfully wrote", i, "to ch")
+    }
+    close(ch)
+}
+func main() {  
+    ch := make(chan int, 2)
+    go write(ch)
+    time.Sleep(2 * time.Second)
+    for v := range ch {
+        fmt.Println("read value", v,"from ch")
+        time.Sleep(2 * time.Second)
+
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/bKe5GdgMK9" target=_"blank">Run program in playground</a></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<p>In the program above, a buffered channel <code>ch</code> of capacity <code>2</code> is created in line no. 16 of the <code>main</code> Goroutine and passed to the <code>write</code> Goroutine in line no. 17. Then the main Goroutine sleeps for 2 seconds. During this time, the <code>write</code> Goroutine is running concurrently. The <code>write</code> Goroutine has a <code>for</code> loop which writes numbers from 0 to 4 to the <code>ch</code> channel. The capacity of this buffered channel is <code>2</code> and hence the write <code>Goroutine</code> will be able to write values <code>0</code> and <code>1</code> to the <code>ch</code> channel immediately and then it blocks until at least one value is read from <code>ch</code> channel. So this program will print the following 2 lines immediately.</p>
+
+<pre><code>successfully wrote 0 to ch  
+successfully wrote 1 to ch  
+</code></pre>
+
+<p>After printing the above two lines, the writes to the <code>ch</code> channel in the <code>write</code> Goroutine are blocked until someone reads from the <code>ch</code> channel. Since the main Goroutine sleeps for 2 seconds before starting to read from the channel, the program will not print anything for the next 2 seconds.  The <code>main</code> Goroutine wakes up after 2 seconds and starts reading from the <code>ch</code> channel using a <code>for range</code> loop in line no. 19, prints the read value and then sleeps for 2 seconds again and this cycle continues until the <code>ch</code> is closed. So the program will print the following lines after 2 seconds,</p>
+
+<pre><code>read value 0 from ch  
+successfully wrote 2 to ch  
+</code></pre>
+
+<p>This will continue until all values are written to the channel and it is closed in the <code>write</code> Goroutine. The final output would be,</p>
+
+<pre><code>successfully wrote 0 to ch  
+successfully wrote 1 to ch  
+read value 0 from ch  
+successfully wrote 2 to ch  
+read value 1 from ch  
+successfully wrote 3 to ch  
+read value 2 from ch  
+successfully wrote 4 to ch  
+read value 3 from ch  
+read value 4 from ch  
+</code></pre>
+
+<h3 id="deadlock">Deadlock</h3>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    ch := make(chan string, 2)
+    ch &lt;- "naveen"
+    ch &lt;- "paul"
+    ch &lt;- "steve"
+    fmt.Println(&lt;-ch)
+    fmt.Println(&lt;-ch)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/FW-LHeH7oD" target=_"blank">Run program in playground</a></p>
+
+<p>In the program above, we write 3 strings to a buffered channel of capacity 2. When the control reaches the third write in line no. 11, the write is blocked since the channel has exceeded its capacity. Now some Goroutine must read from the channel in order for the write to proceed, but in this case, there is no concurrent routine reading from this channel. Hence there will be a <strong>deadlock</strong> and the program will panic at run time with the following message,</p>
+
+<pre><code>fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan send]:  
+main.main()  
+    /tmp/sandbox091448810/prog.go:11 +0x8d
+</code></pre>
+
+<h3 id="closingbufferedchannels">Closing buffered channels</h3>
+
+<p>We already discussed about closing channels in the <a href="https://golangbot.com/channels/#closingchannelsandforrangeloopsonchannels">previous tutorial</a>. In addition to what we have learned in the previous tutorial, there is one more subtlety to be considered when closing buffered channels.</p>
+
+<p>It's possible to read data from a already closed buffered channel. The channel will return the data that is already written to the channel and once all the data has been read, it will return the zero value of the channel.</p>
+
+<p>Let's write a program to understand this.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    ch := make(chan int, 5)
+    ch &lt;- 5
+    ch &lt;- 6
+    close(ch)
+    n, open := &lt;-ch 
+    fmt.Printf("Received: %d, open: %t\n", n, open)
+    n, open = &lt;-ch 
+    fmt.Printf("Received: %d, open: %t\n", n, open)
+    n, open = &lt;-ch 
+    fmt.Printf("Received: %d, open: %t\n", n, open)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/19cZrsy2X4v" target=_"blank">Run program in playground</a></p>
+
+<p>In the program above, we created a buffered channel of capacity <code>5</code> in line no. 8. We then write <code>5</code> and <code>6</code> to the channel. The channel is closed after that in line no. 11. Even though the channel is closed, we can read the values already written to the channel. This is done in line nos. 12 and 14. The value of <code>n</code> will be <code>5</code> and open will be <code>true</code> in line no. 12. The value of <code>n</code> will be <code>6</code> and open will be <code>true</code> again in line no 14. We have now finished reading <code>5</code> and <code>6</code> from the channel and there is no more data to be read. Now when the channel is read again in line no. 16, the value of <code>n</code> will be <code>0</code> which is the zero value of <code>int</code> and <code>open</code> will be <code>false</code> indicating that the channel has closed.</p>
+
+<p>This program will print</p>
+
+<pre><code>Received: 5, open: true  
+Received: 6, open: true  
+Received: 0, open: false  
+</code></pre>
+
+<p>The same program can be written using for range loop too.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    ch := make(chan int, 5)
+    ch &lt;- 5
+    ch &lt;- 6
+    close(ch)
+    for n := range ch {
+        fmt.Println("Received:", n)
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/xVgkn64Jado" target=_"blank">Run program in playground</a></p>
+
+<p>The <code>for range</code> loop in line no. 12 of the program above will read all the values written to the channel and will quit once there are no more values to read since the channel is already closed.</p>
+
+<p>This program will print,</p>
+
+<pre><code>Received: 5  
+Received: 6  
+</code></pre>
+
+<h3 id="lengthvscapacity">Length vs Capacity</h3>
+
+<p>The capacity of a buffered channel is the number of values that the channel can hold. This is the value we specify when creating the buffered channel using the <code>make</code> function.</p>
+
+<p>The length of the buffered channel is the number of elements currently queued in it.</p>
+
+<p>A program will make things clear 😀</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    ch := make(chan string, 3)
+    ch &lt;- "naveen"
+    ch &lt;- "paul"
+    fmt.Println("capacity is", cap(ch))
+    fmt.Println("length is", len(ch))
+    fmt.Println("read value", &lt;-ch)
+    fmt.Println("new length is", len(ch))
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/2ggC64yyvr" target=_"blank">Run program in playground</a></p>
+
+<p>In the program above, the channel is created with a capacity of <code>3</code>, that is, it can hold 3 strings. We then write 2 strings to the channel in line nos. 9 and 10 respectively. Now the channel has 2 strings queued in it and hence its length is <code>2</code>. In line no. 13, we read a string from the channel. Now the channel has only one string queued in it and hence its length becomes <code>1</code>. This program will print,</p>
+
+<pre><code>capacity is 3  
+length is 2  
+read value naveen  
+new length is 1
+</code></pre>
+
+<h3 id="waitgroup">WaitGroup</h3>
+
+<p>The next section in this tutorial is about <em>Worker Pools</em>. To understand worker pools, we need to first know about <code>WaitGroup</code> as it will be used in the implementation of Worker pool. </p>
+
+<p>A WaitGroup is used to wait for a collection of Goroutines to finish executing. The control is blocked until all Goroutines finish executing. Let's say we have 3 concurrently executing Goroutines spawned from the <code>main</code> Goroutine. The <code>main</code> Goroutines needs to wait for the 3 other Goroutines to finish before terminating. This can be accomplished using WaitGroup.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<p>Let's stop the theory and write some code right away 😀</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "sync"
+    "time"
+)
+
+func process(i int, wg *sync.WaitGroup) {  
+    fmt.Println("started Goroutine ", i)
+    time.Sleep(2 * time.Second)
+    fmt.Printf("Goroutine %d ended\n", i)
+    wg.Done()
+}
+
+func main() {  
+    no := 3
+    var wg sync.WaitGroup
+    for i := 0; i &lt; no; i++ {
+        wg.Add(1)
+        go process(i, &amp;wg)
+    }
+    wg.Wait()
+    fmt.Println("All go routines finished executing")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/CZNtu8ktQh" target=_"blank">Run in playground</a></p>
+
+<p><a href="https://golang.org/pkg/sync/#WaitGroup" target=_"blank">WaitGroup</a> is a struct type and we are creating a zero value variable of type <code>WaitGroup</code> in line no.18. The way <code>WaitGroup</code> works is by using a counter. When we call <code>Add</code> on the <code>WaitGroup</code> and pass it an <code>int</code>, the <code>WaitGroup</code>'s counter is incremented by the value passed to <code>Add</code>. The way to decrement the counter is by calling <code>Done()</code> method on the WaitGroup. The <code>Wait()</code> method blocks the <code>Goroutine</code> in which it's called until the counter becomes zero.</p>
+
+<p>In the above program,  we call <code>wg.Add(1)</code> in line no. 20 inside the <code>for</code> loop which iterates 3 times. So the counter now becomes 3. The <code>for</code> loop also spawns 3 <code>process</code> Goroutines and then <code>wg.Wait()</code> called in line no. 23 makes the <code>main</code> Goroutine to wait until the counter becomes zero. The counter is decremented by the call to <code>wg.Done</code> in the <code>process</code> Goroutine in line no. 13. Once all the 3 spawned Goroutines finish their execution, that is once <code>wg.Done()</code> has been called three times, the counter will become zero, and the main Goroutine will be unblocked.</p>
+
+<p><strong>It is important to pass the pointer of <code>wg</code> in line no. 21. If the pointer is not passed, then each Goroutine will have its own copy of the <code>WaitGroup</code> and <code>main</code> will not be notified when they finish executing.</strong></p>
+
+<p>This program outputs.</p>
+
+<pre><code>started Goroutine  2  
+started Goroutine  0  
+started Goroutine  1  
+Goroutine 0 ended  
+Goroutine 2 ended  
+Goroutine 1 ended  
+All go routines finished executing  
+</code></pre>
+
+<p>Your output might be different from mine since the order of execution of Goroutines can vary :).</p>
+
+<h3 id="workerpoolimplementation">Worker Pool Implementation</h3>
+
+<p>One of the important uses of buffered channel is the implementation of <a href="https://en.wikipedia.org/wiki/Thread_pool" target=_"blank">worker pool</a>. </p>
+
+<p>In general, a worker pool is a collection of threads that are waiting for tasks to be assigned to them. Once they finish the task assigned, they make themselves available again for the next task.</p>
+
+<p>We will implement a worker pool using buffered channels. Our worker pool will carry out the task of finding the sum of a digits of the input number. For example if 234 is passed, the output would be 9 (2 + 3 + 4). The input to the worker pool will be a list of pseudo-random integers.</p>
+
+<p>The following are the core functionalities of our worker pool </p>
+
+<ul>
+<li>Creation of a pool of Goroutines which listen on an input buffered channel waiting for jobs to be assigned</li>
+<li>Addition of jobs to the input buffered channel</li>
+<li>Writing results to an output buffered channel after job completion</li>
+<li>Read and print results from the output buffered channel </li>
+</ul>
+
+<p>We will write this program step by step to make it easier to understand.</p>
+
+<p>The first step will be the creation of the structs representing the job and the result.</p>
+
+<pre><code class="language-go line-numbers">type Job struct {  
+    id       int
+    randomno int
+}
+type Result struct {  
+    job         Job
+    sumofdigits int
+}
+</code></pre>
+
+<p>Each <code>Job</code> struct has a <code>id</code> and a <code>randomno</code> for which the sum of the individual digits has to be computed. </p>
+
+<p>The <code>Result</code> struct has a <code>job</code> field which is the job for which it holds the result (sum of individual digits) in the  <code>sumofdigits</code> field.</p>
+
+<p>The next step is to create the buffered channels for receiving the jobs and writing the output.</p>
+
+<pre><code class="language-go line-numbers">var jobs = make(chan Job, 10)  
+var results = make(chan Result, 10)  
+</code></pre>
+
+<p>Worker Goroutines listen for new tasks on the <code>jobs</code> buffered channel. Once a task is complete, the result is written to the <code>results</code> buffered channel.</p>
+
+<p>The <code>digits</code> function below does the actual job of finding the sum of the individual digits of an integer and returning it. We will add a sleep of 2 seconds to this function just to simulate the fact that it takes some time for this function to calculate the result.</p>
+
+<pre><code class="language-go line-numbers">func digits(number int) int {  
+    sum := 0
+    no := number
+    for no != 0 {
+        digit := no % 10
+        sum += digit
+        no /= 10
+    }
+    time.Sleep(2 * time.Second)
+    return sum
+}
+</code></pre>
+
+<p>Next, we will write a function that creates a worker Goroutine.</p>
+
+<pre><code class="language-go line-numbers">func worker(wg *sync.WaitGroup) {  
+    for job := range jobs {
+        output := Result{job, digits(job.randomno)}
+        results &lt;- output
+    }
+    wg.Done()
+}
+</code></pre>
+
+<p>The above function creates a worker which reads from the <code>jobs</code> channel, creates a <code>Result</code> struct using the current <code>job</code>  and the return value of the <code>digits</code> function and then writes the result to the <code>results</code> buffered channel. This function takes a WaitGroup <code>wg</code> as a parameter on which it will call the <code>Done()</code> method when all <code>jobs</code> have been completed.</p>
+
+<p>The <code>createWorkerPool</code> function will create a pool of worker Goroutines.</p>
+
+<pre><code class="language-go line-numbers">func createWorkerPool(noOfWorkers int) {  
+    var wg sync.WaitGroup
+    for i := 0; i &lt; noOfWorkers; i++ {
+        wg.Add(1)
+        go worker(&amp;wg)
+    }
+    wg.Wait()
+    close(results)
+}
+</code></pre>
+
+<p>The function above takes the number of workers to be created as a parameter. It calls <code>wg.Add(1)</code> before creating the Goroutine to increment the WaitGroup counter. Then it creates the worker Goroutines by passing the pointer of the WaitGroup <code>wg</code> to the <code>worker</code> function. After creating the needed worker Goroutines, it waits for all the Goroutines to finish their execution by calling <code>wg.Wait()</code>. After all Goroutines finish executing, it closes the <code>results</code> channel since all Goroutines have finished their execution and no one else will further be writing to the <code>results</code> channel.</p>
+
+<p>Now that we have the worker pool ready, let's go ahead and write the function which will allocate jobs to the workers.</p>
+
+<pre><code class="language-go line-numbers">func allocate(noOfJobs int) {  
+    for i := 0; i &lt; noOfJobs; i++ {
+        randomno := rand.Intn(999)
+        job := Job{i, randomno}
+        jobs &lt;- job
+    }
+    close(jobs)
+}
+</code></pre>
+
+<p>The <code>allocate</code> function above takes the number of jobs to be created as input parameter, generates pseudo random numbers with a maximum value of <code>998</code>, creates <code>Job</code> struct using the random number and the for loop counter <code>i</code> as the id and then writes them to the <code>jobs</code> channel.  It closes the <code>jobs</code> channel after writing all jobs.</p>
+
+<p>The next step would be to create the function that reads the <code>results</code> channel and prints the output.</p>
+
+<pre><code class="language-go line-numbers">func result(done chan bool) {  
+    for result := range results {
+        fmt.Printf("Job id %d, input random no %d , sum of digits %d\n", result.job.id, result.job.randomno, result.sumofdigits)
+    }
+    done &lt;- true
+}
+</code></pre>
+
+<p>The <code>result</code> function reads the <code>results</code> channel and prints the job id, input random no, and the sum of digits of the random no. The result function also takes a <code>done</code> channel as a parameter to which it writes to once it has printed all the results.</p>
+
+<p>We have everything set now. Let's go ahead and finish the last step of calling all these functions from the <code>main()</code> function.</p>
+
+<pre><code class="language-go line-numbers">func main() {  
+    startTime := time.Now()
+    noOfJobs := 100
+    go allocate(noOfJobs)
+    done := make(chan bool)
+    go result(done)
+    noOfWorkers := 10
+    createWorkerPool(noOfWorkers)
+    &lt;-done
+    endTime := time.Now()
+    diff := endTime.Sub(startTime)
+    fmt.Println("total time taken ", diff.Seconds(), "seconds")
+}
+</code></pre>
+
+<p>We first store the execution start time of the program in line no.2 of the main function and in the last line (line no. 12) we calculate the time difference between the endTime and startTime and display the total time it took for the program to run. This is needed because we will do some benchmarks by changing the number of Goroutines. </p>
+
+<p>The <code>noOfJobs</code> is set to 100 and then <code>allocate</code> is called to add jobs to the <code>jobs</code> channel.</p>
+
+<p>Then <code>done</code> channel is created and passed to the <code>result</code> Goroutine so that it can start printing the output and notify once everything has been printed.</p>
+
+<p>Finally a pool of <code>10</code> worker Goroutines are created by the call to <code>createWorkerPool</code> function and then main waits on the <code>done</code> channel for all the results to be printed.</p>
+
+<p>Here is the full program for your reference. I have imported the necessary packages too.  </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "math/rand"
+    "sync"
+    "time"
+)
+
+type Job struct {  
+    id       int
+    randomno int
+}
+type Result struct {  
+    job         Job
+    sumofdigits int
+}
+
+var jobs = make(chan Job, 10)  
+var results = make(chan Result, 10)
+
+func digits(number int) int {  
+    sum := 0
+    no := number
+    for no != 0 {
+        digit := no % 10
+        sum += digit
+        no /= 10
+    }
+    time.Sleep(2 * time.Second)
+    return sum
+}
+func worker(wg *sync.WaitGroup) {  
+    for job := range jobs {
+        output := Result{job, digits(job.randomno)}
+        results &lt;- output
+    }
+    wg.Done()
+}
+func createWorkerPool(noOfWorkers int) {  
+    var wg sync.WaitGroup
+    for i := 0; i &lt; noOfWorkers; i++ {
+        wg.Add(1)
+        go worker(&amp;wg)
+    }
+    wg.Wait()
+    close(results)
+}
+func allocate(noOfJobs int) {  
+    for i := 0; i &lt; noOfJobs; i++ {
+        randomno := rand.Intn(999)
+        job := Job{i, randomno}
+        jobs &lt;- job
+    }
+    close(jobs)
+}
+func result(done chan bool) {  
+    for result := range results {
+        fmt.Printf("Job id %d, input random no %d , sum of digits %d\n", result.job.id, result.job.randomno, result.sumofdigits)
+    }
+    done &lt;- true
+}
+func main() {  
+    startTime := time.Now()
+    noOfJobs := 100
+    go allocate(noOfJobs)
+    done := make(chan bool)
+    go result(done)
+    noOfWorkers := 10
+    createWorkerPool(noOfWorkers)
+    &lt;-done
+    endTime := time.Now()
+    diff := endTime.Sub(startTime)
+    fmt.Println("total time taken ", diff.Seconds(), "seconds")
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/au5islUIbx" target=_"blank">Run in playground</a></p>
+
+<p>Please run this program in your local machine for more accuracy in the total time taken calculation.</p>
+
+<p>This program will print,</p>
+
+<pre><code>Job id 1, input random no 636, sum of digits 15  
+Job id 0, input random no 878, sum of digits 23  
+Job id 9, input random no 150, sum of digits 6  
+...
+total time taken  20.01081009 seconds  
+</code></pre>
+
+<p>A total of 100 lines will be printed corresponding to the 100 jobs and then finally the total time taken for the program to run will be printed in the last line. Your output will differ from mine as the Goroutines can run in any order and the total time will also vary based on the hardware. In my case, it takes approximately 20 seconds for the program to complete. </p>
+
+<p>Now let's increase the <code>noOfWorkers</code> in the <code>main</code> function to <code>20</code>. We have doubled the number the workers. Since the worker Goroutines have increased(doubled to be precise), the total time taken for the program to complete should reduce(by half to be precise). In my case it became, 10.004364685 seconds and the program printed,</p>
+
+<pre><code>...
+total time taken  10.004364685 seconds  
+</code></pre>
+
+<p>Now we can understand that as the number of worker Goroutines increases, the total time taken to complete the jobs decreases. I leave it as an exercise for you to play with the <code>noOfJobs</code> and <code>noOfWorkers</code> in the <code>main</code> function to different values and analyze the results.</p>
+
+<p>This brings us to the end of this tutorial. Have a good day.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/select/">Select</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Buffered%20Channels%20and%20Worker%20Pools&amp;url=https://golangbot.com/buffered-channels-worker-pools/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/buffered-channels-worker-pools/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/buffered-channels-worker-pools/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/buffered-channels-worker-pools/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-32"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

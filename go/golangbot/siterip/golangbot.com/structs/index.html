@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Structs in Go (Golang) | Detailed Tutorial with Examples | golangbot.com</title>
+    <meta name="description" content="A struct is a user defined data type which represents a collections of fields. Structs can either be named or anonymous. It is also possible to create nested structs in Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/structs/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Structs in Go (Golang) | Detailed Tutorial with Examples | golangbot.com" />
+    <meta property="og:description" content="A struct is a user defined data type which represents a collections of fields. Structs can either be named or anonymous. It is also possible to create nested structs in Go." />
+    <meta property="og:url" content="https://golangbot.com/structs/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-05-01T11:26:00.000Z" />
+    <meta property="article:modified_time" content="2020-05-01T19:38:27.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Structs in Go (Golang) | Detailed Tutorial with Examples | golangbot.com" />
+    <meta name="twitter:description" content="A struct is a user defined data type which represents a collections of fields. Structs can either be named or anonymous. It is also possible to create nested structs in Go." />
+    <meta name="twitter:url" content="https://golangbot.com/structs/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Structs in Go (Golang) | Detailed Tutorial with Examples | golangbot.com",
+    "url": "https://golangbot.com/structs/",
+    "datePublished": "2020-05-01T11:26:00.000Z",
+    "dateModified": "2020-05-01T19:38:27.000Z",
+    "description": "A struct is a user defined data type which represents a collections of fields. Structs can either be named or anonymous. It is also possible to create nested structs in Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Structs</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-05-01">01 May 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 16 in our <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatisastruct">What is a struct?</h3>
+
+<p>A struct is a user-defined type that represents a collection of fields. It can be used in places where it makes sense to group the data into a single unit rather than having each of them as separate values.</p>
+
+<p>For instance, an employee has a firstName, lastName and age. It makes sense to group these three properties into a single struct named <code>Employee</code>.</p>
+
+<h3 id="declaringastruct">Declaring a struct</h3>
+
+<pre><code class="language-go line-numbers">type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+}
+</code></pre>
+
+<p>The above snippet declares a struct type <code>Employee</code> with fields <code>firstName</code>, <code>lastName</code> and <code>age</code>. The above <code>Employee</code> struct is called a <strong>named struct</strong> because it creates a new data type named <code>Employee</code> using which <code>Employee</code> structs can be created. </p>
+
+<p>This struct can also be made more compact by declaring fields that belong to the same type in a single line followed by the type name. In the above struct <code>firstName</code> and <code>lastName</code> belong to the same type <code>string</code> and hence the struct can be rewritten as</p>
+
+<pre><code class="language-go line-numbers">type Employee struct {  
+    firstName, lastName string
+    age                 int
+}
+</code></pre>
+
+<p><em>Although the above syntax saves a few lines of code, it doesn't make the field declarations explicit. Please refrain from using the above syntax.</em></p>
+
+<h3 id="creatingnamedstructs">Creating named structs</h3>
+
+<p>Let's declare a <strong>named struct Employee</strong> using the following simple program.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {
+
+    //creating struct specifying field names
+    emp1 := Employee{
+        firstName: "Sam",
+        age:       25,
+        salary:    500,
+        lastName:  "Anderson",
+    }
+
+    //creating struct without specifying field names
+    emp2 := Employee{"Thomas", "Paul", 29, 800}
+
+    fmt.Println("Employee 1", emp1)
+    fmt.Println("Employee 2", emp2)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/WPlLuPy0Lty" target="_blank">Run in playground</a></p>
+
+<p>In line no.7 of the above program, we create a named struct type <code>Employee</code>. In line no.17 of the above program, the <code>emp1</code> struct is defined by specifying the value for each field name. The order of the fields need not necessarily be the same as that of the order of the field names while declaring the struct type. In this case. we have changed the position of <code>lastName</code> and moved it to the end. This will work without any problems.</p>
+
+<p><strong>In line 25. of the above program, <code>emp2</code> is defined by omitting the field names. In this case, it is necessary to maintain the order of fields to be the same as specified in the struct declaration. Please refrain from using this syntax since it makes it difficult to figure out which value is for which field.</strong> We specified this format here just to understand that this is also a valid syntax :)</p>
+
+<p>The above program prints</p>
+
+<pre><code>Employee 1 {Sam Anderson 25 500}  
+Employee 2 {Thomas Paul 29 800}  
+</code></pre>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="creatinganonymousstructs">Creating anonymous structs</h3>
+
+<p>It is possible to declare structs without creating a new data type. These types of structs are called <strong>anonymous structs</strong>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    emp3 := struct {
+        firstName string
+        lastName  string
+        age       int
+        salary    int
+    }{
+        firstName: "Andreah",
+        lastName:  "Nikola",
+        age:       31,
+        salary:    5000,
+    }
+
+    fmt.Println("Employee 3", emp3)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/m_7UoICTiMy" target="_blank">Run in playground</a></p>
+
+<p>In line no 8. of the above program, an <strong>anonymous struct variable</strong> <code>emp3</code> is defined. As we have already mentioned, this struct is called anonymous because it only creates a new struct <a href="https://golangbot.com/variables/">variable</a> <code>emp3</code> and does not define any new struct type like named structs.</p>
+
+<p>This program outputs,</p>
+
+<pre><code>Employee 3 {Andreah Nikola 31 5000}  
+</code></pre>
+
+<h3 id="accessingindividualfieldsofastruct">Accessing individual fields of a struct</h3>
+
+<p>The dot <code>.</code> operator is used to access the individual fields of a struct.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {  
+    emp6 := Employee{
+        firstName: "Sam",
+        lastName:  "Anderson",
+        age:       55,
+        salary:    6000,
+    }
+    fmt.Println("First Name:", emp6.firstName)
+    fmt.Println("Last Name:", emp6.lastName)
+    fmt.Println("Age:", emp6.age)
+    fmt.Printf("Salary: $%d\n", emp6.salary)
+    emp6.salary = 6500
+    fmt.Printf("New Salary: $%d", emp6.salary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/iggKCd8xUMy" target="_blank">Run in playground</a></p>
+
+<p><strong>emp6.firstName</strong> in the above program accesses the <code>firstName</code> field of the <code>emp6</code> struct. In line no. 25 we modify the salary of the employee. This program prints,</p>
+
+<pre><code>First Name: Sam  
+Last Name: Anderson  
+Age: 55  
+Salary: $6000  
+New Salary: $6500  
+</code></pre>
+
+<h3 id="zerovalueofastruct">Zero value of a struct</h3>
+
+<p>When a struct is defined and it is not explicitly initialized with any value, the fields of the struct are assigned their zero values by default.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {  
+    var emp4 Employee //zero valued struct
+    fmt.Println("First Name:", emp4.firstName)
+    fmt.Println("Last Name:", emp4.lastName)
+    fmt.Println("Age:", emp4.age)
+    fmt.Println("Salary:", emp4.salary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/jiCEH1tFvgW" target=_"blank">Run in playground</a></p>
+
+<p>The above program defines <code>emp4</code> but it is not initialized with any value.  Hence <code>firstName</code> and <code>lastName</code> are assigned the zero values of <a href="https://golangbot.com/strings/">string</a> which is an empty string <code>""</code> and <code>age</code>, <code>salary</code> are assigned the zero values of int which is 0. This program prints,</p>
+
+<pre><code>First Name:  
+Last Name:  
+Age: 0  
+Salary: 0  
+</code></pre>
+
+<p>It is also possible to specify values for some fields and ignore the rest. In this case, the ignored fields are assigned zero values.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {  
+    emp5 := Employee{
+        firstName: "John",
+        lastName:  "Paul",
+    }
+    fmt.Println("First Name:", emp5.firstName)
+    fmt.Println("Last Name:", emp5.lastName)
+    fmt.Println("Age:", emp5.age)
+    fmt.Println("Salary:", emp5.salary)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/WANoyFfRt_y" target=_"blank">Run in playground</a></p>
+
+<p>In the above program in line. no 16 and 17, <code>firstName</code> and <code>lastName</code> are initialized whereas <code>age</code> and <code>salary</code> are not. Hence <code>age</code> and <code>salary</code> are assigned their zero values. This program outputs,</p>
+
+<pre><code>First Name: John  
+Last Name: Paul  
+Age: 0  
+Salary: 0  
+</code></pre>
+
+<h3 id="pointerstoastruct">Pointers to a struct</h3>
+
+<p>It is also possible to create pointers to a struct.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {  
+    emp8 := &amp;Employee{
+        firstName: "Sam",
+        lastName:  "Anderson",
+        age:       55,
+        salary:    6000,
+    }
+    fmt.Println("First Name:", (*emp8).firstName)
+    fmt.Println("Age:", (*emp8).age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Rli_WqmE9_H" target=_"blank">Run in playground</a></p>
+
+<p><strong>emp8</strong> in the above program is a pointer to the <code>Employee</code> struct. <code>(*emp8).firstName</code> is the syntax to access the <code>firstName</code> field of the <code>emp8</code> struct. This program prints,</p>
+
+<pre><code>First Name: Sam  
+Age: 55  
+</code></pre>
+
+<p><strong>The Go language gives us the option to use <code>emp8.firstName</code> instead of the explicit dereference <code>(*emp8).firstName</code> to access the <code>firstName</code> field.</strong></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {  
+    emp8 := &amp;Employee{
+        firstName: "Sam",
+        lastName:  "Anderson",
+        age:       55,
+        salary:    6000,
+    }
+    fmt.Println("First Name:", emp8.firstName)
+    fmt.Println("Age:", emp8.age)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/LxEQgUm3_Fu" target=_blank">Run in playground</a></p>
+
+<p>We have used <code>emp8.firstName</code> to access the <code>firstName</code> field in the above program and this program also outputs,</p>
+
+<pre><code>First Name: Sam  
+Age: 55  
+</code></pre>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="anonymousfields">Anonymous fields</h3>
+
+<p>It is possible to create structs with fields that contain only a type without the field name. These kinds of fields are called anonymous fields.</p>
+
+<p>The snippet below creates a struct <code>Person</code> which has two anonymous fields <code>string</code> and <code>int</code>  </p>
+
+<pre><code class="language-go line-numbers">type Person struct {  
+    string
+    int
+}
+</code></pre>
+
+<p><strong>Even though anonymous fields do not have an explicit name, by default the name of an anonymous field is the name of its type.</strong> For example in the case of the Person struct above, although the fields are anonymous, by default they take the name of the type of the fields. So <code>Person</code> struct has 2 fields with name <code>string</code> and <code>int</code>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Person struct {  
+    string
+    int
+}
+
+func main() {  
+    p1 := Person{
+        string: "naveen",
+        int:    50,
+    }
+    fmt.Println(p1.string)
+    fmt.Println(p1.int)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/zDkb0EbLqyJ" target=_"blank">Run in playground</a></p>
+
+<p>In line no. 17 and 18 of the above program, we access the anonymous fields of the Person struct using their types as field name which is <code>string</code> and <code>int</code> respectively. The output of the above program is,</p>
+
+<pre><code>naveen  
+50  
+</code></pre>
+
+<h3 id="nestedstructs">Nested structs</h3>
+
+<p>It is possible that a struct contains a field which in turn is a struct. These kinds of structs are called nested structs.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Address struct {  
+    city  string
+    state string
+}
+
+type Person struct {  
+    name    string
+    age     int
+    address Address
+}
+
+func main() {  
+    p := Person{
+        name: "Naveen",
+        age:  50,
+        address: Address{
+            city:  "Chicago",
+            state: "Illinois",
+        },
+    }
+
+    fmt.Println("Name:", p.name)
+    fmt.Println("Age:", p.age)
+    fmt.Println("City:", p.address.city)
+    fmt.Println("State:", p.address.state)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/ZwfRatdwc4p" target="_blank">Run in playground</a></p>
+
+<p>The <code>Person</code> struct in the above program has a field <code>address</code> which in turn is a struct. This program prints </p>
+
+<pre><code>Name: Naveen  
+Age: 50  
+City: Chicago  
+State: Illinois  
+</code></pre>
+
+<h3 id="promotedfields">Promoted fields</h3>
+
+<p>Fields that belong to an anonymous struct field in a struct are called promoted fields since they can be accessed as if they belong to the struct which holds the anonymous struct field. I can understand that this definition is quite complex so let's dive right into some code to understand this :).</p>
+
+<pre><code class="language-go line-numbers">type Address struct {  
+    city string
+    state string
+}
+type Person struct {  
+    name string
+    age  int
+    Address
+}
+</code></pre>
+
+<p>In the above code snippet, the <code>Person</code> struct has an anonymous field <code>Address</code> which is a struct. Now the fields of the <code>Address</code> namely <code>city</code> and <code>state</code> are called promoted fields since they can be accessed as if they are directly declared in the <code>Person</code> struct itself.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Address struct {  
+    city  string
+    state string
+}
+type Person struct {  
+    name string
+    age  int
+    Address
+}
+
+func main() {  
+    p := Person{
+        name: "Naveen",
+        age:  50,
+        Address: Address{
+            city:  "Chicago",
+            state: "Illinois",
+        },
+    }
+
+    fmt.Println("Name:", p.name)
+    fmt.Println("Age:", p.age)
+    fmt.Println("City:", p.city)   //city is promoted field
+    fmt.Println("State:", p.state) //state is promoted field
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/0sFliXv2FqV" target=_"blank">Run in playground</a></p>
+
+<p>In line no. 29 and 30 of the program above, the promoted fields <code>city</code> and <code>state</code> are accessed as if they are declared in the struct <code>p</code> itself using the syntax <code>p.city</code> and <code>p.state</code>. This program prints,  </p>
+
+<pre><code>Name: Naveen  
+Age: 50  
+City: Chicago  
+State: Illinois  
+</code></pre>
+
+<h3 id="exportedstructsandfields">Exported structs and fields</h3>
+
+<p>If a struct type starts with a capital letter, then it is an <a href="https://golangbot.com/go-packages/#exportednames">exported</a> type and it can be accessed from other <a href="https://golangbot.com/go-packages/">packages</a>. Similarly, if the fields of a struct start with caps, they can be accessed from other packages.</p>
+
+<p>Let's write a program that has custom packages to understand this better.</p>
+
+<p>Create a folder named <code>structs</code> in your <code>Documents</code> directory. Please feel free to create it anywhere you like. I prefer my <code>Documents</code> directory. </p>
+
+<pre><code>mkdir ~/Documents/structs  
+</code></pre>
+
+<p>Let's create a <a href="https://golangbot.com/go-packages/#gomodule">go module</a> named <code>structs</code>.</p>
+
+<pre><code>cd ~/Documents/structs/  
+go mod init structs  
+</code></pre>
+
+<p>Create another directory <code>computer</code> inside <code>structs</code>.</p>
+
+<pre><code>mkdir computer  
+</code></pre>
+
+<p>Inside the <code>computer</code> directory, create a file <code>spec.go</code> with the following contents.</p>
+
+<pre><code class="language-go line-numbers">package computer
+
+type Spec struct { //exported struct  
+    Maker string //exported field
+    Price int //exported field
+    model string //unexported field
+
+}
+</code></pre>
+
+<p>The above snippet creates a <a href="https://golangbot.com/go-packages/">package</a> <code>computer</code> which contains an exported struct type <code>Spec</code> with two exported fields <code>Maker</code> and <code>Price</code> and one unexported field <code>model</code>. Let's import this package from the main package and use the <code>Spec</code> struct.</p>
+
+<p>Create a file named <code>main.go</code> inside the <code>structs</code> directory and write the following program in <code>main.go</code> </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "structs/computer"
+    "fmt"
+)
+
+func main() {  
+    spec := computer.Spec {
+            Maker: "apple",
+            Price: 50000,
+        }
+    fmt.Println("Maker:", spec.Maker)
+    fmt.Println("Price:", spec.Price)
+}
+</code></pre>
+
+<p>The <code>structs</code> folder should have the following structure,</p>
+
+<pre><code>├── structs
+│   ├── computer
+│   │   └── spec.go
+│   ├── go.mod
+│   └── main.go
+</code></pre>
+
+<p>In line no. 4 of the program above, we import the <code>computer</code> package. In line no. 13 and 14, we access the two exported fields <code>Maker</code> and <code>Price</code> of the struct <code>Spec</code>. This program can be run by executing the commands <code>go install</code> followed by <code>structs</code> command. If you are not sure about how to run a Go program, please visit <a href="https://golangbot.com/hello-world-gomod/#1goinstall">https://golangbot.com/hello-world-gomod/#1goinstall</a> to know more.</p>
+
+<pre><code>go install  
+structs  
+</code></pre>
+
+<p>Running the above commands will print,  </p>
+
+<pre><code>Maker: apple  
+Price: 50000  
+</code></pre>
+
+<p>If we try to access the unexported field <code>model</code>, the compiler will complain. Replace the contents of <code>main.go</code> with the following code.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "structs/computer"
+    "fmt"
+)
+
+func main() {  
+    spec := computer.Spec {
+            Maker: "apple",
+            Price: 50000,
+            model: "Mac Mini",
+        }
+    fmt.Println("Maker:", spec.Maker)
+    fmt.Println("Price:", spec.Price)
+}
+</code></pre>
+
+<p>In line no. 12 of the above program, we try to access the unexported field <code>model</code>. Running this program will result in compilation error.  </p>
+
+<pre><code># structs
+./main.go:12:13: unknown field 'model' in struct literal of type computer.Spec
+</code></pre>
+
+<p>Since <code>model</code> field is unexported, it cannot be accessed from other packages.</p>
+
+<h3 id="structsequality">Structs Equality</h3>
+
+<p><strong>Structs are value types and are comparable if each of their fields are comparable. Two struct variables are considered equal if their corresponding fields are equal.</strong></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type name struct {  
+    firstName string
+    lastName  string
+}
+
+func main() {  
+    name1 := name{
+        firstName: "Steve",
+        lastName:  "Jobs",
+    }
+    name2 := name{
+        firstName: "Steve",
+        lastName:  "Jobs",
+    }
+    if name1 == name2 {
+        fmt.Println("name1 and name2 are equal")
+    } else {
+        fmt.Println("name1 and name2 are not equal")
+    }
+
+    name3 := name{
+        firstName: "Steve",
+        lastName:  "Jobs",
+    }
+    name4 := name{
+        firstName: "Steve",
+    }
+
+    if name3 == name4 {
+        fmt.Println("name3 and name4 are equal")
+    } else {
+        fmt.Println("name3 and name4 are not equal")
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/ntDT8ZuOVK8" target=_"blank">Run in playground</a></p>
+
+<p>In the above program, <code>name</code> struct type contain two <code>string</code> fields. Since strings are comparable, it is possible to compare two struct variables of type <code>name</code>.</p>
+
+<p>In the above program <code>name1</code> and <code>name2</code> are equal whereas <code>name3</code> and <code>name4</code> are not. This program will output,</p>
+
+<pre><code>name1 and name2 are equal  
+name3 and name4 are not equal  
+</code></pre>
+
+<p><strong>Struct variables are not comparable if they contain fields that are not comparable</strong> (Thanks to <a href="https://www.reddit.com/r/golang/comments/6cht1j/a_complete_guide_to_structs_in_go/dhvf7hd/" target=_"blank">alasijia</a> from reddit for pointing this out).</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type image struct {  
+    data map[int]int
+}
+
+func main() {  
+    image1 := image{
+        data: map[int]int{
+            0: 155,
+        }}
+    image2 := image{
+        data: map[int]int{
+            0: 155,
+        }}
+    if image1 == image2 {
+        fmt.Println("image1 and image2 are equal")
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/NUfoyGdOgu4" target="_blank">Run in playground</a></p>
+
+<p>In the program above <code>image</code> struct type contains a field <code>data</code> which is of type <code>map</code>. <a href="https://golangbot.com/maps/">maps</a> are not comparable, hence <code>image1</code> and <code>image2</code> cannot be compared. If you run this program, the compilation will fail with error </p>
+
+<pre><code>./prog.go:20:12: invalid operation: image1 == image2 (struct containing map[int]int cannot be compared)
+</code></pre>
+
+<p>Thanks for reading. Please leave your comments and feedback.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/methods/">Methods</a></strong></p>
+
+<p>Like my tutorials? Please <a href="https://golangbot.com/support-the-content/">support the content</a>.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Structs&amp;url=https://golangbot.com/structs/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/structs/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/structs/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/structs/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-24"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

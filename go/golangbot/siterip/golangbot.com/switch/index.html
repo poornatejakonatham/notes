@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Go (Golang) Switch Statement Tutorial with Examples | golangbot.com</title>
+    <meta name="description" content="A switch is a conditional statement that evaluates an expression and compares it against a list of possible matches. It can replace complex if else clauses." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/switch/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Go (Golang) Switch Statement Tutorial with Examples | golangbot.com" />
+    <meta property="og:description" content="A switch is a conditional statement that evaluates an expression and compares it against a list of possible matches. It can replace complex if else clauses." />
+    <meta property="og:url" content="https://golangbot.com/switch/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-05-30T13:35:00.000Z" />
+    <meta property="article:modified_time" content="2020-06-01T14:19:36.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Go (Golang) Switch Statement Tutorial with Examples | golangbot.com" />
+    <meta name="twitter:description" content="A switch is a conditional statement that evaluates an expression and compares it against a list of possible matches. It can replace complex if else clauses." />
+    <meta name="twitter:url" content="https://golangbot.com/switch/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Go (Golang) Switch Statement Tutorial with Examples | golangbot.com",
+    "url": "https://golangbot.com/switch/",
+    "datePublished": "2020-05-30T13:35:00.000Z",
+    "dateModified": "2020-06-01T14:19:36.000Z",
+    "description": "A switch is a conditional statement that evaluates an expression and compares it against a list of possible matches. It can replace complex if else clauses.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Switch  Statement</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-05-30">30 May 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>This is tutorial number 10 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<h3 id="whatisaswitchstatement">What is a switch statement?</h3>
+
+<p><strong>A switch is a conditional statement that evaluates an expression and compares it against a list of possible matches and executes the corresponding block of code. It can be considered as an idiomatic way of replacing complex <code>if else</code> clauses.</strong></p>
+
+<h3 id="example">Example</h3>
+
+<p>An example program is worth a hundred words. Let's start with a simple example which will take a finger number as input and outputs the name of that finger :) . For example, 1 is thumb, 2 is index, and so on.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    finger := 4
+    fmt.Printf("Finger %d is ", finger)
+    switch finger {
+    case 1:
+        fmt.Println("Thumb")
+    case 2:
+        fmt.Println("Index")
+    case 3:
+        fmt.Println("Middle")
+    case 4:
+        fmt.Println("Ring")
+    case 5:
+        fmt.Println("Pinky")
+
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/94ktmJWlUom" target="_blank">Run in playground</a></p>
+
+<p>In the above program <code>switch finger</code> in line no. 10, compares the value of <code>finger</code> with each of the <code>case</code> statements. The cases are evaluated from top to bottom and the first case which matches the expression is executed. In this case, <code>finger</code> has a value of <code>4</code> and hence </p>
+
+<pre><code>Finger 4 is Ring  
+</code></pre>
+
+<p>
+is printed.</p>
+
+<h3 id="duplicatecasesarenotallowed">Duplicate cases are not allowed</h3>
+
+<p>Duplicate cases with the same constant value are not allowed. If you try to run the program below, the compiler will complain <code>./prog.go:19:7: duplicate case 4 in switch previous case at ./prog.go:17:7</code></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    finger := 4
+    fmt.Printf("Finger %d is ", finger)
+    switch finger {
+    case 1:
+        fmt.Println("Thumb")
+    case 2:
+        fmt.Println("Index")
+    case 3:
+        fmt.Println("Middle")
+    case 4:
+        fmt.Println("Ring")
+    case 4: //duplicate case
+        fmt.Println("Another Ring")
+    case 5:
+        fmt.Println("Pinky")
+
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/7qrmR0hdvHH" target=_blank">Run in playground</a></p>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<h3 id="defaultcase">Default case</h3>
+
+<p>We have only 5 fingers in our hands. What will happen if we input an incorrect finger number? This is where the default case comes into the picture. The default case will be executed when none of the other cases match.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    switch finger := 8; finger {
+    case 1:
+        fmt.Println("Thumb")
+    case 2:
+        fmt.Println("Index")
+    case 3:
+        fmt.Println("Middle")
+    case 4:
+        fmt.Println("Ring")
+    case 5:
+        fmt.Println("Pinky")
+    default: //default case
+        fmt.Println("incorrect finger number")
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Fq7U7SkHe1" target="_blank">Run in playground</a></p>
+
+<p>In the above program <code>finger</code> is <code>8</code> and it does not match any of the cases and hence <code>incorrect finger number</code> in the default case is printed. It's not necessary that <code>default</code> should be the last case in a switch statement. It can be present anywhere in the switch.</p>
+
+<p>You might also have noticed a small change in the declaration of <code>finger</code>. It is declared in the switch itself. A switch can include an optional statement that is executed before the expression is evaluated. In line no. 8, <code>finger</code> is first declared and then used in the expression. The scope of <code>finger</code> in this case is limited to the switch block. </p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="multipleexpressionsincase">Multiple expressions in case</h3>
+
+<p>It is possible to include multiple expressions in a case by separating them with comma. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    letter := "i"
+    fmt.Printf("Letter %s is a ", letter)
+    switch letter {
+    case "a", "e", "i", "o", "u": //multiple expressions in case
+        fmt.Println("vowel")
+    default:
+        fmt.Println("not a vowel")
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/AAVSQK76Me7" target="_blank">Run in playground</a></p>
+
+<p>The above program finds whether <code>letter</code> is a vowel or not. The code <code>case "a", "e", "i", "o", "u":</code> in line no. 11 matches any of the vowels. Since <code>i</code> is a vowel, this program prints </p>
+
+<pre><code>Letter i is a vowel  
+</code></pre>
+
+<h3 id="expressionlessswitch">Expressionless switch</h3>
+
+<p>The expression in a switch is optional and it can be omitted. If the expression is omitted, the switch is considered to be <code>switch true</code> and each of the <code>case</code> expression is evaluated for truth and the corresponding block of code is executed.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    num := 75
+    switch { // expression is omitted
+    case num &gt;= 0 &amp;&amp; num &lt;= 50:
+        fmt.Printf("%d is greater than 0 and less than 50", num)
+    case num &gt;= 51 &amp;&amp; num &lt;= 100:
+        fmt.Printf("%d is greater than 51 and less than 100", num)
+    case num &gt;= 101:
+        fmt.Printf("%d is greater than 100", num)
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/KPkwK0VdXII" target="_blank">Run in playground</a> </p>
+
+<p>In the above program, the expression is absent in switch and hence it is considered as true and each of the cases is evaluated. <code>case num &gt;= 51 &amp;&amp; num &lt;= 100:</code> in line no. 12 is <code>true</code> and the program prints </p>
+
+<pre><code>75 is greater than 51 and less than 100  
+</code></pre>
+
+<p>This type of switch can be considered as an alternative to multiple <code>if else</code> clauses.</p>
+
+<h3 id="fallthrough">Fallthrough</h3>
+
+<p>In Go, the control comes out of the switch statement immediately after a case is executed. A <code>fallthrough</code> statement is used to transfer control to the first statement of the case that is present immediately after the case which has been executed. </p>
+
+<p>Let's write a program to understand fallthrough. Our program will check whether the input number is less than 50, 100, or 200. For instance, if we input 75, the program will print that 75 is less than both 100 and 200. We will achieve this using <code>fallthrough</code>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func number() int {  
+        num := 15 * 5 
+        return num
+}
+
+func main() {
+
+    switch num := number(); { //num is not a constant
+    case num &lt; 50:
+        fmt.Printf("%d is lesser than 50\n", num)
+        fallthrough
+    case num &lt; 100:
+        fmt.Printf("%d is lesser than 100\n", num)
+        fallthrough
+    case num &lt; 200:
+        fmt.Printf("%d is lesser than 200", num)
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/svGJAiswQj" target="_blank">Run in playground</a></p>
+
+<p>Switch and case expressions need not be only constants. They can be evaluated at runtime too. In the program above <code>num</code> is initialized to the return value of the function <code>number()</code> in line no. 14. The control comes inside the switch and the cases are evaluated. <code>case num &lt; 100:</code> in line no. 18 is true and the program prints <code>75 is lesser than 100</code>. The next statement is <code>fallthrough</code>. When <code>fallthrough</code> is encountered the control moves to the first statement of the next case and also prints <code>75 is lesser than 200</code>. The output of the program is </p>
+
+<pre><code>75 is lesser than 100  
+75 is lesser than 200  
+</code></pre>
+
+<p><em><code>fallthrough</code> should be the last statement in a <code>case</code>. If it is present somewhere in the middle, the compiler will complain that <code>fallthrough statement out of place</code>.</em></p>
+
+<h3 id="fallthroughhappensevenwhenthecaseevaluatestofalse">Fallthrough happens even when the case evaluates to false</h3>
+
+<p>There is a subtlety to be considered when using <code>fallthrough</code>. Fallthrough will happen even when the case evaluates to false. </p>
+
+<p>Please consider the following program.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    switch num := 25; { 
+    case num &lt; 50:
+        fmt.Printf("%d is lesser than 50\n", num)
+        fallthrough
+    case num &gt; 100:
+        fmt.Printf("%d is greater than 100\n", num)     
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/sjynQMXtnmY" target="_blank">Run in playground</a></p>
+
+<p>In the above program, <code>num</code> is 25 which is less than 50 and hence the case in line no. 9 evaluates to true. A <code>fallthrough</code> is present in line no. 11. The next case <code>case num &gt; 100:</code> in line no. 12 is false since num &lt; 100. But fallthrough doesn't consider this. Fallthrough will happen even though the case evaluates to false.</p>
+
+<p>The program above will print </p>
+
+<pre><code>25 is lesser than 50  
+25 is greater than 100  
+</code></pre>
+
+<p>So be sure that you understand what you are doing when using fallthrough.</p>
+
+<p>One more thing is <code>fallthrough</code> cannot be used in the last case of a switch since there are no more cases to fallthrough. If <code>fallthrough</code> is present in the last case, it will result in the following compilation error.</p>
+
+<pre><code>cannot fallthrough final case in switch  
+</code></pre>
+
+<h3 id="breakingswitch">Breaking switch</h3>
+
+<p>The <code>break</code> statement can be used to terminate a switch early before it completes.  Let's just modify the above example to a contrived one to understand how break works.</p>
+
+<p>Let's add a condition that if <code>num</code> is less than 0 then the switch should terminate.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    switch num := -5; {
+    case num &lt; 50:
+        if num &lt; 0 {
+            break
+        }
+        fmt.Printf("%d is lesser than 50\n", num)
+        fallthrough
+    case num &lt; 100:
+        fmt.Printf("%d is lesser than 100\n", num)
+        fallthrough
+    case num &lt; 200:
+        fmt.Printf("%d is lesser than 200", num)
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/UHwBXPYLv1B" target="_blank">Run in playground</a></p>
+
+<p>In the above program <code>num</code> is <code>-5</code>. When the control reaches the <a href="/if-statement/">if statement</a> in line no. 10, the condition is satisfied since num &lt; 0. The break statement terminates the switch before it completes and the program doesn't print anything :).</p>
+
+<h3 id="breakingtheouterforloop">Breaking the outer for loop</h3>
+
+<p>When the switch case is inside a <a href="https://golangbot.com/loops/">for loop</a>, there might be a need to terminate the for loop early. This can be done by labeling the for loop and breaking the for loop using that label inside the switch statement. Let's look at an example.</p>
+
+<p>Let's write a program to generate a random even number. </p>
+
+<p>We will create an infinite for loop and use a switch case to determine whether the generated random number is even. If it is even, the generated number is printed and the for loop is terminated using its label. The <a href="https://golang.org/pkg/math/rand/#Rand.Intn" target="_blank"><code>Intn</code></a> function of the <code>rand</code> <a href="/go-packages/">package</a> is used to generate non-negative pseudo-random numbers.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "math/rand"
+)
+
+func main() {  
+randloop:  
+    for {
+        switch i := rand.Intn(100); {
+        case i%2 == 0:
+            fmt.Printf("Generated even number %d", i)
+            break randloop
+        }
+    }
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/0bLYOgs2TUk" target="_blank">Run in playground</a></p>
+
+<p>In the program above, the for loop is labeled <code>randloop</code> in line no. 9. A random number is generated between 0 and 99 (100 is not included) using the <code>Intn</code> function in line no. 11. If the generated number is even, the loop is broken in line no. 14 using the label. </p>
+
+<p>This program prints,</p>
+
+<pre><code>Generated even number 18  
+</code></pre>
+
+<p><strong>Please note that if the break statement is used without the label, the switch statement will only be broken and the loop will continue running. So labeling the loop and using it in the break statement inside the switch is necessary to break the outer for loop.</strong></p>
+
+<p>This brings us to the end of this tutorial. There is one more type of switch called <strong>type switch</strong>. We will look into this when we learn about <a href="/interfaces-part-1/">interfaces</a>. </p>
+
+<p>Please share your valuable comments and feedback.</p>
+
+<p>Like my tutorials? Please <a href="https://golangbot.com/support-the-content/">support the content</a>.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/arrays-and-slices/">Arrays and Slices</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Switch%20%20Statement&amp;url=https://golangbot.com/switch/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/switch/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/switch/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/switch/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-18"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

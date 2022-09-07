@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Golang Arrays and Slices - golangbot.com</title>
+    <meta name="description" content="Arrays are collection of elements of the same type. A slice in Go is a convenient wrapper on top of array." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/arrays-and-slices/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Golang Arrays and Slices - golangbot.com" />
+    <meta property="og:description" content="Arrays are collection of elements of the same type. A slice in Go is a convenient wrapper on top of array." />
+    <meta property="og:url" content="https://golangbot.com/arrays-and-slices/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2021-05-13T14:52:00.000Z" />
+    <meta property="article:modified_time" content="2021-05-13T18:09:10.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Golang Arrays and Slices - golangbot.com" />
+    <meta name="twitter:description" content="Arrays are collection of elements of the same type. A slice in Go is a convenient wrapper on top of array." />
+    <meta name="twitter:url" content="https://golangbot.com/arrays-and-slices/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Golang Arrays and Slices - golangbot.com",
+    "url": "https://golangbot.com/arrays-and-slices/",
+    "datePublished": "2021-05-13T14:52:00.000Z",
+    "dateModified": "2021-05-13T18:09:10.000Z",
+    "description": "Arrays are collection of elements of the same type. A slice in Go is a convenient wrapper on top of array.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Arrays and Slices</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2021-05-13">13 May 2021</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to the part 11 of <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>. In this tutorial, we will learn about Arrays and Slices in Go.</p>
+
+<h3 id="arrays">Arrays</h3>
+
+<p>An array is a collection of elements that belong to the same type. For example, the collection of integers 5, 8, 9, 79, 76 forms an array. Mixing values of different types, for example, an array that contains both strings and integers is not allowed in Go.</p>
+
+<h5 id="declaration">Declaration</h5>
+
+<p>An array belongs to type <code>[n]T</code>. <code>n</code> denotes the number of elements in an array and <code>T</code> represents the type of each element. The number of elements <code>n</code> is also a part of the type(We will discuss this in more detail shortly.)</p>
+
+<p>There are different ways to declare arrays. Let's look at them one by one.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+
+func main() {  
+    var a [3]int //int array with length 3
+    fmt.Println(a)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Zvgh82u0ej"target=_"blank">Run in playground</a></p>
+
+<p><strong>var a [3]int</strong> declares an integer array of length 3. <strong>All elements in an array are automatically assigned the zero value of the array type</strong>. In this case <code>a</code> is an integer array and hence all elements of <code>a</code> are assigned to <code>0</code>, the zero value of int. Running the above program will print </p>
+
+<pre><code>[0 0 0]
+</code></pre>
+
+<p>The index of an array starts from <code>0</code> and ends at <code>length - 1</code>. Let's assign some values to the above array.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+
+func main() {  
+    var a [3]int //int array with length 3
+    a[0] = 12 // array index starts at 0
+    a[1] = 78
+    a[2] = 50
+    fmt.Println(a)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/WF0Uj8sv39" target=_"blank">Run in playground</a></p>
+
+<p>a[0] assigns value to the first element of the array. The program will print  </p>
+
+<pre><code>[12 78 50]
+</code></pre>
+
+<p>Let's create the same array using the <strong>short hand declaration</strong>.</p>
+
+<pre><code class="language-go line-numbers">package main 
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    a := [3]int{12, 78, 50} // short hand declaration to create array
+    fmt.Println(a)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/NKOV04zgI6" target=_"blank">Run in playground</a> </p>
+
+<p>The program above will print the same output  </p>
+
+<pre><code>[12 78 50]
+</code></pre>
+
+<p>It is not necessary that all elements in an array have to be assigned a value during short hand declaration.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    a := [3]int{12} 
+    fmt.Println(a)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/AdPH0kXRly" target="_blank">Run in playground</a></p>
+
+<p>In the above program in line no. 8 <code>a := [3]int{12}</code> declares an array of length 3 but is provided with only one value <code>12</code>. The remaining 2 elements are assigned <code>0</code> automatically. This program will print  </p>
+
+<pre><code>[12 0 0]
+</code></pre>
+
+<p>You can even ignore the length of the array in the declaration and replace it with <code>...</code> and let the compiler find the length for you. This is done in the following program.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    a := [...]int{12, 78, 50} // ... makes the compiler determine the length
+    fmt.Println(a)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/_fVmr6KGDh" target="_blank">Run in playground</a></p>
+
+<p><strong>The size of the array is a part of the type.</strong> Hence <code>[5]int</code> and <code>[25]int</code> are distinct types. Because of this, arrays cannot be resized. Don't worry about this restriction since <code>slices</code> exist to overcome this.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+func main() {  
+    a := [3]int{5, 78, 8}
+    var b [5]int
+    b = a //not possible since [3]int and [5]int are distinct types
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/kBdot3pXSB" target="_blank">Run in playground</a></p>
+
+<p>In line no. 6 of the program above, we are trying to assign a variable of type <code>[3]int</code> to a variable of type <code>[5]int</code> which is not allowed and hence the compiler will print the following error  </p>
+
+<pre><code>./prog.go:6:7: cannot use a (type [3]int) as type [5]int in assignment
+</code></pre>
+
+<p>.</p>
+
+<h5 id="arraysarevaluetypes">Arrays are value types</h5>
+
+<p>Arrays in Go are value types and not reference types. This means that when they are assigned to a new variable, a copy of the original array is assigned to the new variable. If changes are made to the new variable, it will not be reflected in the original array.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    a := [...]string{"USA", "China", "India", "Germany", "France"}
+    b := a // a copy of a is assigned to b
+    b[0] = "Singapore"
+    fmt.Println("a is ", a)
+    fmt.Println("b is ", b) 
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/-ncGk1mqPd" target="_blank">Run in playground</a></p>
+
+<p>In the above program in line no. 7, a copy of <code>a</code> is assigned to <code>b</code>. In line no. 8, the first element of <code>b</code> is changed to <code>Singapore</code>. This will not reflect in the original array <code>a</code>. The program will print,</p>
+
+<pre><code>a is [USA China India Germany France]  
+b is [Singapore China India Germany France]  
+</code></pre>
+
+<p>Similarly when arrays are passed to functions as parameters, they are passed by value and the original array is unchanged.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func changeLocal(num [5]int) {  
+    num[0] = 55
+    fmt.Println("inside function ", num)
+
+}
+func main() {  
+    num := [...]int{5, 6, 7, 8, 8}
+    fmt.Println("before passing to function ", num)
+    changeLocal(num) //num is passed by value
+    fmt.Println("after passing to function ", num)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/e3U75Q8eUZ" target="_blank">Run in playground</a></p>
+
+<p>In the above program in line no. 13, the array <code>num</code> is actually passed by value to the function <code>changeLocal</code> and hence will not change because of the function call. This program will print,</p>
+
+<pre><code>before passing to function  [5 6 7 8 8]  
+inside function  [55 6 7 8 8]  
+after passing to function  [5 6 7 8 8]  
+</code></pre>
+
+<h5 id="lengthofanarray">Length of an array</h5>
+
+<p>The length of the array is found by passing the array as parameter to the  <code>len</code> function.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    a := [...]float64{67.7, 89.8, 21, 78}
+    fmt.Println("length of a is",len(a))
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/UrIeNlS0RN" target="_blank">Run in playground</a></p>
+
+<p>The output of the above program is  </p>
+
+<pre><code>length of a is 4  
+</code></pre>
+
+<h5 id="iteratingarraysusingrange">Iterating arrays using range</h5>
+
+<p>The <code>for</code> loop can be used to iterate over elements of an array. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    a := [...]float64{67.7, 89.8, 21, 78}
+    for i := 0; i &lt; len(a); i++ { //looping from 0 to the length of the array
+        fmt.Printf("%d th element of a is %.2f\n", i, a[i])
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/80ejSTACO6" target="_blank">Run in playground</a></p>
+
+<p>The above program uses a <code>for</code> loop to iterate over the elements of the array starting from index <code>0</code> to <code>length of the array - 1</code>. This program works and will print,</p>
+
+<pre><code>0 th element of a is 67.70  
+1 th element of a is 89.80  
+2 th element of a is 21.00  
+3 th element of a is 78.00  
+</code></pre>
+
+<p><script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script><br></p>
+
+<p>Go provides a better and concise way to iterate over an array by using the <strong>range</strong> form of the <code>for</code> loop. <code>range</code> returns both the index and the value at that index. Let's rewrite the above code using range. We will also find the sum of all elements of the array.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import "fmt"
+
+func main() {  
+    a := [...]float64{67.7, 89.8, 21, 78}
+    sum := float64(0)
+    for i, v := range a {//range returns both the index and value
+        fmt.Printf("%d the element of a is %.2f\n", i, v)
+        sum += v
+    }
+    fmt.Println("\nsum of all elements of a",sum)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Ji6FRon36m" target="_blank">Run in playground</a></p>
+
+<p>line no. 8 <code>for i, v := range a</code> of the above program is the range form of the for loop. It will return both the index and the value at that index. We print the values and also calculate the sum of all elements of the array <code>a</code>. The <strong>output</strong> of the program is,</p>
+
+<pre><code>0 the element of a is 67.70  
+1 the element of a is 89.80  
+2 the element of a is 21.00  
+3 the element of a is 78.00
+
+sum of all elements of a 256.5  
+</code></pre>
+
+<p>In case you want only the value and want to ignore the index, you can do this by replacing the index with the <code>_</code> blank identifier.  </p>
+
+<pre><code class="language-go">for _, v := range a { //ignores index  
+}
+</code></pre>
+
+<p>The above for loop ignores the index. Similarly, the value can also be ignored.</p>
+
+<h5 id="multidimensionalarrays">Multidimensional arrays</h5>
+
+<p>The arrays we created so far are all single dimension. It is possible to create multidimensional arrays.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func printarray(a [3][2]string) {  
+    for _, v1 := range a {
+        for _, v2 := range v1 {
+            fmt.Printf("%s ", v2)
+        }
+        fmt.Printf("\n")
+    }
+}
+
+func main() {  
+    a := [3][2]string{
+        {"lion", "tiger"},
+        {"cat", "dog"},
+        {"pigeon", "peacock"}, //this comma is necessary. The compiler will complain if you omit this comma
+    }
+    printarray(a)
+    var b [3][2]string
+    b[0][0] = "apple"
+    b[0][1] = "samsung"
+    b[1][0] = "microsoft"
+    b[1][1] = "google"
+    b[2][0] = "AT&amp;T"
+    b[2][1] = "T-Mobile"
+    fmt.Printf("\n")
+    printarray(b)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/InchXI4yY8" target="_blank">Run in playground</a></p>
+
+<p>In the above program in line no. 17, a two dimensional string array <code>a</code> has been declared using short hand syntax. The comma at the end of line no. 20 is necessary. This is because of the fact that the lexer automatically inserts semicolons according to simple rules. Please read <a href="https://golang.org/doc/effective_go.html#semicolons" target="_blank">https://golang.org/doc/effective_go.html#semicolons</a> if you are interested to know more about why a semicolon is needed.</p>
+
+<p>Another 2d array <code>b</code> is declared in line no. 23 and strings are added to it one by one for each index. This is another way of initializing a 2d array. </p>
+
+<p>The <code>printarray</code> function in line no. 7 uses two for range loops to print the contents of 2d arrays. The above program will print </p>
+
+<pre><code>lion tiger  
+cat dog  
+pigeon peacock 
+
+apple samsung  
+microsoft google  
+AT&amp;T T-Mobile  
+</code></pre>
+
+<p>That's it for arrays. Although arrays seem to be flexible enough, they come with the restriction that they are of fixed length. It is not possible to increase the length of an array. This is where <strong>slices</strong> come into the picture. In fact in Go, slices are more common than conventional arrays.</p>
+
+<h3 id="slices">Slices</h3>
+
+<p>A slice is a convenient, flexible and powerful wrapper on top of an array. Slices do not own any data on their own. They are just references to existing arrays.</p>
+
+<h5 id="creatingaslice">Creating a slice</h5>
+
+<p>A slice with elements of type T is represented by <code>[]T</code></p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    a := [5]int{76, 77, 78, 79, 80}
+    var b []int = a[1:4] //creates a slice from a[1] to a[3]
+    fmt.Println(b)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Za6w5eubBB" target="_blank">Run in playground</a></p>
+
+<p>The syntax <code>a[start:end]</code> creates a slice from array  <code>a</code> starting from index <code>start</code> to index <code>end - 1</code>. So in line no. 9 of the above program <code>a[1:4]</code> creates a slice representation of the array <code>a</code> starting from indexes 1 through 3. Hence the slice <code>b</code> has values <code>[77 78 79]</code>.</p>
+
+<p>Let's look at another way to create a slice.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    c := []int{6, 7, 8} //creates and array and returns a slice reference
+    fmt.Println(c)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/_Z97MgXavA" target="_blank">Run in playground</a></p>
+
+<p>In the above program in line no. 9, <code>c := []int{6, 7, 8}</code> creates an array with 3 integers and returns a slice reference which is stored in c.</p>
+
+<h5 id="modifyingaslice">modifying a slice</h5>
+
+<p>A slice does not own any data of its own. It is just a representation of the underlying array. Any modifications done to the slice will be reflected in the underlying array.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    darr := [...]int{57, 89, 90, 82, 100, 78, 67, 69, 59}
+    dslice := darr[2:5]
+    fmt.Println("array before",darr)
+    for i := range dslice {
+        dslice[i]++
+    }
+    fmt.Println("array after",darr) 
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/6FinudNf1k " target="_blank">Run in playground</a></p>
+
+<p>In line number 9 of the above program, we create <code>dslice</code> from indexes 2, 3, 4 of the array. The for loop increments the value in these indexes by one. When we print the array after the for loop, we can see that the changes to the slice are reflected in the array. The output of the program is</p>
+
+<pre><code>array before [57 89 90 82 100 78 67 69 59]  
+array after [57 89 91 83 101 78 67 69 59]  
+</code></pre>
+
+<p>When a number of slices share the same underlying array, the changes that each one makes will be reflected in the array.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    numa := [3]int{78, 79 ,80}
+    nums1 := numa[:] //creates a slice which contains all elements of the array
+    nums2 := numa[:]
+    fmt.Println("array before change 1",numa)
+    nums1[0] = 100
+    fmt.Println("array after modification to slice nums1", numa)
+    nums2[1] = 101
+    fmt.Println("array after modification to slice nums2", numa)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/mdNi4cs854" target="_blank">Run in playground</a></p>
+
+<p>In line no. 9, in <code>numa[:]</code> the start and end values are missing. The default values for start and end are <code>0</code> and <code>len(numa)</code> respectively. Both slices <code>nums1</code> and <code>nums2</code> share the same array. The output of the program is</p>
+
+<pre><code>array before change 1 [78 79 80]  
+array after modification to slice nums1 [100 79 80]  
+array after modification to slice nums2 [100 101 80]  
+</code></pre>
+
+<p>From the output, it's clear that when slices share the same array. The modifications made to the slice are reflected in the array.</p>
+
+<h5 id="lengthandcapacityofaslice">length and capacity of a slice</h5>
+
+<p>The length of the slice is the number of elements in the slice. <strong>The capacity of the slice is the number of elements in the underlying array starting from the index from which the slice is created.</strong></p>
+
+<p>Let's write some code to understand this better.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    fruitarray := [...]string{"apple", "orange", "grape", "mango", "water melon", "pine apple", "chikoo"}
+    fruitslice := fruitarray[1:3]
+    fmt.Printf("length of slice %d capacity %d", len(fruitslice), cap(fruitslice)) //length of fruitslice is 2 and capacity is 6
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/a1WOcdv827" target=_"blank">Run in playground</a></p>
+
+<p>In the above program, <code>fruitslice</code> is created from indexes 1 and 2 of the <code>fruitarray</code>. Hence the length of <code>fruitslice</code> is 2. </p>
+
+<p>The length of the  <code>fruitarray</code> is 7. <code>fruiteslice</code> is created from index <code>1</code> of <code>fruitarray</code>. Hence the capacity of <code>fruitslice</code> is the no of elements in <code>fruitarray</code> starting from index <code>1</code> i.e from <code>orange</code> and that value is <code>6</code>. Hence the capacity of <code>fruitslice</code> is 6. The <a href="https://play.golang.org/p/a1WOcdv827" target="_blank">program</a> prints <strong>length of slice 2 capacity 6</strong>.</p>
+
+<p>A slice can be re-sliced upto its capacity. Anything beyond that will cause the program to throw a run time error.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    fruitarray := [...]string{"apple", "orange", "grape", "mango", "water melon", "pine apple", "chikoo"}
+    fruitslice := fruitarray[1:3]
+    fmt.Printf("length of slice %d capacity %d\n", len(fruitslice), cap(fruitslice)) //length of is 2 and capacity is 6
+    fruitslice = fruitslice[:cap(fruitslice)] //re-slicing furitslice till its capacity
+    fmt.Println("After re-slicing length is",len(fruitslice), "and capacity is",cap(fruitslice))
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/GcNzOOGicu " target="_blank">Run in playground</a></p>
+
+<p>In line no. 11 of the above program,<code>fruitslice</code> is re-sliced to its capacity. The above program outputs,</p>
+
+<pre><code>length of slice 2 capacity 6  
+After re-slicing length is 6 and capacity is 6  
+</code></pre>
+
+<p><script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script><br></p>
+
+<h5 id="creatingasliceusingmake">creating a slice using make</h5>
+
+<p><em>func make([]T, len, cap) []T</em> can be used to create a slice by passing the type, length and capacity. The capacity parameter is optional and defaults to the length. The make function creates an array and returns a slice reference to it.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    i := make([]int, 5, 5)
+    fmt.Println(i)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/M4OqxzerxN" target="_blank">Run in playground</a></p>
+
+<p>The values are zeroed by default when a slice is created using make. The above program will output <code>[0 0 0 0 0]</code>.</p>
+
+<h5 id="appendingtoaslice">Appending to a slice</h5>
+
+<p>As we already know arrays are restricted to fixed length and their length cannot be increased. Slices are dynamic and new elements can be appended to the slice using <code>append</code> function. The definition of append function is <code>func append(s []T, x ...T) []T</code>. </p>
+
+<p><strong>x ...T</strong> in the function definition means that the function accepts variable number of arguments for the parameter x. These type of functions are called <a href="https://golangbot.com/variadic-functions/">variadic functions</a>.</p>
+
+<p>One question might be bothering you though. If slices are backed by arrays and arrays themselves are of fixed length then how come a slice is of dynamic length. Well what happens under the hood is, when new elements are appended to the slice, a new array is created. The elements of the existing array are copied to this new array and a new slice reference for this new array is returned. The capacity of the new slice is now twice that of the old slice. Pretty cool right :). The following program will make things clear.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    cars := []string{"Ferrari", "Honda", "Ford"}
+    fmt.Println("cars:", cars, "has old length", len(cars), "and capacity", cap(cars)) //capacity of cars is 3
+    cars = append(cars, "Toyota")
+    fmt.Println("cars:", cars, "has new length", len(cars), "and capacity", cap(cars)) //capacity of cars is doubled to 6
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/VUSXCOs1CF" target=_"blank">Run in playground</a></p>
+
+<p>In the above program, the capacity of <code>cars</code> is 3 initially. We append a new element to cars in line no. 10 and assign the slice returned by <code>append(cars, "Toyota")</code> to cars again. Now the capacity of cars is doubled and becomes 6. The output of the above program is </p>
+
+<pre><code>cars: [Ferrari Honda Ford] has old length 3 and capacity 3  
+cars: [Ferrari Honda Ford Toyota] has new length 4 and capacity 6  
+</code></pre>
+
+<p>The zero value of a slice type is <code>nil</code>. A <code>nil</code> slice has length and capacity 0. It is possible to append values to a <code>nil</code> slice using the append function.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    var names []string //zero value of a slice is nil
+    if names == nil {
+        fmt.Println("slice is nil going to append")
+        names = append(names, "John", "Sebastian", "Vinay")
+        fmt.Println("names contents:",names)
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/x_-4XAJHbM" target=_"blank">Run in playground</a></p>
+
+<p>In the above program <code>names</code> is nil and we have appended 3 strings to <code>names</code>. The output of the program is </p>
+
+<pre><code>slice is nil going to append  
+names contents: [John Sebastian Vinay]  
+</code></pre>
+
+<p>It is also possible to append one slice to another using the <code>...</code> operator. You can learn more about this operator in the <a href="https://golangbot.com/variadic-functions/">variadic functions</a> tutorial.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    veggies := []string{"potatoes","tomatoes","brinjal"}
+    fruits := []string{"oranges","apples"}
+    food := append(veggies, fruits...)
+    fmt.Println("food:",food)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/UnHOH_u6HS" target="_blank">Run in playground</a></p>
+
+<p>In line no. 10 of the  above program <em>food</em> is created by appending <code>fruits</code>  to <code>veggies</code>. Output of the program is <code>food: [potatoes tomatoes brinjal oranges apples]</code></p>
+
+<h5 id="passingaslicetoafunction">Passing a slice to a function</h5>
+
+<p>Slices can be thought of as being represented internally by a structure type. This is how it looks,</p>
+
+<pre><code>type slice struct {  
+    Length        int
+    Capacity      int
+    ZerothElement *byte
+}
+</code></pre>
+
+<p>A slice contains the length, capacity and a pointer to the zeroth element of the array. When a slice is passed to a function, even though it's passed by value, the pointer variable will refer to the same underlying array. Hence when a slice is passed to a function as parameter, changes made inside the function are visible outside the function too. Lets write a program to check this out.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func subtactOne(numbers []int) {  
+    for i := range numbers {
+        numbers[i] -= 2
+    }
+
+}
+func main() {  
+    nos := []int{8, 7, 6}
+    fmt.Println("slice before function call", nos)
+    subtactOne(nos)                               //function modifies the slice
+    fmt.Println("slice after function call", nos) //modifications are visible outside
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/IzqDihNifq " target=_"blank">Run in playground</a></p>
+
+<p>The function call in line number 17 of the above program decrements each element of the slice by 2. When the slice is printed after the function call, these changes are visible. If you can recall, this is different from an array where the changes made to an  array inside a function are not visible outside the function. Output of the above <a href="https://play.golang.org/p/bWUb6R-1bS " target=_"blank">program</a> is,</p>
+
+<pre><code>slice before function call [8 7 6]  
+slice after function call [6 5 4]  
+</code></pre>
+
+<h5 id="multidimensionalslices">Multidimensional slices</h5>
+
+<p>Similar to arrays, slices can have multiple dimensions. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+
+func main() {  
+     pls := [][]string {
+            {"C", "C++"},
+            {"JavaScript"},
+            {"Go", "Rust"},
+            }
+    for _, v1 := range pls {
+        for _, v2 := range v1 {
+            fmt.Printf("%s ", v2)
+        }
+        fmt.Printf("\n")
+    }
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/--p1AvNGwN" target="_blank">Run in playground</a></p>
+
+<p>The output of the program is,</p>
+
+<pre><code>C C++  
+JavaScript  
+Go Rust  
+</code></pre>
+
+<h5 id="memoryoptimisation">Memory Optimisation</h5>
+
+<p>Slices hold a reference to the underlying array. As long as the slice is in memory, the array cannot be garbage collected. This might be of concern when it comes to memory management. Lets assume that we have a very large array and we are interested in processing only a small part of it. Henceforth we create a slice from that array and start processing the slice. The important thing to be noted here is that the array will still be in memory since the slice references it. </p>
+
+<p>One way to solve this problem is to use the <a href="https://golang.org/pkg/builtin/#copy" target=_"blank">copy</a> function <code>func copy(dst, src []T) int</code>  to make a copy of that slice. This way we can use the new slice and the original array can be garbage collected.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func countries() []string {  
+    countries := []string{"USA", "Singapore", "Germany", "India", "Australia"}
+    neededCountries := countries[:len(countries)-2]
+    countriesCpy := make([]string, len(neededCountries))
+    copy(countriesCpy, neededCountries) //copies neededCountries to countriesCpy
+    return countriesCpy
+}
+func main() {  
+    countriesNeeded := countries()
+    fmt.Println(countriesNeeded)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/35ayYBhcDE" target="_blank">Run in playground</a></p>
+
+<p>In line no. 9 of the above program, <code>neededCountries := countries[:len(countries)-2]</code> creates a slice of <code>countries</code> barring the last 2 elements. Line no. 11 of the above program copies <code>neededCountries</code> to <code>countriesCpy</code> and also returns it from the function in the next line. Now <code>countries</code>  array can be garbage collected since <code>neededCountries</code> is no longer referenced. </p>
+
+<p>I have compiled all the concepts we discussed so far into a single program. You can download it from <a href="https://github.com/golangbot/arraysandslices" target="_blank">github</a>.</p>
+
+<p>Thats it for arrays and slices. Thanks for reading. Please leave your valuable feedback and comments.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/variadic-functions/">Variadic Functions</a></strong></p>
+
+<p><strong>Previous tutorial - <a href="https://golangbot.com/switch/">Switch Statement</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Arrays%20and%20Slices&amp;url=https://golangbot.com/arrays-and-slices/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/arrays-and-slices/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/arrays-and-slices/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/arrays-and-slices/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-19"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Introduction to Strings in Go (Golang) | golangbot.com</title>
+    <meta name="description" content="A string is a slice of bytes in Go. The &#x3D;&#x3D; operator is used to compare two strings for equality. RuneCountInString function is used to find the length of the string." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/strings/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Introduction to Strings in Go (Golang) | golangbot.com" />
+    <meta property="og:description" content="A string is a slice of bytes in Go. The &#x3D;&#x3D; operator is used to compare two strings for equality. RuneCountInString function is used to find the length of the string." />
+    <meta property="og:url" content="https://golangbot.com/strings/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-06-01T18:00:00.000Z" />
+    <meta property="article:modified_time" content="2020-06-01T19:50:49.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Introduction to Strings in Go (Golang) | golangbot.com" />
+    <meta name="twitter:description" content="A string is a slice of bytes in Go. The &#x3D;&#x3D; operator is used to compare two strings for equality. RuneCountInString function is used to find the length of the string." />
+    <meta name="twitter:url" content="https://golangbot.com/strings/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Introduction to Strings in Go (Golang) | golangbot.com",
+    "url": "https://golangbot.com/strings/",
+    "datePublished": "2020-06-01T18:00:00.000Z",
+    "dateModified": "2020-06-01T19:50:49.000Z",
+    "description": "A string is a slice of bytes in Go. The &#x3D;&#x3D; operator is used to compare two strings for equality. RuneCountInString function is used to find the length of the string.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Strings</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-06-01">01 June 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 14 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<p>Strings deserve a special mention in Go as they are different in implementation when compared to other languages. </p>
+
+<h3 id="whatisastring">What is a String?</h3>
+
+<p><strong>A string is a <a href="https://golangbot.com/arrays-and-slices/">slice</a> of bytes in Go. Strings can be created by enclosing a set of characters inside double quotes <code>" "</code>.</strong></p>
+
+<p>Let's look at a simple example that creates a <code>string</code> and prints it.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    name := "Hello World"
+    fmt.Println(name)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/o9OVDgEMU0 "target="_blank">Run in playground</a></p>
+
+<p>The above program will print <code>Hello World</code>.</p>
+
+<p>Strings in Go are <a href="https://naveenr.net/unicode-character-set-and-utf-8-utf-16-utf-32-encoding/" target="_blank">Unicode compliant</a> and are <a href="https://naveenr.net/unicode-character-set-and-utf-8-utf-16-utf-32-encoding/" target="_blank">UTF-8 Encoded</a>.</p>
+
+<h3 id="accessingindividualbytesofastring">Accessing individual bytes of a string</h3>
+
+<p>Since a string is a slice of bytes, it's possible to access each byte of a string.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func printBytes(s string) {  
+    fmt.Printf("Bytes: ")
+    for i := 0; i &lt; len(s); i++ {
+        fmt.Printf("%x ", s[i])
+    }
+}
+
+func main() {  
+    name := "Hello World"
+    fmt.Printf("String: %s\n", name)
+    printBytes(name)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/B3KgBBQhiN9" target="_blank">Run in playground</a></p>
+
+<p><strong>%s is the format specifier to print a string.</strong> In line no. 16, the input string is printed. In line no. 9 of the program above, <strong>len(s) returns the number of bytes in the string</strong> and we use a <a href="https://golangbot.com/loops/">for loop</a> to print those bytes in hexadecimal notation. <strong>%x is the format specifier for hexadecimal.</strong> The above program outputs </p>
+
+<pre><code>String: Hello World  
+Bytes: 48 65 6c 6c 6f 20 57 6f 72 6c 64  
+</code></pre>
+
+<p>These are the <a href="https://mothereff.in/utf-8#Hello%20World" target="_blank">Unicode UT8-encoded</a> values of <code>Hello World</code>. A basic understanding of Unicode and UTF-8 is needed to understand strings better. I recommend reading <a href="https://naveenr.net/unicode-character-set-and-utf-8-utf-16-utf-32-encoding/" target="_blank">https://naveenr.net/unicode-character-set-and-utf-8-utf-16-utf-32-encoding/</a> to know more about Unicode and UTF-8.</p>
+
+<h3 id="accessingindividualcharactersofastring">Accessing individual characters of a string</h3>
+
+<p>Let's modify the above program a little bit to print the characters of the string. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func printBytes(s string) {  
+    fmt.Printf("Bytes: ")
+    for i := 0; i &lt; len(s); i++ {
+        fmt.Printf("%x ", s[i])
+    }
+}
+
+func printChars(s string) {  
+    fmt.Printf("Characters: ")
+    for i := 0; i &lt; len(s); i++ {
+        fmt.Printf("%c ", s[i])
+    }
+}
+
+func main() {  
+    name := "Hello World"
+    fmt.Printf("String: %s\n", name)
+    printChars(name)
+    fmt.Printf("\n")
+    printBytes(name)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/ZkXmyVNsqv7 "target="_blank">Run in playground</a> </p>
+
+<p>In line no.17 of the program above, <strong>%c format specifier is used to print the characters of the string</strong> in the <code>printChars</code> method. The program prints  </p>
+
+<pre><code>String: Hello World  
+Characters: H e l l o   W o r l d  
+Bytes: 48 65 6c 6c 6f 20 57 6f 72 6c 64  
+</code></pre>
+
+<p>Although the above program looks like a legitimate way to access the individual characters of a string, this has a serious bug. Let's find out what that bug is.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func printBytes(s string) {  
+    fmt.Printf("Bytes: ")
+    for i := 0; i &lt; len(s); i++ {
+        fmt.Printf("%x ", s[i])
+    }
+}
+
+func printChars(s string) {  
+    fmt.Printf("Characters: ")
+    for i := 0; i &lt; len(s); i++ {
+        fmt.Printf("%c ", s[i])
+    }
+}
+
+func main() {  
+    name := "Hello World"
+    fmt.Printf("String: %s\n", name)
+    printChars(name)
+    fmt.Printf("\n")
+    printBytes(name)
+    fmt.Printf("\n\n")
+    name = "Señor"
+    fmt.Printf("String: %s\n", name)
+    printChars(name)
+    fmt.Printf("\n")
+    printBytes(name)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/2hyVf8l9fiO "target="_blank">Run in playground</a></p>
+
+<p>The output of the above program is</p>
+
+<pre><code>String: Hello World  
+Characters: H e l l o   W o r l d  
+Bytes: 48 65 6c 6c 6f 20 57 6f 72 6c 64 
+
+String: Señor  
+Characters: S e Ã ± o r  
+Bytes: 53 65 c3 b1 6f 72  
+</code></pre>
+
+<p>In line no. 30 of the program above, we are trying to print the characters of <strong>Señor</strong> and it outputs <strong>S e Ã ± o r</strong> which is wrong. Why does this program break for <code>Señor</code> when it works perfectly fine for <code>Hello World</code>. The reason is that the Unicode code point of <code>ñ</code> is <code>U+00F1</code> and its <a href="https://mothereff.in/utf-8#%C3%B1" target=_"blank">UTF-8 encoding</a> occupies 2 bytes <code>c3</code> and <code>b1</code>. We are trying to print characters assuming that each code point will be one byte long which is wrong. <strong>In UTF-8 encoding a code point can occupy more than 1 byte.</strong> So how do we solve this? This is where <strong>rune</strong> saves us.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="rune">Rune</h3>
+
+<p>A rune is a builtin <a href="https://golangbot.com/types/">type</a> in Go and it's the alias of int32. Rune represents a Unicode code point in Go. It doesn't matter how many bytes the code point occupies, it can be represented by a rune. Let's modify the above program to print characters using a rune.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func printBytes(s string) {  
+    fmt.Printf("Bytes: ")
+    for i := 0; i &lt; len(s); i++ {
+        fmt.Printf("%x ", s[i])
+    }
+}
+
+func printChars(s string) {  
+    fmt.Printf("Characters: ")
+    runes := []rune(s)
+    for i := 0; i &lt; len(runes); i++ {
+        fmt.Printf("%c ", runes[i])
+    }
+}
+
+func main() {  
+    name := "Hello World"
+    fmt.Printf("String: %s\n", name)
+    printChars(name)
+    fmt.Printf("\n")
+    printBytes(name)
+    fmt.Printf("\n\n")
+    name = "Señor"
+    fmt.Printf("String: %s\n", name)
+    printChars(name)
+    fmt.Printf("\n")
+    printBytes(name)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/n8rsfagm2SJ" target="_blank">Run in playground</a></p>
+
+<p>In line no. 16 of the program above, the string is converted to a <a href="https://golangbot.com/arrays-and-slices/">slice</a> of runes. We then loop over it and display the characters. This program prints,</p>
+
+<pre><code>String: Hello World  
+Characters: H e l l o   W o r l d  
+Bytes: 48 65 6c 6c 6f 20 57 6f 72 6c 64 
+
+String: Señor  
+Characters: S e ñ o r  
+Bytes: 53 65 c3 b1 6f 72  
+</code></pre>
+
+<p>The above output is perfect. Just want we wanted 😀.</p>
+
+<h3 id="accessingindividualrunesusingforrangeloop">Accessing individual runes using for range loop</h3>
+
+<p>The above program is a perfect way to iterate over the individual runes of a string. But Go offers us a much easier way to do this using the <strong>for range</strong> loop. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func charsAndBytePosition(s string) {  
+    for index, rune := range s {
+        fmt.Printf("%c starts at byte %d\n", rune, index)
+    }
+}
+
+func main() {  
+    name := "Señor"
+    charsAndBytePosition(name)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/0ldNBeffjYI" target=_"blank">Run in playground</a></p>
+
+<p>In line no.8 of the program above, the string is iterated using <code>for range</code> loop. The loop returns the position of the byte where the rune starts along with the rune. This program outputs</p>
+
+<pre><code>S starts at byte 0  
+e starts at byte 1  
+ñ starts at byte 2
+o starts at byte 4  
+r starts at byte 5  
+</code></pre>
+
+<p>From the above output, it's clear that <code>ñ</code> occupies 2 bytes since the next character <code>o</code> starts at byte 4 instead of byte 3 😀. </p>
+
+<h3 id="creatingastringfromasliceofbytes">Creating a string from a slice of bytes</h3>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    byteSlice := []byte{0x43, 0x61, 0x66, 0xC3, 0xA9}
+    str := string(byteSlice)
+    fmt.Println(str)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/Vr9pf8X8xO" target="_blank">Run in playground</a></p>
+
+<p><em>byteSlice</em> in line no. 8 of the program above contains the <a href="https://mothereff.in/utf-8#Caf%C3%A9" target="_blank">UTF-8 Encoded</a> hex bytes of the string <code>Café</code>. The program prints </p>
+
+<pre><code>Café  
+</code></pre>
+
+<p>What if we have the decimal equivalent of hex values. Will the above program work? Let's check it out.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    byteSlice := []byte{67, 97, 102, 195, 169}//decimal equivalent of {'\x43', '\x61', '\x66', '\xC3', '\xA9'}
+    str := string(byteSlice)
+    fmt.Println(str)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/jgsRowW6XN" target="_blank">Run in playground</a></p>
+
+<p>Decimal values also work and the above program will also print <code>Café</code>.</p>
+
+<h3 id="creatingastringfromasliceofrunes">Creating a string from a slice of runes</h3>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    runeSlice := []rune{0x0053, 0x0065, 0x00f1, 0x006f, 0x0072}
+    str := string(runeSlice)
+    fmt.Println(str)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/m8wTMOpYJP" target="_blank">Run in playground</a> </p>
+
+<p>In the above program <code>runeSlice</code> contains the Unicode code points of the string <code>Señor</code> in hexadecimal. The program outputs </p>
+
+<pre><code>Señor  
+</code></pre>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="stringlength">String length</h3>
+
+<p>The <code>RuneCountInString(s string) (n int)</code> function of the <a href="https://golang.org/pkg/unicode/utf8/#RuneCountInString "target ="_blank">utf8 package</a> can be used to find the length of the string. This method takes a string as an argument and returns the number of runes in it. </p>
+
+<p>As we discussed earlier,  <code>len(s)</code> is used to find the number of bytes in the string and it doesn't return the string length. As we already discussed, some Unicode characters have code points that occupy more than 1 byte. Using <code>len</code> to find out the length of those strings will return the incorrect string length.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "unicode/utf8"
+)
+
+func main() {  
+    word1 := "Señor"
+    fmt.Printf("String: %s\n", word1)
+    fmt.Printf("Length: %d\n", utf8.RuneCountInString(word1))
+    fmt.Printf("Number of bytes: %d\n", len(word1))
+
+    fmt.Printf("\n")
+    word2 := "Pets"
+    fmt.Printf("String: %s\n", word2)
+    fmt.Printf("Length: %d\n", utf8.RuneCountInString(word2))
+    fmt.Printf("Number of bytes: %d\n", len(word2))
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/KBQg1qagnfC" target="_blank">Run in playground</a></p>
+
+<p>The output of the above program is</p>
+
+<pre><code>String: Señor  
+Length: 5  
+Number of bytes: 6
+
+String: Pets  
+Length: 4  
+Number of bytes: 4  
+</code></pre>
+
+<p>The above output confirms that <code>len(s)</code> and <code>RuneCountInString(s)</code> return different values 😀.</p>
+
+<h3 id="stringcomparison">String comparison</h3>
+
+<p>The <code>==</code> operator is used to compare two strings for equality. If both the strings are equal, then the result is <code>true</code> else it's <code>false</code>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func compareStrings(str1 string, str2 string) {  
+    if str1 == str2 {
+        fmt.Printf("%s and %s are equal\n", str1, str2)
+        return
+    }
+    fmt.Printf("%s and %s are not equal\n", str1, str2)
+}
+
+func main() {  
+    string1 := "Go"
+    string2 := "Go"
+    compareStrings(string1, string2)
+
+    string3 := "hello"
+    string4 := "world"
+    compareStrings(string3, string4)
+
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/JEAMexbvJ1s" target="_blank">Run in playground</a></p>
+
+<p>In the <code>compareStrings</code> function above, line no. 8 compares whether the two strings <code>str1</code> and <code>str2</code> are equal using the <code>==</code> operator. If they are equal, it prints a corresponding message and the <a href="https://golangbot.com/functions/">function</a> returns.</p>
+
+<p>The above program prints,</p>
+
+<pre><code>Go and Go are equal  
+hello and world are not equal  
+</code></pre>
+
+<h3 id="stringconcatenation">String concatenation</h3>
+
+<p>There are multiple ways to perform string concatenation in Go. Let's look at a couple of them.</p>
+
+<p>The most simple way to perform string concatenation is using the <code>+</code> operator.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    string1 := "Go"
+    string2 := "is awesome"
+    result := string1 + " " + string2
+    fmt.Println(result)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/RCL8SGkrBe9" target="_blank">Run in playground</a></p>
+
+<p>In the program above, in line no. 10, <code>string1</code> is concatenated to <code>string2</code> with a space in the middle. This program prints,</p>
+
+<pre><code>Go is awesome  
+</code></pre>
+
+<p>The second way to concatenate strings is using the <a href="https://golang.org/pkg/fmt/#Sprintf" target="_blank">Sprintf</a> function of the fmt package. </p>
+
+<p>The <code>Sprintf</code> function formats a string according to the input format specifier and returns the resulting string. Let's rewrite the above program using <code>Sprintf</code> function.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    string1 := "Go"
+    string2 := "is awesome"
+    result := fmt.Sprintf("%s %s", string1, string2)
+    fmt.Println(result)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/AgqI29aQQDu" target="_blank">Run in playground</a></p>
+
+<p>In line no. 10 of the program above, <code>%s %s</code> is the format specifier input for <code>Sprintf</code>. This format specifier takes two strings as input and has a space in between. This will concatenate the two strings with a space in the middle. The resulting string is stored in <code>result</code>. This program also prints, </p>
+
+<pre><code>Go is awesome  
+</code></pre>
+
+<h3 id="stringsareimmutable">Strings are immutable</h3>
+
+<p>Strings are immutable in Go. Once a string is created it's not possible to change it. </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func mutate(s string)string {  
+    s[0] = 'a'//any valid unicode character within single quote is a rune 
+    return s
+}
+func main() {  
+    h := "hello"
+    fmt.Println(mutate(h))
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/bv4SlSd_hp" target="_blank">Run in playground</a></p>
+
+<p>In line no. 8 of the above program, we try to change the first character of the string to <code>'a'</code>. Any valid Unicode character within a single quote is a rune. We try to assign the rune <code>a</code> to the zeroth position of the slice. This is not allowed since the string is immutable and hence the program fails to compile with error <strong>./prog.go:8:7: cannot assign to s[0]</strong></p>
+
+<p>To workaround this string immutability, strings are converted to a <a href="https://golangbot.com/arrays-and-slices/">slice</a> of runes. Then that slice is mutated with whatever changes are needed and converted back to a new string.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+func mutate(s []rune) string {  
+    s[0] = 'a' 
+    return string(s)
+}
+func main() {  
+    h := "hello"
+    fmt.Println(mutate([]rune(h)))
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/GL1cm17IP1" target="_blank">Run in playground</a></p>
+
+<p>In line no.7 of the above program, the <code>mutate</code> function accepts a rune slice as an argument. It then changes the first element of the slice to <code>'a'</code>, converts the rune back to string and returns it. This method is called from line no. 13 of the program. <code>h</code> is converted to a slice of runes and passed to <code>mutate</code> in line no. 13. This program outputs <code>aello</code></p>
+
+<p>I have created a single program in GitHub which includes everything we discussed. You can download it <a href="https://github.com/golangbot/stringsexplained" target="blank">here</a>.</p>
+
+<p>That's it for strings. Have a great day.</p>
+
+<p>Please share your valuable comments and feedback.</p>
+
+<p>Like my tutorials? Please <a href="https://golangbot.com/support-the-content/">support the content</a>.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/pointers/">Pointers</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Strings&amp;url=https://golangbot.com/strings/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/strings/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/strings/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/strings/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-22"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

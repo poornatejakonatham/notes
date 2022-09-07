@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Connecting to MySQL and Creating a Database | Go (Golang) MySQL Tutorial</title>
+    <meta name="description" content="Learn how to connect to MySQL and create a database using the database/sql package. This tutorial also deals with DB connection pooling in Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/connect-create-db-mysql/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Connecting to MySQL and Creating a Database | Go (Golang) MySQL Tutorial" />
+    <meta property="og:description" content="Learn how to connect to MySQL and create a database using the database/sql package. This tutorial also deals with DB connection pooling in Go." />
+    <meta property="og:url" content="https://golangbot.com/connect-create-db-mysql/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-10-05T19:00:00.000Z" />
+    <meta property="article:modified_time" content="2021-10-17T08:48:51.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Connecting to MySQL and Creating a Database | Go (Golang) MySQL Tutorial" />
+    <meta name="twitter:description" content="Learn how to connect to MySQL and create a database using the database/sql package. This tutorial also deals with DB connection pooling in Go." />
+    <meta name="twitter:url" content="https://golangbot.com/connect-create-db-mysql/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Connecting to MySQL and Creating a Database | Go (Golang) MySQL Tutorial",
+    "url": "https://golangbot.com/connect-create-db-mysql/",
+    "datePublished": "2020-10-05T19:00:00.000Z",
+    "dateModified": "2021-10-17T08:48:51.000Z",
+    "description": "Learn how to connect to MySQL and create a database using the database/sql package. This tutorial also deals with DB connection pooling in Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">MySQL Tutorial: Connecting to MySQL and Creating a DB using Go</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-10-05">05 October 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 1 in our MySQL tutorial series. In this tutorial, we will connect to MySQL and create a database. We will also ping the DB to ensure the connection is established properly.</p>
+
+<h4 id="mysqlseriesindex">MySQL Series Index</h4>
+
+<p><a href="https://golangbot.com/connect-create-db-mysql/">Connecting to MySQL and creating a Database</a><br>
+<a href="https://golangbot.com/mysql-create-table-insert-row/">Creating a Table and Inserting Rows</a><br>
+<a href="https://golangbot.com/mysql-select-single-multiple-rows/">Selecting single and multiple rows</a><br>
+Prepared statements - WIP <br />
+Updating rows - WIP <br />
+Deleting rows - WIP</p>
+
+<h3 id="importingthemysqldriver">Importing the MySQL driver</h3>
+
+<p>The first step in creating the MySQL database is to download the MySQL driver <a href="/go-packages/">package</a> and import it into our application.</p>
+
+<p>Let's create a folder for our app and then download the MySQL package.</p>
+
+<p>I have created a folder in the <code>Documents</code> directory. Please feel free to create it wherever you like.  </p>
+
+<pre><code>mkdir ~/Documents/mysqltutorial  
+cd ~/Documents/mysqltutorial  
+</code></pre>
+
+<p>After creating the directory, let's initialize a go module for the project. </p>
+
+<pre><code>go mod init github.com/golangbot/mysqltutorial  
+</code></pre>
+
+<p>The above command initializes a module named <code>github.com/golangbot/mysqltutorial</code></p>
+
+<p>The next step is to download the MySql driver. Run the following command to download the MySQL driver package.</p>
+
+<pre><code>go get github.com/go-sql-driver/mysql  
+</code></pre>
+
+<p>Let's write a program to import the MySQL driver we just downloaded.</p>
+
+<p>Create a file named <code>main.go</code> with the following contents.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "database/sql"
+
+    _ "github.com/go-sql-driver/mysql"
+)
+</code></pre>
+
+<h3 id="useofblankidentifier_whenimportingthedriver">Use of blank identifier _ when importing the driver</h3>
+
+<p>The <code>"database/sql"</code> package provides generic <a href="/interfaces-part-1/">interfaces</a> for accessing the MySQL database. It contains the types needed to manage the MySQL DB. </p>
+
+<p>In the next line, we import <code>_ "github.com/go-sql-driver/mysql"</code> prefixed with an underscore (called as a blank identifier). What does this mean? This means we are importing the MySQL driver package for its side effect and we will not use it explicitly anywhere in our code. <strong>When a package is imported prefixed with a blank identifier, the init function of the package will be called. Also, the Go compiler will not complain if the package is not used anywhere in the code.</strong></p>
+
+<p>That's all fine, but why is this needed?</p>
+
+<p>The reason is any SQL driver must be registered by calling the <a href="https://golang.org/pkg/database/sql/#Register" target=_"blank">Register</a> function before it can be used. If we take a look at the source code of the MySQL driver, in line <a href="https://github.com/go-sql-driver/mysql/blob/b66d043e6c8986ca01241b990326db395f9c0afd/driver.go#L83">https://github.com/go-sql-driver/mysql/blob/b66d043e6c8986ca01241b990326db395f9c0afd/driver.go#L83</a> we can see the following <code>init</code> function</p>
+
+<pre><code class="language-go line-numbers">func init() {  
+    sql.Register("mysql", &amp;MySQLDriver{})
+}
+</code></pre>
+
+<p>The above function registers the SQL driver named <code>mysql</code>. When we import the package prefixed with the blank identifier <code>_ "github.com/go-sql-driver/mysql"</code>, this <code>init</code> function is called and the driver is available for use. Perfect 😃. Just what we wanted. </p>
+
+<h3 id="connectingandcreatingthedatabase">Connecting and Creating the Database</h3>
+
+<p>Now that we have registered the driver successfully, the next step is to connect to MySQL and create the database. </p>
+
+<p>Let's define <a href="/constants/">constants</a> for our DB credentials.</p>
+
+<pre><code class="language-go line-numbers">const (  
+    username = "root"
+    password = "password"
+    hostname = "127.0.0.1:3306"
+    dbname   = "ecommerce"
+)
+</code></pre>
+
+<p>Please replace the above values with your credentials.</p>
+
+<p>The DB can be opened by using <a href="https://golang.org/pkg/database/sql/#Open" target=_"blank">Open</a> function of the sql package.  This function takes two parameters, the driver name, and the data source name(DSN). As we have already discussed, the driver name is <code>mysql</code>. The DSN is of the following format</p>
+
+<pre><code>username:password@protocol(address)/dbname?param=value  
+</code></pre>
+
+<p>Let's write a small function that will return us this DSN when the database name is passed as a parameter.</p>
+
+<pre><code class="language-go line-numbers">func dsn(dbName string) string {  
+    return fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, hostname, dbName)
+}
+</code></pre>
+
+<p>The above <a href="/functions/">function</a> returns a DSN for the <code>dbName</code> passed. The <code>dbName</code> is optional and it can be empty. For example, if <code>ecommerce</code> is passed, it will return <code>root:password@tcp(127.0.0.1:3306)/ecommerce</code></p>
+
+<p>Since we are actually creating the DB here and do not want to connect an existing DB, an empty <code>dbName</code> will be passed to the <code>dsn</code> function.</p>
+
+<pre><code class="language-go line-numbers">func main() {  
+    db, err := sql.Open("mysql", dsn(""))
+    if err != nil {
+        log.Printf("Error %s when opening DB\n", err)
+        return
+    }
+    defer db.Close()
+}
+</code></pre>
+
+<p>Please ensure that the user has access rights to create the DB. The above lines of code open and return a connection to the database. The database connection is closed when the function returns using <a href="/defer/">defer</a>.</p>
+
+<p>After establishing a connection to the DB, the next step is to create the DB. The following code does that.</p>
+
+<pre><code class="language-go line-numbers">ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)  
+defer cancelfunc()  
+res, err := db.ExecContext(ctx, "CREATE DATABASE IF NOT EXISTS "+dbname)  
+if err != nil {  
+    log.Printf("Error %s when creating DB\n", err)
+    return
+}
+no, err := res.RowsAffected()  
+if err != nil {  
+    log.Printf("Error %s when fetching rows", err)
+    return
+}
+log.Printf("rows affected %d\n", no)  
+</code></pre>
+
+<p>After opening the database, we use the <a href="https://golang.org/pkg/database/sql/#DB.ExecContext" target=_"blank">ExecContext</a>  method to create the database. This <a href="/methods/">method</a> is used to execute a query without returning any rows. Since we are creating a DB, it returns no rows, and <code>ExecContext</code> can be used to create the database. Being a responsible developer, we pass a context with a timeout of 5 seconds to ensure that the control doesn't get stuck when creating the DB in case there is any network error or any other error in the DB. <code>cancelfunc</code> is only needed when we want to cancel the context before it times out. There is no use of it here, hence we just defer the <code>cancelfunc</code> call.</p>
+
+<p>The <code>ExecContext</code> call returns a <a href="https://golang.org/pkg/database/sql/#Result" target=_"blank">result</a> type and an error. We can check the number of rows affected by the query by calling the <code>RowsAffected()</code> method. The above code creates a database named <code>ecommerce</code>.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="understandingconnectionpool">Understanding Connection Pool</h3>
+
+<p>The next step after creating the DB is to connect to it and start executing queries. In other programming languages, you might do this by running the <code>use ecommerce</code> command to select the database and start executing queries. This can be done in Go by using the code <code>db.ExecContext("USE ecommerce")</code>. </p>
+
+<p>While this might seem to be a logical way to proceed, this leads to unexpected runtime errors in Go. Let's understand the reason behind this.</p>
+
+<p>When we first executed <code>sql.Open("mysql", dsn(""))</code>, the <a href="https://golang.org/pkg/database/sql/#DB" target=_"blank">DB</a> returned is actually a pool of underlying DB connections. The sql package takes care of maintaining the pool, creating and freeing connections automatically. This DB is also safe to be concurrently accessed by multiple <a href="/goroutines/">Goroutines</a>. </p>
+
+<p>Since <code>DB</code> is a connection pool, if we execute <code>use ecommerce</code> on <code>DB</code>, it will be run on only one of the DB connections in the pool. When we execute another query on <code>DB</code>, we might end up running the query on some other connection in the pool on which <code>use ecommerce</code> was not executed. This will lead to the error <code>Error Code: 1046. No database selected</code>.</p>
+
+<p>The solution is simple. We close the existing connection to the DB which we created without specifying a DB name and open a new connection with the DB name <code>ecommerce</code> which was just created.</p>
+
+<pre><code class="language-go line-numbers">db.Close()  
+db, err = sql.Open("mysql", dsn(dbname))  
+if err != nil {  
+    log.Printf("Error %s when opening DB", err)
+    return
+}
+defer db.Close()  
+</code></pre>
+
+<p>In the above lines, we close the existing connection and open a new connection to the DB. This time we specify the DB name <code>ecommerce</code> in line no. 2 when opening a connection to the database. Now we have a connection pool connected to the <code>ecommerce</code> DB 😃.</p>
+
+<h3 id="connectionpooloptions">Connection Pool Options</h3>
+
+<p>There are few important connection pool options to be set to ensure that  network partitions and other runtime errors that may occur with our DB connections are handled properly.</p>
+
+<h4 id="setmaxopenconns">SetMaxOpenConns</h4>
+
+<p>This option is used to set the maximum number of open connections that are allowed from our application. It's better to set this to ensure that our application doesn't utilize all available connections to MySQL and starve other applications. </p>
+
+<p>The  maximum connections for a MySQL Server can be determined by running the folllowing query</p>
+
+<pre><code>show variables like 'max_connections';  
+</code></pre>
+
+<p>It returns the following output in my case. <code>151</code> is the default maximum connections allowed. You can change it to a different value according to your requirement. <br />
+<img src="/content/images/2020/10/mysql-max-connections.png" alt="" /></p>
+
+<p><em>151</em> is the maximum connections allowed for this entire MySQL server which may include other applications accessing the same DB and also access to other databases if any exist.</p>
+
+<p>Ensure that you set a value lower than <code>max_connections</code> so that other applications and databases are not starved. I am using <code>20</code>. Please feel free to change it according to your requirement.</p>
+
+<pre><code class="language-go">db.SetMaxOpenConns(20)  
+</code></pre>
+
+<h4 id="setmaxidleconns">SetMaxIdleConns</h4>
+
+<p>This option limits the maximum idle connections. The number of idle connections in the connection pool is controlled by this setting.</p>
+
+<pre><code class="language-go">db.SetMaxIdleConns(20)  
+</code></pre>
+
+<h4 id="setconnmaxlifetime">SetConnMaxLifetime</h4>
+
+<p>It's quite common for connections to become unusable because of a number of reasons. For instance, there might be a firewall or middleware that terminates idle connections. This option ensures that the driver closes the idle connection properly before it is terminated by a firewall or middleware.</p>
+
+<pre><code class="language-go">db.SetConnMaxLifetime(time.Minute * 5)  
+</code></pre>
+
+<p>Please feel free to change the above options based on your requirement.</p>
+
+<h3 id="pingingthedb">Pinging the DB</h3>
+
+<p>The <code>Open</code> function call doesn't make an actual connection to the DB. It just validates whether the DSN is correct. The <a href="https://golang.org/pkg/database/sql/#DB.PingContext" target=_"blank">PingContext()</a> method must be called to verify the actual connection to the database. It pings the DB and verifies the connection.</p>
+
+<pre><code class="language-go line-numbers">ctx, cancelfunc = context.WithTimeout(context.Background(), 5*time.Second)  
+defer cancelfunc()  
+err = db.PingContext(ctx)  
+if err != nil {  
+    log.Printf("Errors %s pinging DB", err)
+    return
+}
+log.Printf("Connected to DB %s successfully\n", dbname)  
+</code></pre>
+
+<p>We create a context with a 5 second timeout to ensure that the control doesn't get stuck when pinging the DB in case there is a network error or any other error.  </p>
+
+<p>The full code is provided below.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "context"
+    "database/sql"
+    "fmt"
+    "log"
+    "time"
+
+    _ "github.com/go-sql-driver/mysql"
+)
+
+const (  
+    username = "root"
+    password = "password"
+    hostname = "127.0.0.1:3306"
+    dbname   = "ecommerce"
+)
+
+func dsn(dbName string) string {  
+    return fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, hostname, dbName)
+}
+
+func main() {  
+    db, err := sql.Open("mysql", dsn(""))
+    if err != nil {
+        log.Printf("Error %s when opening DB\n", err)
+        return
+    }
+    defer db.Close()
+
+    ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancelfunc()
+    res, err := db.ExecContext(ctx, "CREATE DATABASE IF NOT EXISTS "+dbname)
+    if err != nil {
+        log.Printf("Error %s when creating DB\n", err)
+        return
+    }
+    no, err := res.RowsAffected()
+    if err != nil {
+        log.Printf("Error %s when fetching rows", err)
+        return
+    }
+    log.Printf("rows affected %d\n", no)
+
+    db.Close()
+    db, err = sql.Open("mysql", dsn(dbname))
+    if err != nil {
+        log.Printf("Error %s when opening DB", err)
+        return
+    }
+    defer db.Close()
+
+    db.SetMaxOpenConns(20)
+    db.SetMaxIdleConns(20)
+    db.SetConnMaxLifetime(time.Minute * 5)
+
+    ctx, cancelfunc = context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancelfunc()
+    err = db.PingContext(ctx)
+    if err != nil {
+        log.Printf("Errors %s pinging DB", err)
+        return
+    }
+    log.Printf("Connected to DB %s successfully\n", dbname)
+}
+</code></pre>
+
+<p>Running the above code will print</p>
+
+<pre><code>2020/08/11 19:17:44 rows affected 1  
+2020/08/11 19:17:44 Connected to DB ecommerce successfully  
+</code></pre>
+
+<p>That's about it for connecting to MySQL and creating a DB.</p>
+
+<p>Please leave your comments and feedback.</p>
+
+<p>If you would like to advertise on this website, hire me, or if you have any other development requirements please email to <em>naveen[at]golangbot[dot]com</em>.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/mysql-create-table-insert-row/">Creating a Table and Inserting Rows</a></strong></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=MySQL%20Tutorial%3A%20Connecting%20to%20MySQL%20and%20Creating%20a%20DB%20using%20Go&amp;url=https://golangbot.com/connect-create-db-mysql/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/connect-create-db-mysql/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/connect-create-db-mysql/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/connect-create-db-mysql/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-145"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

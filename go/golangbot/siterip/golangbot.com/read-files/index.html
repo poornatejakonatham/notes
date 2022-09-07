@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Read files using Golang - golangbot.com</title>
+    <meta name="description" content="Learn how to read an entire file and also how to read a file in small chunks using Go. This tutorial also deals with bundling static files inside go binaries." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/read-files/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Read files using Golang - golangbot.com" />
+    <meta property="og:description" content="Learn how to read an entire file and also how to read a file in small chunks using Go. This tutorial also deals with bundling static files inside go binaries." />
+    <meta property="og:url" content="https://golangbot.com/read-files/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2020-05-09T08:54:00.000Z" />
+    <meta property="article:modified_time" content="2021-06-19T08:42:37.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Read files using Golang - golangbot.com" />
+    <meta name="twitter:description" content="Learn how to read an entire file and also how to read a file in small chunks using Go. This tutorial also deals with bundling static files inside go binaries." />
+    <meta name="twitter:url" content="https://golangbot.com/read-files/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Read files using Golang - golangbot.com",
+    "url": "https://golangbot.com/read-files/",
+    "datePublished": "2020-05-09T08:54:00.000Z",
+    "dateModified": "2021-06-19T08:42:37.000Z",
+    "description": "Learn how to read an entire file and also how to read a file in small chunks using Go. This tutorial also deals with bundling static files inside go binaries.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Reading Files</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2020-05-09">09 May 2020</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p><img src="/content/images/2018/07/golang-read-files.png" alt="golang read files" /></p>
+
+<p>Welcome to tutorial no. 35 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>. </p>
+
+<p>File reading is one of the most common operations performed in any programming language. In this tutorial, we will learn about how files can be read using Go. </p>
+
+<p>This tutorial has the following sections.</p>
+
+<ul>
+<li>Reading an entire file into memory
+<ul><li>Using an absolute file path</li>
+<li>Passing the file path as a command line flag</li>
+<li>Bundling the file inside the binary</li></ul></li>
+<li>Reading a file in small chunks</li>
+<li>Reading a file line by line</li>
+</ul>
+
+<h3 id="readinganentirefileintomemory">Reading an entire file into memory</h3>
+
+<p>One of the most basic file operations is reading an entire file into memory. This is done with the help of the <a href="https://golang.org/pkg/io/ioutil/#ReadFile" target=_"blank">ReadFile</a> function of the <a href="https://golang.org/pkg/io/ioutil/" target=_"blank">ioutil</a> package. </p>
+
+<p>Let's read a file and print its contents. </p>
+
+<p>I have created a folder <code>filehandling</code> inside my <code>Documents</code> directory by running <code>mkdir ~/Documents/filehandling</code>.</p>
+
+<p>Create a Go module named <code>filehandling</code> by running the following command from the <code>filehandling</code> directory. </p>
+
+<pre><code>go mod init filehandling  
+</code></pre>
+
+<p>I have a text file <code>test.txt</code> which will be read from our Go program <code>filehandling.go</code>. <code>test.txt</code> contains the following string </p>
+
+<pre><code>Hello World. Welcome to file handling in Go.  
+</code></pre>
+
+<p>Here is my directory structure.</p>
+
+<pre><code>├── Documents
+│   └── filehandling
+│       ├── filehandling.go
+|       ├── go.mod
+│       └── test.txt
+</code></pre>
+
+<p>Let's get to the code right away. Create a file <code>filehandling.go</code> with the following contents.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "io/ioutil"
+)
+
+func main() {  
+    data, err := ioutil.ReadFile("test.txt")
+    if err != nil {
+        fmt.Println("File reading error", err)
+        return
+    }
+    fmt.Println("Contents of file:", string(data))
+}
+</code></pre>
+
+<p>Please run this program from your local environment as it's not possible to read files in the playground. </p>
+
+<p>Line no. 9 of the program above reads the file and returns a byte <a href="https://golangbot.com/arrays-and-slices/#slices">slice</a> which is stored in <code>data</code>. In line no. 14 we convert <code>data</code> to a <code>string</code> and display the contents of the file.</p>
+
+<p>Please run this program from the location where <strong>test.txt</strong> is present. </p>
+
+<p>If <strong>test.txt</strong> is located at <strong>~/Documents/filehandling</strong>, then run this program using the following steps,</p>
+
+<pre><code>cd ~/Documents/filehandling/  
+go install  
+filehandling  
+</code></pre>
+
+<p>If you are not aware of how to run a Go program, please visit <a href="https://golangbot.com/hello-world-gomod/">https://golangbot.com/hello-world-gomod/</a> to know more. If you want to learn more about packages and Go modules, please visit <a href="https://golangbot.com/go-packages/">https://golangbot.com/go-packages/</a></p>
+
+<p>This program will print,</p>
+
+<pre><code>Contents of file: Hello World. Welcome to file handling in Go.  
+</code></pre>
+
+<p>If this program is run from any other location, for instance, try running the program from <code>~/Documents/</code></p>
+
+<pre><code>cd ~/Documents/  
+filehandling  
+</code></pre>
+
+<p>It will print the following error.</p>
+
+<pre><code>File reading error open test.txt: no such file or directory  
+</code></pre>
+
+<p>The reason is Go is a compiled language. What <code>go install</code> does is, it creates a binary from the source code. The binary is independent of the source code and it can be run from any location. Since <code>test.txt</code> is not found in the location from which the binary is run, the program complains that it cannot find the file specified. </p>
+
+<p>There are three ways to solve this problem,</p>
+
+<ol>
+<li>Using absolute file path  </li>
+<li>Passing the file path as a command line flag  </li>
+<li>Bundling the text file along with the binary</li>
+</ol>
+
+<p>Let's discuss them one by one. </p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h5 id="1usingabsolutefilepath">1. Using absolute file path</h5>
+
+<p>The simplest way to solve this problem is to pass the absolute file path. I have modified the program and changed the path to an absolute one in line no. 9. Please change this path to the absolute location of your <code>test.txt</code>.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+    "io/ioutil"
+)
+
+func main() {  
+    data, err := ioutil.ReadFile("/home/naveen/Documents/filehandling/test.txt")
+    if err != nil {
+        fmt.Println("File reading error", err)
+        return
+    }
+    fmt.Println("Contents of file:", string(data))
+}
+</code></pre>
+
+<p>Now the program can be run from any location and it will print the contents of <code>test.txt</code>.</p>
+
+<p>For example, it will work even when I run it from my home directory</p>
+
+<pre><code>cd ~/Documents/filehandling  
+go install  
+cd ~  
+filehandling  
+</code></pre>
+
+<p>The program will print the contents of <code>test.txt</code></p>
+
+<p>This seems to be an easy way but comes with the pitfall that the file should be located in the path specified in the program else this method will fail. </p>
+
+<h5 id="2passingthefilepathasacommandlineflag">2. Passing the file path as a command line flag</h5>
+
+<p>Another way to solve this problem is to pass the file path as a command line argument. Using the <a href="https://golang.org/pkg/flag/" target=_"blank">flag</a> package, we can get the file path as input argument from the command line and then read its contents.</p>
+
+<p>Let's first understand how the <code>flag</code> package works. The <code>flag</code> package has a <a href="https://golang.org/pkg/flag/#String" target=_"blank">String</a> <a href="https://golangbot.com/functions/">function</a>. This function accepts 3 arguments. The first is the name of the flag, second is the default value and the third is a short description of the flag. </p>
+
+<p>Let's write a small program to read the file name from the command line. Replace the contents of <code>filehandling.go</code> with the following,</p>
+
+<pre><code class="language-go line-numbers">package main  
+import (  
+    "flag"
+    "fmt"
+)
+
+func main() {  
+    fptr := flag.String("fpath", "test.txt", "file path to read from")
+    flag.Parse()
+    fmt.Println("value of fpath is", *fptr)
+}
+</code></pre>
+
+<p>Line no. 8 of the program above, creates a string flag named <code>fpath</code> with default value <code>test.txt</code> and description <code>file path to read from</code> using the <code>String</code> function. This function returns the address of the string <a href="https://golangbot.com/variables/">variable</a> that stores the value of the flag. </p>
+
+<p><em>flag.Parse()</em> should be called before any flag is accessed by the program.</p>
+
+<p>We print the value of the flag in line no. 10</p>
+
+<p>When this program is run using the command  </p>
+
+<pre><code>filehandling -fpath=/path-of-file/test.txt  
+</code></pre>
+
+<p>we pass <code>/path-of-file/test.txt</code> as the value of the flag <code>fpath</code>.</p>
+
+<p>This program outputs </p>
+
+<pre><code>value of fpath is /path-of-file/test.txt  
+</code></pre>
+
+<p>If the program is run using just <code>filehandling</code> without passing any <code>fpath</code>, it will print</p>
+
+<pre><code>value of fpath is test.txt  
+</code></pre>
+
+<p>since <code>test.txt</code> is the default value of <code>fpath</code>.</p>
+
+<p>Now that we know how to read the file path from the command line, let's go ahead and finish our file reading program.</p>
+
+<pre><code class="language-go line-numbers">package main  
+import (  
+    "flag"
+    "fmt"
+    "io/ioutil"
+)
+
+func main() {  
+    fptr := flag.String("fpath", "test.txt", "file path to read from")
+    flag.Parse()
+    data, err := ioutil.ReadFile(*fptr)
+    if err != nil {
+        fmt.Println("File reading error", err)
+        return
+    }
+    fmt.Println("Contents of file:", string(data))
+}
+</code></pre>
+
+<p>The program above reads the content of the file path passed from the command line. Run this program using the command </p>
+
+<pre><code>filehandling -fpath=/path-of-file/test.txt  
+</code></pre>
+
+<p>Please replace <code>/path-of-file/</code> with the absolute path of <code>test.txt</code>. For example, in my case, I ran the command </p>
+
+<pre><code>filehandling --fpath=/home/naveen/Documents/filehandling/test.txt  
+</code></pre>
+
+<p>and the program printed.</p>
+
+<pre><code>Contents of file: Hello World. Welcome to file handling in Go.  
+</code></pre>
+
+<h5 id="3bundlingthetextfilealongwiththebinary">3. Bundling the text file along with the binary</h5>
+
+<p>The above option of getting the file path from the command line is good but there is an even better way to solve this problem. Wouldn't it be awesome if we are able to bundle the text file along with our binary? This is what we are going to do next.</p>
+
+<p>There are various <a href="https://golangbot.com/go-packages/">packages</a> that help us achieve this. We will be using <a href="https://github.com/gobuffalo/packr/tree/master/v2" target=_"blank">packr v2</a> because it's quite simple and I have been using it for my projects without any problems.</p>
+
+<p>The first step is to install the <code>packr</code>.</p>
+
+<p>Type the following command in the command prompt from the <code>~/Documents/filehandling/</code> directory to install the package  </p>
+
+<pre><code>cd ~/Documents/filehandling/  
+go get -u github.com/gobuffalo/packr/v2/...  
+</code></pre>
+
+<p><em>packr</em> converts static files such as <code>.txt</code> to <code>.go</code> files which are then embedded directly into the binary. Packer is intelligent enough to fetch the static files from disk rather than from the binary during development. This prevents the need for re-compilation during development when only static files change.</p>
+
+<p>A program will make us understand things better. Replace the contents of <code>filehandling.go</code> with the following,</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+
+    "github.com/gobuffalo/packr/v2"
+)
+
+func main() {  
+        box :=  packr.New("fileBox", "../filehandling")
+        data, err := box.FindString("test.txt")
+        if err != nil {
+            fmt.Println("File reading error", err)
+                return
+        }
+        fmt.Println("Contents of file:", data)
+}
+</code></pre>
+
+<p>In line no. 10 of the program above, we are creating a New Box named <code>box</code>. A box represents a folder whose contents will be embedded in the binary. In this case, I am specifying the <code>filehandling</code> folder which contains <code>test.txt</code>. In the next line, we read the contents of the file using the <code>FindString</code> method and print it.</p>
+
+<p>Run the program using the following commands. </p>
+
+<pre><code>cd ~/Documents/filehandling  
+go install  
+filehandling  
+</code></pre>
+
+<p>and the program will print the contents of <code>test.txt</code>.</p>
+
+<p>Since we are in the development phase now, the file will be read from disk. Try changing the contents of <code>test.txt</code> and run <code>filehandling</code> again. You can see that the program prints the updated contents of <code>test.txt</code>  without the need for any recompilation. Perfect :). </p>
+
+<p>Packr is also capable of finding the absolute path of the box. Because of this, the program will work from any directory. It doesn't need <code>test.txt</code> to be present in the current directory. Let's cd to a different directory and try running the program again.</p>
+
+<pre><code>cd ~/Documents  
+filehandling  
+</code></pre>
+
+<p>Running the above commands also will print the contents of <code>test.txt</code>. </p>
+
+<p>Now let's move to the next step and bundle <code>test.txt</code> to our binary. We use the <code>packr2</code> command to do this.</p>
+
+<p>Run the <code>packr2</code> command from <code>filehandling</code> directory.</p>
+
+<pre><code>cd ~/Documents/filehandling/  
+packr2  
+</code></pre>
+
+<p>This command will search the source code for new boxes and generate Go files that contain our test.txt text file converted to bytes and this can be bundled along with the Go binary. This command will generate a file <code>main-packr.go</code> and a package <code>packrd</code>. These two are needed to bundle the static file along with the binary.</p>
+
+<p>After running the above command, compile and run the program again. The program will print the contents of <code>test.txt</code>. </p>
+
+<pre><code>go install  
+filehandling  
+</code></pre>
+
+<p>When running <code>go install</code> you might get the following error.</p>
+
+<pre><code>build filehandling: cannot load Users/naveen/Documents/filehandling/packrd: malformed module path "Users/naveen/Documents/filehandling/packrd": missing dot in first path element  
+</code></pre>
+
+<p>This might happen because packr2 doesn't know that we are using Go Modules. If you get this error, try setting go modules to on explicitly by running the command <code>export GO111MODULE=on</code>. After setting Go modules to on, the generated files have to be cleaned and regenerated.</p>
+
+<pre><code>packr2 clean  
+packr2  
+go install  
+filehandling  
+</code></pre>
+
+<p>Now the contents of <code>test.txt</code> will be printed and it is being read from the binary.</p>
+
+<p>If you doubt whether the file is served from within the binary or from disk, I suggest that you delete <code>test.txt</code> and run the command <code>filehandling</code> again. You can see that <code>test.txt</code>'s contents are printed. Awesome :D We have successfully embedded static files to our binary. </p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="readingafileinsmallchunks">Reading a file in small chunks</h3>
+
+<p>In the last section, we learned how to load an entire file into memory. When the size of the file is extremely large it doesn't make sense to read the entire file into memory especially if you are running low on RAM. A more optimal way is to read the file in small chunks. This can be done with the help of the <a href="https://golang.org/pkg/bufio" target=_"blank">bufio</a> package.</p>
+
+<p>Let's write a program that reads our <code>test.txt</code> file in chunks of 3 bytes. Run <code>packr2 clean</code> to remove the files generated by packr in the previous section. You might also want to recreate <code>test.txt</code> in case you deleted it. Replace the contents of <code>filehandling.go</code> with the following,</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "bufio"
+    "flag"
+    "fmt"
+    "log"
+    "os"
+)
+
+func main() {  
+    fptr := flag.String("fpath", "test.txt", "file path to read from")
+    flag.Parse()
+
+    f, err := os.Open(*fptr)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer func() {
+        if err = f.Close(); err != nil {
+            log.Fatal(err)
+        }
+    }()
+    r := bufio.NewReader(f)
+    b := make([]byte, 3)
+    for {
+        n, err := r.Read(b)
+        if err != nil {
+            fmt.Println("Error reading file:", err)
+            break
+        }
+        fmt.Println(string(b[0:n]))
+    }
+}
+</code></pre>
+
+<p>In line no. 15 of the program above, we open the file using the path passed from the command line flag.</p>
+
+<p>In line no. 19, we defer the file closing.</p>
+
+<p>Line no. 24 of the program above creates a new buffered reader. In the next line, we create a byte slice of length and capacity 3 into which the bytes of the file will be read.</p>
+
+<p>The <code>Read</code> <a href="https://golangbot.com/methods/">method</a> in line no. 27 reads up to len(b) bytes i.e up to 3 bytes and returns the number of bytes read. We store the bytes returned in a variable<code>n</code>. In line no. 32, the slice is read from index <code>0</code> to <code>n-1</code>, i.e up to the number of bytes returned by the <code>Read</code> method and printed.</p>
+
+<p>Once the end of the file is reached, it will return an EOF error. The rest of the program is straight forward.</p>
+
+<p>If we run the program above using the commands,  </p>
+
+<pre><code>cd ~/Documents/filehandling  
+go install  
+filehandling -fpath=/path-of-file/test.txt  
+</code></pre>
+
+<p>the following will be output</p>
+
+<pre><code>Hel  
+lo  
+Wor  
+ld.  
+ We
+lco  
+me  
+to  
+fil  
+e h  
+and  
+lin  
+g i  
+n G  
+o.  
+Error reading file: EOF  
+</code></pre>
+
+<h3 id="readingafilelinebyline">Reading a file line by line</h3>
+
+<p>In the section, we will discuss how to read a file line by line using Go. This can done using the <a href="https://golang.org/pkg/bufio/" target=_"blank">bufio</a> package. </p>
+
+<p>Please replace the contents in <code>test.txt</code> with the following</p>
+
+<pre><code>Hello World. Welcome to file handling in Go.  
+This is the second line of the file.  
+We have reached the end of the file.  
+</code></pre>
+
+<p>The following are the steps involved in reading a file line by line.</p>
+
+<ol>
+<li>Open the file  </li>
+<li>Create a new scanner from the file  </li>
+<li>Scan the file and read it line by line.</li>
+</ol>
+
+<p>Replace the contents of <code>filehandling.go</code> with the following  </p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "bufio"
+    "flag"
+    "fmt"
+    "log"
+    "os"
+)
+
+func main() {  
+    fptr := flag.String("fpath", "test.txt", "file path to read from")
+    flag.Parse()
+
+    f, err := os.Open(*fptr)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer func() {
+        if err = f.Close(); err != nil {
+        log.Fatal(err)
+    }
+    }()
+    s := bufio.NewScanner(f)
+    for s.Scan() {
+        fmt.Println(s.Text())
+    }
+    err = s.Err()
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+</code></pre>
+
+<p>In line no. 15 of the program above, we open the file using the path passed from the command line flag. In line no. 24, we create a new scanner using the file. The <code>scan()</code> method in line no. 25 reads the next line of the file and the string that is read will be available through the <code>text()</code> method. </p>
+
+<p>After Scan returns <code>false</code>, the <code>Err()</code> method will return any error that occurred during scanning. If the error is End of File, <code>Err()</code> will return <code>nil</code>. </p>
+
+<p>If we run the program above using the commands,</p>
+
+<pre><code>cd ~/Documents/filehandling  
+go install  
+filehandling -fpath=/path-of-file/test.txt  
+</code></pre>
+
+<p>the contents of the file will be printed line by line as shown below.</p>
+
+<pre><code>Hello World. Welcome to file handling in Go.  
+This is the second line of the file.  
+We have reached the end of the file.  
+</code></pre>
+
+<p>This brings us to the end of this tutorial. Hope you enjoyed it. Please leave your comments.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/write-files/">Writing Files</a></strong></p>
+
+<p>Like my tutorials? Please show your support by <a href="https://golangbot.com/support-the-content/">donating</a>. Your donations will help me create more awesome tutorials. </p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Reading%20Files&amp;url=https://golangbot.com/read-files/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/read-files/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/read-files/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/read-files/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-53"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

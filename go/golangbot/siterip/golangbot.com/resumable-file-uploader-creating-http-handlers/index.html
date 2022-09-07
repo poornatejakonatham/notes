@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Creating http handler - Resumable file uploader</title>
+    <meta name="description" content="In this tutorial we create the GET, POST and PATCH handlers needed for implementing the tus server using Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/resumable-file-uploader-creating-http-handlers/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Creating http handler - Resumable file uploader" />
+    <meta property="og:description" content="In this tutorial we create the GET, POST and PATCH handlers needed for implementing the tus server using Go." />
+    <meta property="og:url" content="https://golangbot.com/resumable-file-uploader-creating-http-handlers/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2021-06-18T00:59:00.000Z" />
+    <meta property="article:modified_time" content="2021-06-19T08:51:28.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Creating http handler - Resumable file uploader" />
+    <meta name="twitter:description" content="In this tutorial we create the GET, POST and PATCH handlers needed for implementing the tus server using Go." />
+    <meta name="twitter:url" content="https://golangbot.com/resumable-file-uploader-creating-http-handlers/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Creating http handler - Resumable file uploader",
+    "url": "https://golangbot.com/resumable-file-uploader-creating-http-handlers/",
+    "datePublished": "2021-06-18T00:59:00.000Z",
+    "dateModified": "2021-06-19T08:51:28.000Z",
+    "description": "In this tutorial we create the GET, POST and PATCH handlers needed for implementing the tus server using Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Resumable file uploader: Creating http handlers</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2021-06-18">18 June 2021</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 3 in our <a href="https://golangbot.com/resumable-file-uploader/">Resumable file uploader series</a>.</p>
+
+<p>The <a href="https://golangbot.com/resumable-file-uploader/">previous tutorials</a> provided an introduction about the tus protocol and we also created the <a href="/resumable-file-uploader-implementing-db-crud-methods">DB CRUD</a> methods. </p>
+
+<p>In this tutorial, we will create the http handlers to support the <code>POST</code>, <code>PATCH</code> and <code>HEAD</code> http methods.</p>
+
+<p>This tutorial has the following sections</p>
+
+<ul>
+<li>POST http handler</li>
+<li>HEAD http handler</li>
+<li>PATCH http handler
+<ul><li>File validation</li>
+<li>Upload complete validation</li>
+<li>Upload offset validation</li>
+<li>Content length validation</li>
+<li>File patch</li></ul></li>
+</ul>
+
+<h3 id="posthttphandler">POST http handler</h3>
+
+<p>Before we create the POST handler, we need a directory to store the files. For simplicity, we are going to create a directory named <code>fileserver</code> inside the <code>home</code> directory to store the files.</p>
+
+<pre><code class="language-go line-numbers">const dirName="fileserver"
+
+func createFileDir() (string, error) {  
+    u, err := user.Current()
+    if err != nil {
+        log.Println("Error while fetching user home directory", err)
+        return "", err
+    }
+    home := u.HomeDir
+    dirPath := path.Join(home, dirName)
+    err = os.MkdirAll(dirPath, 0744)
+    if err != nil {
+        log.Println("Error while creating file server directory", err)
+        return "", err
+    }
+    return dirPath, nil
+}
+</code></pre>
+
+<p>In the above function, we get the current user's name and home directory and append <code>dirName</code> constant to create the directory. This function will return the path of the newly created directory or errors if any.</p>
+
+<p>This function will be called from main and the <code>dirPath</code> returned from this function will be used by the POST file handler to create the file.</p>
+
+<p>Now that we have the directory ready, let's move to the POST http handler. We will name this handler <code>createFileHandler</code>. The <code>POST</code> http handler is used to create a new file and return the location of the newly created file in the <code>Location</code> header. It is mandatory for the request to contain a <code>Upload-Length</code> header indicating the entire file size. </p>
+
+<pre><code class="language-go line-numbers">func (fh fileHandler) createFileHandler(w http.ResponseWriter, r *http.Request) {  
+    ul, err := strconv.Atoi(r.Header.Get("Upload-Length"))
+    if err != nil {
+        e := "Improper upload length"
+        log.Printf("%s %s", e, err)
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(e))
+        return
+    }
+    log.Printf("upload length %d\n", ul)
+    io := 0
+    uc := false
+    f := file{
+        offset:         &amp;io,
+        uploadLength:   ul,
+        uploadComplete: &amp;uc,
+    }
+    fileID, err := fh.createFile(f)
+    if err != nil {
+        e := "Error creating file in DB"
+        log.Printf("%s %s\n", e, err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+
+    filePath := path.Join(fh.dirPath, fileID)
+    file, err := os.Create(filePath)
+    if err != nil {
+        e := "Error creating file in filesystem"
+        log.Printf("%s %s\n", e, err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+    defer file.Close()
+    w.Header().Set("Location", fmt.Sprintf("localhost:8080/files/%s", fileID))
+    w.WriteHeader(http.StatusCreated)
+    return
+}
+</code></pre>
+
+<p>In line no. 2 we check whether the <code>Upload-Length</code> header is valid. If not we return a <code>Bad Request</code> response.</p>
+
+<p>If the <code>Upload-Length</code> is valid, we create a file in the DB with the provided upload length and with initial <code>offset 0</code> and <code>upload complete false</code>. Then we create the file in the filesystem and return the location of the file in the <code>Location</code> http header and a <code>201 created</code> response code.</p>
+
+<p>The <code>dirPath</code> field containing the path to store the file should be added to the <code>fileHandler</code> struct. This field will be updated with the dirPath returned from <code>createFileDir()</code> function later from <code>main()</code>. The updated <code>fileHandler</code> struct is provided below.</p>
+
+<pre><code>type fileHandler struct {  
+    db      *sql.DB
+    dirPath string
+}
+</code></pre>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h3 id="headhttphandler">HEAD http handler</h3>
+
+<p>When a HEAD request is received, we are supposed to return the offset of the file if it exists. If the file does not exist, then we should return a 404 not found response. We will name this handler as <code>fileDetailsHandler</code>.</p>
+
+<pre><code class="language-go line-numbers">func (fh fileHandler) fileDetailsHandler(w http.ResponseWriter, r *http.Request) {  
+    vars := mux.Vars(r)
+    fID := vars["fileID"]
+    file, err := fh.File(fID)
+    if err != nil {
+        w.WriteHeader(http.StatusNotFound)
+        return
+    }
+    log.Println("going to write upload offset to output")
+    w.Header().Set("Upload-Offset", strconv.Itoa(*file.offset))
+    w.WriteHeader(http.StatusOK)
+    return
+}
+</code></pre>
+
+<p>We will use <a href="https://github.com/gorilla/mux" target=_"blank">mux</a> router to route the http requests. Please run the command <code>go get github.com/gorilla/mux</code> to fetch the mux router from github.</p>
+
+<p>In line no 3. we get the <code>fileID</code> from the request URL using <a href="https://github.com/gorilla/mux" target=_"blank">mux</a> router. </p>
+
+<p>For the purpose of understanding, I have provided the code which will call the above <code>fileDetailsHandler</code>. We will be writing the below line in the main function later. </p>
+
+<pre><code class="language-go">r.HandleFunc("/files/{fileID:[0-9]+}", fh.fileDetailsHandler).Methods("HEAD")  
+</code></pre>
+
+<p>This handler will be called when the URL has a valid integer <code>fileID</code>. <code>[0-9]+</code> is a regular expression that matches one or more digits. If the <code>fileID</code> is valid, it will be stored with the key <code>fileID</code> in a map of type <code>map[string]string</code> . This map can be retrieved by calling the <code>Vars</code> function of the mux router. This is how we get the <code>fileID</code> in line no. 3.</p>
+
+<p>After getting the <code>fileID</code>, we check whether the file exists by calling the <code>File</code>  method in line no. 4. Remember we wrote this <code>File</code> Method in the <a href="/resumable-file-uploader-implementing-db-crud-methods">last tutorial</a>. If the file is valid, we return the response with the <code>Upload-Offset</code> header. If not we return a <code>http.StatusNotFound</code> response.</p>
+
+<h3 id="patchhttphandler">PATCH http handler</h3>
+
+<p>The only remaining handler is the PATCH http handler. There are a few validations to be done in the <code>PATCH</code> request before we move to the actual file patching. Let's do them first.</p>
+
+<h5 id="filevalidation">File validation</h5>
+
+<p>The first step is to make sure the file trying to be uploaded actually exists.  </p>
+
+<pre><code class="language-go line-numbers">func (fh fileHandler) filePatchHandler(w http.ResponseWriter, r *http.Request) {  
+log.Println("going to patch file")  
+    vars := mux.Vars(r)
+    fID := vars["fileID"]
+    file, err := fh.File(fID)
+    if err != nil {
+        w.WriteHeader(http.StatusNotFound)
+        return
+    }
+}
+</code></pre>
+
+<p>The above code is similar to the one we wrote in the head http handler. It validates whether the file exists.</p>
+
+<h5 id="uploadcompletevalidation">Upload complete validation</h5>
+
+<p>The next step is to check whether the file has already been uploaded completely. </p>
+
+<pre><code class="language-go line-numbers">if *file.uploadComplete == true {  
+        e := "Upload already completed" //change to string
+        w.WriteHeader(http.StatusUnprocessableEntity)
+        w.Write([]byte(e))
+        return
+    }
+</code></pre>
+
+<p>If the upload is already complete, we return a <code>StatusUnprocessableEntity</code> status.</p>
+
+<h5 id="uploadoffsetvalidation">Upload offset validation</h5>
+
+<p>Each patch request should contain a <code>Upload-Offset</code> header field indicating the current offset of the data and the actual data to be patched to the file should be present in the message body.  </p>
+
+<pre><code class="language-go line-numbers">off, err := strconv.Atoi(r.Header.Get("Upload-Offset"))  
+if err != nil {  
+    log.Println("Improper upload offset", err)
+    w.WriteHeader(http.StatusBadRequest)
+    return
+}
+log.Printf("Upload offset %d\n", off)  
+if *file.offset != off {  
+    e := fmt.Sprintf("Expected Offset %d got offset %d", *file.offset, off) 
+    w.WriteHeader(http.StatusConflict)
+    w.Write([]byte(e))
+    return
+}
+</code></pre>
+
+<p>In the above code, we first check whether the <code>Upload-Offset</code> in the request header is valid. If it is not, we return a <code>StatusBadRequest</code>.</p>
+
+<p>In line no. 8, we compare the offset in the table <code>*file.Offset</code> with the one present in the header <code>off</code>. They are expected to be equal. <em>Let's take the example of a  file with upload length 250 bytes. If 100 bytes are already uploaded, the upload offset in the database will be 100. Now the server will expect a request with <code>Upload-offset</code> header 100.</em> If they are not equal, we return a <code>StatusConflict</code> header.</p>
+
+<h5 id="contentlengthvalidation">Content length validation</h5>
+
+<p>The next step is validating the <code>content-length</code>.</p>
+
+<pre><code class="language-go line-numbers">clh := r.Header.Get("Content-Length")  
+cl, err := strconv.Atoi(clh)  
+if err != nil {  
+    log.Println("unknown content length")
+    w.WriteHeader(http.StatusInternalServerError)
+    return
+}
+
+if cl != (file.uploadLength - *file.offset) {  
+    e := fmt.Sprintf("Content length doesn't not match upload length.Expected content length %d got %d", file.uploadLength-*file.offset, cl)
+    log.Println(e)
+    w.WriteHeader(http.StatusBadRequest)
+    w.Write([]byte(e))
+    return
+}
+</code></pre>
+
+<p>Let's say a file is 250 bytes length and the current offset is 150. This indicates that there are 100 more bytes to be uploaded. Hence the <code>Content-Length</code> of the patch request should be exactly 100. This validation is done in line no. 9 of the above code.</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<h5 id="filepatch">File patch</h5>
+
+<p>Now comes the fun part. We have done all our validations and ready to patch the file.</p>
+
+<pre><code class="language-go line-numbers">body, err := ioutil.ReadAll(r.Body)  
+if err != nil {  
+    log.Printf("Received file partially %s\n", err)
+    log.Println("Size of received file ", len(body))
+}
+fp := fmt.Sprintf("%s/%s", fh.dirPath, fID)  
+f, err := os.OpenFile(fp, os.O_APPEND|os.O_WRONLY, 0644)  
+if err != nil {  
+    log.Printf("unable to open file %s\n", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    return
+}
+defer f.Close()
+
+n, err := f.WriteAt(body, int64(off))  
+if err != nil {  
+    log.Printf("unable to write %s", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    return
+}
+log.Println("number of bytes written ", n)  
+no := *file.offset + n  
+file.offset = &amp;no
+
+uo := strconv.Itoa(*file.offset)  
+w.Header().Set("Upload-Offset", uo)  
+if *file.offset == file.uploadLength {  
+    log.Println("upload completed successfully")
+    *file.uploadComplete = true
+}
+
+err = fh.updateFile(file)  
+if err != nil {  
+    log.Println("Error while updating file", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    return
+}
+log.Println("going to send succesfully uploaded response")  
+w.WriteHeader(http.StatusNoContent)  
+</code></pre>
+
+<p>We start reading the message body in line no.1 of the above code. The <code>ReadAll</code> function returns the data it has read until <code>EOF</code> or there is an error. <code>EOF</code> is not considered as an error as <code>ReadAll</code> is expected to read from the source until EOF. </p>
+
+<p>Let's say the patch request disconnects before it is complete. When this happens, <code>ReadAll</code> will return a <code>unexpected EOF</code> error. <strong>Usually generic web servers will discard the request if it is incomplete. But we are creating a resumable file uploader and we shouldn't do it. We should patch the file with the data we have received till now.</strong> </p>
+
+<p>The length of data received is printed in line no. 4.</p>
+
+<p>In line no. 7 we open the file in append mode if it already exists or create a new file if it doesn't exist. </p>
+
+<p>In line no. 15 we write the request body to the file at the offset provided in the request header. In line no. 23 we update the offset of the file by adding the number of bytes written. In line no. 26 we write the updated offset to the response header. </p>
+
+<p>In line no. 27 we check whether the current offset is equal to the upload lenght. If this is the case then the upload has completed. We set the <code>uploadComplete</code> flag to <code>true</code>. </p>
+
+<p>Finally in line no. 32 we write the updated file details to the database and return a <code>StatusNoContent</code> header indicating that the request is successful.</p>
+
+<p>The entire code along with the main function available in github at <a href="https://github.com/golangbot/tusserver" target=_"blank">https://github.com/golangbot/tusserver</a>. We will need the Postgres driver to run the code. Please fetch the postgres driver running the command <code>go get github.com/lib/pq</code> in the terminal before running the program.</p>
+
+<p>That's about it. We have a working resumable file uploader. In the next tutorial, we will test this uploader using curl and dd commands and also discuss the possible enhancements.</p>
+
+<p><strong>Next tutorial - <a href="/resumable-file-uploader-testing-the-server-using-curl-dd">Testing the server using curl and dd  commands</a></strong></p>
+
+<p>Have a good day.</p>
+
+<p>Like my tutorials? Please show your support by <a href="https://golangbot.com/support-the-content/">donating</a>. Your donations will help me create more awesome tutorials. </p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Resumable%20file%20uploader%3A%20Creating%20http%20handlers&amp;url=https://golangbot.com/resumable-file-uploader-creating-http-handlers/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/resumable-file-uploader-creating-http-handlers/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/resumable-file-uploader-creating-http-handlers/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/resumable-file-uploader-creating-http-handlers/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-65"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>

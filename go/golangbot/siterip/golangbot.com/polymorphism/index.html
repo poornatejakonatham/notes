@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Polymorphism in Golang using Interfaces | OOP in Go | golangbot.com</title>
+    <meta name="description" content="Polymorphism in Go is achieved with the help of interfaces. A variable of type interface can hold any value which implements the interface. This property is used to achieve polymorphism in Go." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/webkid.css?v=e847a559d0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://golangbot.com/polymorphism/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Go Tutorial - Learn Go from the Basics with Code Examples" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Polymorphism in Golang using Interfaces | OOP in Go | golangbot.com" />
+    <meta property="og:description" content="Polymorphism in Go is achieved with the help of interfaces. A variable of type interface can hold any value which implements the interface. This property is used to achieve polymorphism in Go." />
+    <meta property="og:url" content="https://golangbot.com/polymorphism/" />
+    <meta property="og:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta property="article:published_time" content="2021-03-29T00:09:00.000Z" />
+    <meta property="article:modified_time" content="2021-03-29T08:53:01.000Z" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Polymorphism in Golang using Interfaces | OOP in Go | golangbot.com" />
+    <meta name="twitter:description" content="Polymorphism in Go is achieved with the help of interfaces. A variable of type interface can hold any value which implements the interface. This property is used to achieve polymorphism in Go." />
+    <meta name="twitter:url" content="https://golangbot.com/polymorphism/" />
+    <meta name="twitter:image" content="https://golangbot.com/content/images/2019/05/golangbot-twt.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Naveen Ramanathan" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Go Tutorial - Learn Go from the Basics with Code Examples",
+        "logo": "https://golangbot.com/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Naveen Ramanathan",
+        "url": "https://golangbot.com/author/naveen/",
+        "sameAs": [],
+        "description": "Naveen Ramanathan is a software engineer with interests in \nGo, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com."
+    },
+    "headline": "Polymorphism in Golang using Interfaces | OOP in Go | golangbot.com",
+    "url": "https://golangbot.com/polymorphism/",
+    "datePublished": "2021-03-29T00:09:00.000Z",
+    "dateModified": "2021-03-29T08:53:01.000Z",
+    "description": "Polymorphism in Go is achieved with the help of interfaces. A variable of type interface can hold any value which implements the interface. This property is used to achieve polymorphism in Go.",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://golangbot.com"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11" />
+    <link rel="alternate" type="application/rss+xml" title="Go Tutorial - Learn Go from the Basics with Code Examples" href="https://golangbot.com/rss/" />
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90692889-1', 'auto');
+  ga('send', 'pageview');
+  ga('set', 'anonymizeIp', true);
+</script>
+<meta name="msvalidate.01" content="6A3D351D35CFAE52BEDB8E512F8290E0" />
+<!-- MailerLite Universal -->
+<script>
+(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+var ml_account = ml('accounts', '802191', 'h9h0n5z0n2', 'load');
+</script>
+<!-- End MailerLite Universal -->
+
+<!--mailerlite styles-->
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=cyrillic,cyrillic-ext,latin-ext');
+    #mlb2-5163759,
+    #mlb2-5163759 *,
+    #mlb2-5163759 a:hover,
+    #mlb2-5163759 a:visited,
+    #mlb2-5163759 a:focus,
+    #mlb2-5163759 a:active {
+        overflow: visible;
+        position: static;
+        background: none;
+        border: none;
+        bottom: auto;
+        clear: none;
+        cursor: default;
+        float: none;
+        letter-spacing: normal;
+        line-height: normal;
+        text-align: left;
+        text-indent: 0;
+        text-transform: none;
+        visibility: visible;
+        white-space: normal;
+        max-height: none;
+        max-width: none;
+        left: auto;
+        min-height: 0;
+        min-width: 0;
+        right: auto;
+        top: auto;
+        width: auto;
+        z-index: auto;
+        text-shadow: none;
+        box-shadow: none;
+        outline: medium none;
+    }
+    
+    #mlb2-5163759 a:hover {
+        cursor: pointer !important;
+    }
+    
+    #mlb2-5163759 h4 {
+        font-weight: normal;
+    }
+    
+    #mlb2-5163759 .subscribe-form {
+        padding: 20px;
+        border: 0px solid #F6F6F6 !important;
+        background: #FFFFFF none !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #mlb2-5163759 .ml-block-form {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb10 {
+        margin-bottom: 10px;
+        float: left;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section.mb0 {
+        margin-bottom: 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section h4 {
+        margin: 0px 0px 10px 0px !important;
+        padding: 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 28px !important;
+        line-height: 100%;
+        text-align: left !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section p,
+    #mlb2-5163759 .subscribe-form .form-section li {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 10px 0px;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section a {
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox {
+        line-height: 150%;
+        padding: 0px !important;
+        margin: 0px 0px 15px 0px !important;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .confirmation_checkbox input[type="checkbox"] {
+        margin-right: 5px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group {
+        margin-bottom: 15px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .form-group label {
+        float: left;
+        margin-bottom: 10px;
+        width: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox label {
+        color: #000000 !important;
+        font-family: 'Open Sans', sans-serif !important;
+        font-size: 14px !important;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input {
+        margin: 0px 5px 0px 0px;
+    }
+    
+    #mlb2-5163759 .subscribe-form .form-section .checkbox input[type=checkbox] {
+        -webkit-appearance: checkbox;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group .form-control {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 10px;
+        height: auto;
+        font-family: Arial;
+        border-radius: 0px;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        clear: left;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button {
+        border: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        border-radius: 0px !important;
+        height: 40px !important;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        font-family: 'Arial', sans-serif !important;
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    #mlb2-5163759.ml-subscribe-form button[disabled] {
+        cursor: not-allowed!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-section.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error label {
+        color: red!important;
+    }
+    
+    #mlb2-5163759.ml-subscribe-form .form-group.ml-error .form-control {
+        border-color: red!important;
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5163759 {
+            width: 100% !important;
+        }
+        #mlb2-5163759 form.ml-block-form,
+        #mlb2-5163759 .subscribe-form {
+            width: 100% !important;
+        }
+    }
+    
+    <!--start of inline cheat sheet button-->
+    .ml-button-iframe {
+        background-color: transparent !important;
+        border: 0px none transparent;
+        !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        visibility: visible !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        left: 0px !important;
+        top: 0px !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        display: none;
+    }
+    
+    #mlb2-5217285 button.ml-subscribe-button {
+        cursor: pointer;
+        font-family: Open Sans!important;
+        font-size: 16px!important;
+        height: 40px;
+        width: auto;
+        background: #000000!important;
+        background-color: #000000!important;
+        color: #ffffff!important;
+        border: none;
+        border-radius: 0px;
+        padding: 0px 16px;
+    }
+    
+    #mlb2-5217285 button.gradient-on {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+    }
+    
+    #mlb2-5217285 button.gradient-on:hover {
+        background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        #mlb2-5217285 button.ml-subscribe-button {
+            height: auto;
+            line-height: 26px;
+            padding: 5px 16px;
+        }
+    }
+    <!--end of inline cheat sheet button-->
+</style>
+<!--mailer lite style end-->
+</head>
+<body class="post-template">
+
+    
+
+<link rel="stylesheet" href="/assets/css/prism.css">
+<script src="/assets/js/prism.js"></script>
+
+<header id="header">
+    <nav class="header-nav" ">
+
+      <div class="blog-title"><a href="https://golangbot.com">golangbot.com</a></div>
+      <!--Change this to customize the navigation-->
+      <div class="taglist-wrapper clearfix">
+        <ul id="taglist" class="taglist">
+            <li><a href="/learn-golang-series/">Golang Tutorial - Table of Contents</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </nav> 
+
+</header>
+
+
+<main id="content" class="content" role="main">
+
+    <!--<div id="detlarticle" class="box ">-->
+        <div id="detlarticle" class="box">
+        <!--<div class="image-wrapper">
+            <img src="" class="post-image"/>
+        </div>-->
+    
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Polymorphism - OOP in Go</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2021-03-29">29 March 2021</time>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Welcome to tutorial no. 28 in <a href="https://golangbot.com/learn-golang-series/">Golang tutorial series</a>.</p>
+
+<p>Polymorphism in Go is achieved with the help of <a href="https://golangbot.com/interfaces-part-1/">interfaces</a>. As we have already discussed, <a href="https://golangbot.com/interfaces-part-1/">interfaces</a> are implicitly implemented in Go. A type implements an interface if it provides definitions for all the <a href="https://golangbot.com/methods/">methods</a> declared in the interface. Let's see how polymorphism is achieved in Go with the help of interfaces.</p>
+
+<h3 id="polymorphismusinganinterface">Polymorphism using an interface</h3>
+
+<p>Any type which provides definition for all the methods of an interface is said to implicitly implement that interface. This will be more clear as we discuss an example of polymorphism shortly.</p>
+
+<p><strong>A variable of type interface can hold any value which implements the interface. This property of interfaces is used to achieve polymorphism in Go.</strong></p>
+
+<p>Let's understand polymorphism in Go with the help of a program that calculates the net income of an organization. For simplicity, let's assume that this imaginary organization has income from two kinds of projects viz. <em>fixed billing</em> and <em>time and material</em>. The net income of the organization is calculated by the sum of the incomes from these projects. To keep this tutorial simple, we will assume that the currency is dollars and we will not deal with cents. It will be represented using <code>int</code>. (I recommend reading <a href="https://forum.golangbridge.org/t/what-is-the-proper-golang-equivalent-to-decimal-when-dealing-with-money/413" target=_"blank">https://forum.golangbridge.org/t/what-is-the-proper-golang-equivalent-to-decimal-when-dealing-with-money/413</a> to learn how to represent cents. Thanks to <em>Andreas Matuschek</em> in the comments section for pointing this out.)</p>
+
+<p>Let's first define an interface <code>Income</code>.</p>
+
+<pre><code class="language-go line-numbers">type Income interface {  
+    calculate() int
+    source() string
+}
+</code></pre>
+
+<p>The <code>Income</code> interface defined above contains two methods <code>calculate()</code> which calculates and returns the income from the source and <code>source()</code> which returns the name of the source.</p>
+
+<p>Next, let's define a struct for <code>FixedBilling</code> project type.</p>
+
+<pre><code class="language-go line-numbers">type FixedBilling struct {  
+    projectName string
+    biddedAmount int
+}
+</code></pre>
+
+<p>The <code>FixedBilling</code> project has two fields <code>projectName</code> which represents the name of the project and <code>biddedAmount</code> which is the amount that the organization has bid for the project.</p>
+
+<p>The <code>TimeAndMaterial</code> struct will represent projects of  Time and Material type.</p>
+
+<pre><code class="language-go line-numbers">type TimeAndMaterial struct {  
+    projectName string
+    noOfHours  int
+    hourlyRate int
+}
+</code></pre>
+
+<p>The <code>TimeAndMaterial</code> struct has three fields names <code>projectName</code>,  <code>noOfHours</code> and <code>hourlyRate</code>.</p>
+
+<p>The next step would be to define methods on these struct types which calculate and return the actual income and source of income.</p>
+
+<pre><code class="language-go line-numbers">func (fb FixedBilling) calculate() int {  
+    return fb.biddedAmount
+}
+
+func (fb FixedBilling) source() string {  
+    return fb.projectName
+}
+
+func (tm TimeAndMaterial) calculate() int {  
+    return tm.noOfHours * tm.hourlyRate
+}
+
+func (tm TimeAndMaterial) source() string {  
+    return tm.projectName
+}
+</code></pre>
+
+<p>In the case of <code>FixedBilling</code> projects, the income is just the amount bid for the project. Hence we return this from the <code>calculate()</code> method of <code>FixedBilling</code> type.</p>
+
+<p>In the case of <code>TimeAndMaterial</code> projects, the income is the product of the <code>noOfHours</code> and <code>hourlyRate</code>. This value is returned from the <code>calculate()</code> method with receiver type <code>TimeAndMaterial</code>. </p>
+
+<p>We return the name of the project as the source of income from the <code>source()</code> method.</p>
+
+<p>Since both  <code>FixedBilling</code> and <code>TimeAndMaterial</code> structs provide definitions for the <code>calculate()</code> and <code>source()</code> methods of the <code>Income</code> interface, both structs implement the <code>Income</code> interface.</p>
+
+<p>Let's declare the <code>calculateNetIncome</code> function which will calculate and print the total income. </p>
+
+<pre><code class="language-go">func calculateNetIncome(ic []Income) {  
+    var netincome int = 0
+    for _, income := range ic {
+        fmt.Printf("Income From %s = $%d\n", income.source(), income.calculate())
+        netincome += income.calculate()
+    }
+    fmt.Printf("Net income of organization = $%d", netincome)
+}
+</code></pre>
+
+<p>The <code>calculateNetIncome</code> <a href="https://golangbot.com/functions/">function</a> above accepts a <a href="https://golangbot.com/arrays-and-slices/#slices">slice</a> of <code>Income</code> interfaces as argument. It calculates the total income by iterating over the slice and calling <code>calculate()</code> method on each of its items. It also displays the income source by calling <code>source()</code> method. Depending on the concrete type of the <code>Income</code> interface, different <code>calculate()</code> and <code>source()</code> methods will be called. Thus we have achieved polymorphism in the  <code>calculateNetIncome</code> function. </p>
+
+<p>In the future, if a new kind of income source is added by the organization, this function will still calculate the total income correctly without a single line of code change :).</p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+
+<p>The only part remaining in the program is the main function. </p>
+
+<pre><code class="language-go line-numbers">func main() {  
+    project1 := FixedBilling{projectName: "Project 1", biddedAmount: 5000}
+    project2 := FixedBilling{projectName: "Project 2", biddedAmount: 10000}
+    project3 := TimeAndMaterial{projectName: "Project 3", noOfHours: 160, hourlyRate: 25}
+    incomeStreams := []Income{project1, project2, project3}
+    calculateNetIncome(incomeStreams)
+}
+</code></pre>
+
+<p>In the <code>main</code> function above we have created three projects, two of type <code>FixedBilling</code> and one of type <code>TimeAndMaterial</code>. Next, we create a slice of type <code>Income</code> with these 3 projects. Since each of these projects has implemented the <code>Income</code> interface, it is possible to add all three projects to a slice of type <code>Income</code>. Finally, we call <code>calculateNetIncome</code> function and pass this slice as a parameter. It will display the various income sources and the income from them.</p>
+
+<p>Here is the full program for your reference.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Income interface {  
+    calculate() int
+    source() string
+}
+
+type FixedBilling struct {  
+    projectName string
+    biddedAmount int
+}
+
+type TimeAndMaterial struct {  
+    projectName string
+    noOfHours  int
+    hourlyRate int
+}
+
+func (fb FixedBilling) calculate() int {  
+    return fb.biddedAmount
+}
+
+func (fb FixedBilling) source() string {  
+    return fb.projectName
+}
+
+func (tm TimeAndMaterial) calculate() int {  
+    return tm.noOfHours * tm.hourlyRate
+}
+
+func (tm TimeAndMaterial) source() string {  
+    return tm.projectName
+}
+
+func calculateNetIncome(ic []Income) {  
+    var netincome int = 0
+    for _, income := range ic {
+        fmt.Printf("Income From %s = $%d\n", income.source(), income.calculate())
+        netincome += income.calculate()
+    }
+    fmt.Printf("Net income of organization = $%d", netincome)
+}
+
+func main() {  
+    project1 := FixedBilling{projectName: "Project 1", biddedAmount: 5000}
+    project2 := FixedBilling{projectName: "Project 2", biddedAmount: 10000}
+    project3 := TimeAndMaterial{projectName: "Project 3", noOfHours: 160, hourlyRate: 25}
+    incomeStreams := []Income{project1, project2, project3}
+    calculateNetIncome(incomeStreams)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/uexie1DCcvh" target=_"blank">Run in playground</a></p>
+
+<p>This program will output </p>
+
+<pre><code>Income From Project 1 = $5000  
+Income From Project 2 = $10000  
+Income From Project 3 = $4000  
+Net income of organization = $19000  
+</code></pre>
+
+<h3 id="addinganewincomestreamtotheaboveprogram">Adding a new income stream to the above program</h3>
+
+<p>Let's say the organization has found a new income stream through advertisements. Let's see how simple it is to add this new income stream and calculate the total income without making any changes to the <code>calculateNetIncome</code> function. This becomes possible because of polymorphism.</p>
+
+<p>Lets first define the <code>Advertisement</code> type and the <code>calculate()</code> and <code>source()</code> methods on the <code>Advertisement</code> type.</p>
+
+<pre><code class="language-go line-numbers">type Advertisement struct {  
+    adName     string
+    CPC        int
+    noOfClicks int
+}
+
+func (a Advertisement) calculate() int {  
+    return a.CPC * a.noOfClicks
+}
+
+func (a Advertisement) source() string {  
+    return a.adName
+}
+</code></pre>
+
+<p>The <code>Advertisement</code> type has three fields <code>adName</code>, <code>CPC</code> (cost per click) and <code>noOfClicks</code> (number of clicks). The total income from ads is the product of <code>CPC</code> and <code>noOfClicks</code>.</p>
+
+<p>Let's modify the <code>main</code> function a little to include this new income stream.</p>
+
+<pre><code class="language-go line-numbers">func main() {  
+    project1 := FixedBilling{projectName: "Project 1", biddedAmount: 5000}
+    project2 := FixedBilling{projectName: "Project 2", biddedAmount: 10000}
+    project3 := TimeAndMaterial{projectName: "Project 3", noOfHours: 160, hourlyRate: 25}
+    bannerAd := Advertisement{adName: "Banner Ad", CPC: 2, noOfClicks: 500}
+    popupAd := Advertisement{adName: "Popup Ad", CPC: 5, noOfClicks: 750}
+    incomeStreams := []Income{project1, project2, project3, bannerAd, popupAd}
+    calculateNetIncome(incomeStreams)
+}
+</code></pre>
+
+<p>We have created two ads namely <code>bannerAd</code> and <code>popupAd</code>. The <code>incomeStreams</code> slice includes the two ads we just created. </p>
+
+<p>Here is the full program after adding Advertisement.</p>
+
+<pre><code class="language-go line-numbers">package main
+
+import (  
+    "fmt"
+)
+
+type Income interface {  
+    calculate() int
+    source() string
+}
+
+type FixedBilling struct {  
+    projectName  string
+    biddedAmount int
+}
+
+type TimeAndMaterial struct {  
+    projectName string
+    noOfHours   int
+    hourlyRate  int
+}
+
+type Advertisement struct {  
+    adName     string
+    CPC        int
+    noOfClicks int
+}
+
+func (fb FixedBilling) calculate() int {  
+    return fb.biddedAmount
+}
+
+func (fb FixedBilling) source() string {  
+    return fb.projectName
+}
+
+func (tm TimeAndMaterial) calculate() int {  
+    return tm.noOfHours * tm.hourlyRate
+}
+
+func (tm TimeAndMaterial) source() string {  
+    return tm.projectName
+}
+
+func (a Advertisement) calculate() int {  
+    return a.CPC * a.noOfClicks
+}
+
+func (a Advertisement) source() string {  
+    return a.adName
+}
+func calculateNetIncome(ic []Income) {  
+    var netincome int = 0
+    for _, income := range ic {
+        fmt.Printf("Income From %s = $%d\n", income.source(), income.calculate())
+        netincome += income.calculate()
+    }
+    fmt.Printf("Net income of organization = $%d", netincome)
+}
+
+func main() {  
+    project1 := FixedBilling{projectName: "Project 1", biddedAmount: 5000}
+    project2 := FixedBilling{projectName: "Project 2", biddedAmount: 10000}
+    project3 := TimeAndMaterial{projectName: "Project 3", noOfHours: 160, hourlyRate: 25}
+    bannerAd := Advertisement{adName: "Banner Ad", CPC: 2, noOfClicks: 500}
+    popupAd := Advertisement{adName: "Popup Ad", CPC: 5, noOfClicks: 750}
+    incomeStreams := []Income{project1, project2, project3, bannerAd, popupAd}
+    calculateNetIncome(incomeStreams)
+}
+</code></pre>
+
+<p><a href="https://play.golang.org/p/HF1P9tNt2H_6" target=_"blank">Run in playground</a></p>
+
+<p>The above program will output,</p>
+
+<pre><code>Income From Project 1 = $5000  
+Income From Project 2 = $10000  
+Income From Project 3 = $4000  
+Income From Banner Ad = $1000  
+Income From Popup Ad = $3750  
+Net income of organization = $23750  
+</code></pre>
+
+<p>You would have noticed that we did not make any changes to the <code>calculateNetIncome</code> function though we added a new income stream. It just worked because of polymorphism. Since the new <code>Advertisement</code> type also implemented the <code>Income</code> interface, we were able to add it to the <code>incomeStreams</code> slice. The <code>calculateNetIncome</code> function also worked without any changes as it was able to call the <code>calculate()</code> and <code>source()</code> methods of the <code>Advertisement</code> type.</p>
+
+<p>This brings us to the end of this tutorial. Have a good day.</p>
+
+<p><strong>Next tutorial - <a href="https://golangbot.com/defer/">Defer</a></strong></p>
+
+<p><center> <br />
+<script type="text/javascript" src="//static.mailerlite.com/data/webforms/524571/p8t5t8.js?v4"></script></center><br></p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+
+		<h4><a href="https://golangbot.com/about/">Naveen Ramanathan</a></h4>
+                    <p>Naveen Ramanathan is a software engineer with interests in 
+Go, Docker, Kubernetes, Swift, Python, and  Web Assembly. If you would like to hire him, please mail to naveen[at]golangbot[dot]com.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="fa fa-twitter" href="https://twitter.com/share?text=Polymorphism%20-%20OOP%20in%20Go&amp;url=https://golangbot.com/polymorphism/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://golangbot.com/polymorphism/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="fa fa-google" href="https://plus.google.com/share?url=https://golangbot.com/polymorphism/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "https://golangbot.com/polymorphism/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "blog-37"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//golangbot.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+    </article>
+
+</div>
+
+<div id="detlsidebar"><!--<div class="box sidebox about">
+  <div class="sidebox-title">Support Me</div>
+  <div class="sidebox-content">
+      Please support my work by donating. Your donations will help me with the running costs of the website and also my personal time investment. <br><br>
+      <a href="https://www.patreon.com/golangbot" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/patreon_upd.png"></a><br><br>
+      <a href="https://www.paypal.me/rnaveen/0" target="_blank"><img style = "width:204px;height:40px;" src = "https://golangbot.com/content/images/staticimgs/paypaldonatebutton.jpg"></a>
+  </div>
+</div>-->
+
+<!--
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>
+  </ul>
+</div>
+</div>
+</div>-->
+
+<!--<div class="alignleft" style="margin-bottom: 30px; margin-top: 30px; min-height: 130px; height: auto;">
+<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7IV2QE&placement=golangbotcom" id="_carbonads_js"></script>
+</div>-->
+<!--<div class="box sidebox about">
+  <div>
+    <a href="http://mng.bz/D2xy" target="_blank" rel="noopener sponsored"><img style="width: 100%; max-width: 486px" src="https://golangbot.com/content/images/staticimgs/nlgolangbot.png"></a>
+  </div>
+</div>-->
+<div class="box sidebox about" style="margin-bottom: 30px;">
+<div class="sidebox-title">Follow Us</div>
+<div class="sidebox-content">
+<div class="sidebox box social clearfix">
+  <ul>
+    <li><a href="http://twitter.com/bot_golang" target="_blank" class="social-item tw"><i class="fa fa-twitter"></i></a></li>
+    <!--<li><a href="http://facebook.com/golangbot" target="_blank" class="social-item fb"><i class="fa fa-facebook"></i></a></li>
+    <li><a href="https://github.com/golangbot" target="_blank" class="social-item github"><i class="fa fa-github"></i></a></li>-->
+       <li><a href="http://linkedin.com/in/msgtonaveen" target="_blank" class="social-item linkedin"><i class="fa fa-linkedin"></i></a></li>
+  
+</ul>
+</div>
+</div>
+</div>
+
+<div class="box sidebox about">
+  <div class="sidebox-title">Popular Articles</div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/goroutines/">Goroutines</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This tutorial discusses how concurrency is achieved in Go using goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/channels/">Channels</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           This article explains how channels can be used to establish communication between goroutines.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/arrays-and-slices/">Arrays and Slices</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A detailed tutorial about arrays and slices covering the internal implementation details too.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/structs/">Structs</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           An in-depth tutorial about declaring and defining structs. It also covers anonymous structs, promoted fields and nested structs.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/first-class-functions/">First Class Functions</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 0em; padding-right: 1em; margin-bottom: 0em;">
+           A tutorial explaining how to use anonymous functions, user-defined functions, higher order functions and closures in Go.
+      </p>
+  </div>
+  <div style="padding-left: 1em; padding-top:1em;">
+      <h4>
+          <a href="/interfaces-part-1/">Interfaces</a>
+      </h4>
+  </div>
+  <div>
+      <p style="padding-left: 1em; padding-bottom: 2em; padding-right: 1em; margin-bottom: 0em;">
+           Learn how interfaces are declared and implemented and also get to know the use of interfaces in Go.
+      </p>
+  </div>
+ </div>
+
+<div class="box sidebox about" style="margin-top: 40px;">
+  <div class="sidebox-title">Newsletter</div>
+  <div class="sidebox-content">
+<div id="mlb2-5163759" class="ml-subscribe-form ml-subscribe-form-5163759">
+    <div class="ml-vertical-align-center">
+        <div class="subscribe-form ml-block-success" style="display:none">
+            <div class="form-section">
+                <h4>Join Our Newsletter</h4>
+                <p>Thank you for subscribing. Golang tools cheat sheet has been emailed to your id.</p>
+            </div>
+        </div>
+        <form class="ml-block-form" action="https://static.mailerlite.com/webforms/submit/m9d9l5" data-id="428815" data-code="m9d9l5" method="POST" target="_blank">
+            <div class="subscribe-form">
+                <div class="form-section mb10">
+                    <h4>Join Our Newsletter</h4>
+                    <p>Signup for our newsletter and get the <span style="font-size: 18px;"><strong>Golang tools cheat sheet for free</strong></span>.</p>
+                </div>
+                <div class="form-section">
+                    <div class="form-group ml-field-email ml-validate-required ml-validate-email">
+                        <input type="email" name="fields[email]" class="form-control" placeholder="Email*" value="" autocomplete="email" x-autocompletetype=$
+                    </div>
+                </div>
+                <input type="hidden" name="ml-submit" value="1" />
+                <button type="submit" class="primary">
+                    Subscribe
+                </button>
+                <button disabled="disabled" style="display: none;" type="button" class="loading">
+                    <img src="https://static.mailerlite.com/images/rolling@2x.gif" width="20" height="20" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </form>
+        <script>
+            function ml_webform_success_5163759() {
+                var $ = ml_jQuery || jQuery;
+
+                $('.ml-subscribe-form-5163759 .ml-block-success').show();
+                $('.ml-subscribe-form-5163759 .ml-block-form').hide();
+            };
+        </script>
+    </div>
+</div>
+<script type="text/javascript" src="https://static.mailerlite.com/js/w/webforms.min.js?v0c75f831c56857441820dcec3163967c"></script>
+  </div>
+</div>
+
+
+</div>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="https://golangbot.com">Go Tutorial - Learn Go from the Basics with Code Examples</a> &copy; 2022 <a href="/privacy" target="_blank">Privacy Policy</a></section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5895f456682d473d" async="async"></script> 
+
+<!--EU Cookie LAW Start-->
+<style scoped>@import url("//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css");</style>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "We uses cookies to measure website performance and personalize content.",
+    "href": "https://golangbot.com/privacy"
+  }
+})});
+</script>
+<!--EU COOKIE LAW END-->
+
+    <script type="text/javascript" src="/assets/js/jquery.min.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/jquery.xml2json.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/index.js?v=e847a559d0"></script>
+    <script type="text/javascript" src="/assets/js/webkid.js?v=e847a559d0"></script>
+
+</body>
+</html>
